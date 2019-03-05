@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My sandbox</string>
+    <string name="child_image_desc">Child image</string>
+    <string name="child_fragment_label">ChildFragment %d</string>
 </resources>

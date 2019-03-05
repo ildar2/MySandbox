@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigator
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.child_fragment.*
 import kz.ildar.sandbox.R
@@ -16,9 +17,11 @@ import org.koin.android.viewmodel.ext.android.getViewModel
 class ChildFragment : Fragment() {
 
     private lateinit var viewModel: ChildViewModel
+    private var counter: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        counter = arguments?.getInt("counter") ?: 0
         viewModel = getViewModel()
 
         viewModel.childLiveData.observe(this, Observer { value ->
@@ -27,7 +30,8 @@ class ChildFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.child_fragment, container, false)
@@ -39,9 +43,18 @@ class ChildFragment : Fragment() {
 
         viewModel.getData()
 
-        childView.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_recursive_child)
-        )
+        childView.text = getString(R.string.child_fragment_label, counter)
+        childView.setOnClickListener {
+            val extras = FragmentNavigator.Extras.Builder()
+                .addSharedElement(toolbar, "toolbar")//todo
+                .build()
+            Navigation.findNavController(view).navigate(
+                R.id.action_recursive_child,
+                Bundle().apply { putInt("counter", ++counter) },
+                null,
+                extras
+            )
+        }
 
         Glide.with(this)
             .load(viewModel.getUrl())
