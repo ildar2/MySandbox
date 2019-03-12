@@ -49,9 +49,13 @@ dependencies {
 
     //testing
     implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
+
     testImplementation 'org.mockito:mockito-core:2.23.0'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    testImplementation 'android.arch.core:core-testing:1.1.1' //livedata testing
+
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     debugImplementation 'androidx.fragment:fragment-testing:1.1.0-alpha04'

@@ -23,6 +23,8 @@ val appModule = module {
 
     single<HelloRepository> { HelloRepositoryImpl(get()) }
 
+    single { CoroutineContextProvider() }
+
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
     viewModel { HelloViewModel(get()) }

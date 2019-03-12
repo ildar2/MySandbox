@@ -3,18 +3,21 @@ package kz.ildar.sandbox.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
 import kz.ildar.sandbox.data.RequestResult
+import kz.ildar.sandbox.di.CoroutineContextProvider
 import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import retrofit2.Response
 
 abstract class BaseViewModel : ViewModel(), KoinComponent {
     val statusLiveData = MutableLiveData<Status>()
     val errorLiveData = MutableLiveData<String>()
 
+    private val scopeProvider: CoroutineContextProvider by inject()
+
     private val coroutineJob = Job()
 
-    protected val scope = CoroutineScope(coroutineJob + IO)
+    protected val scope = CoroutineScope(coroutineJob + scopeProvider.io)
 
     override fun onCleared() {
         super.onCleared()
@@ -32,12 +35,12 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
     fun <T> makeRequest(
         call: suspend () -> RequestResult<T>,
         resultBlock: suspend (RequestResult<T>) -> Unit
-    ) = scope.launch {
+    ) = scope.launch(scopeProvider.main) {
         this@BaseViewModel set Status.SHOW_LOADING
-        val result = call.invoke()
-        withContext(Dispatchers.Main) {
-            resultBlock(result)
+        val result = withContext(scopeProvider.io) {
+            call.invoke()
         }
+        resultBlock(result)
         this@BaseViewModel set Status.HIDE_LOADING
     }
 
@@ -56,7 +59,7 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
             if (result.isSuccessful) {
                 val body = result.body()
                 body?.let {
-                    withContext(Dispatchers.Main) {
+                    withContext(scopeProvider.main) {
                         successBlock(it)
                     }
                 }
@@ -75,16 +78,12 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         this@BaseViewModel set Status.HIDE_LOADING
     }
 
-    suspend infix fun set(status: Status) {
-        withContext(Dispatchers.Main) {
-            statusLiveData.value = status
-        }
+    suspend infix fun set(status: Status) = withContext(scopeProvider.main) {
+        statusLiveData.value = status
     }
 
-    suspend infix fun setError(error: String) {
-        withContext(Dispatchers.Main) {
-            errorLiveData.value = error
-        }
+    suspend infix fun setError(error: String) = withContext(scopeProvider.main) {
+        errorLiveData.value = error
     }
 
     enum class Status {
