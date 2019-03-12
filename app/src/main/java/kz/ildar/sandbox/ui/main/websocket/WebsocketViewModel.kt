@@ -8,20 +8,13 @@ import okhttp3.*
 import okio.ByteString
 
 
-class WebsocketViewModel : BaseViewModel() {
+class WebsocketViewModel(val client: OkHttpClient, val request: Request) : BaseViewModel() {
 
     val logLiveData = MutableLiveData<String>()
-    val client = OkHttpClient()
 
     fun start() {
-        val request = Request.Builder()
-                .url("ws://echo.websocket.org")
-                .build()
         val listener = EchoWebSocketListener()
-        val ws = client.newWebSocket(request, listener)
-        client.dispatcher()
-                .executorService()
-                .shutdown()
+        client.newWebSocket(request, listener)
     }
     
     private fun output(text: String) {

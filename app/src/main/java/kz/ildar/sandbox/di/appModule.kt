@@ -9,6 +9,7 @@ import kz.ildar.sandbox.ui.main.child.ChildViewModel
 import kz.ildar.sandbox.ui.main.hello.HelloViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
@@ -21,6 +22,8 @@ val appModule = module {
 
     single { createApi(get()) }
 
+    single { createRequest() }
+
     single<HelloRepository> { HelloRepositoryImpl(get()) }
 
     single { CoroutineContextProvider() }
@@ -28,7 +31,7 @@ val appModule = module {
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
     viewModel { HelloViewModel(get()) }
-    viewModel { WebsocketViewModel() }
+    viewModel { WebsocketViewModel(get(), get()) }
 }
 
 const val TIMEOUT = 5L
@@ -40,6 +43,12 @@ private fun createOkHttp(): OkHttpClient {
         .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
+}
+
+private fun createRequest() : Request {
+    return Request.Builder()
+            .url("ws://echo.websocket.org")
+            .build()
 }
 
 private fun createApi(client: OkHttpClient): Api {
