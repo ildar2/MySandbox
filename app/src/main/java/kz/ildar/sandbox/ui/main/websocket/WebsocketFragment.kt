@@ -34,6 +34,11 @@ class WebsocketFragment : Fragment() {
             Timber.w("errorLiveData fired")
             Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
         })
+        viewModel.logLiveData.observe(this, Observer { logEntry ->
+            Timber.w("logLiveData fired")
+            logView.append(logEntry)
+            logView.append("\n")
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +50,6 @@ class WebsocketFragment : Fragment() {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.title = "Websocket echo"
-        logView.text = "Log stub"
+        viewModel.start()
     }
 }
