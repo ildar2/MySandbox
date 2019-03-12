@@ -6,6 +6,8 @@ import kz.ildar.sandbox.data.HelloRepositoryImpl
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
+import kz.ildar.sandbox.ui.main.hello.HelloViewModel
+import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.viewmodel.ext.koin.viewModel
@@ -21,8 +23,10 @@ val appModule = module {
 
     single<HelloRepository> { HelloRepositoryImpl(get()) }
 
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
+    viewModel { HelloViewModel(get()) }
+    viewModel { WebsocketViewModel() }
 }
 
 const val TIMEOUT = 5L

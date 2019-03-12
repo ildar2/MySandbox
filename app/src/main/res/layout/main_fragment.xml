@@ -38,10 +38,10 @@
             app:layout_constraintVertical_bias="0.25"/>
 
     <TextView
-            android:id="@+id/makeRequest"
+            android:id="@+id/helloView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Поприветствовать"
+            android:text="Proceed to hello"
             android:textSize="20sp"
             android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,14 +50,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"/>
 
-    <EditText
-            android:id="@+id/nameInput"
-            android:hint="Введите имя"
-            android:layout_width="match_parent"
+
+    <TextView
+            android:id="@+id/websocketView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:inputType="textCapWords"
-            android:imeOptions="actionDone"
-            app:layout_constraintTop_toBottomOf="@+id/makeRequest"/>
+            android:text="Proceed to websocket"
+            android:textSize="20sp"
+            android:padding="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.75"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

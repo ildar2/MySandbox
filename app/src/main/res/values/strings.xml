@@ -2,4 +2,7 @@
     <string name="app_name">My sandbox</string>
     <string name="child_image_desc">Child image</string>
     <string name="child_fragment_label">ChildFragment %d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
