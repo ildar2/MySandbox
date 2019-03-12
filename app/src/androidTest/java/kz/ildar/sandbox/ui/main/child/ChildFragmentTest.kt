@@ -10,18 +10,15 @@ import org.junit.Test
 
 class ChildFragmentTest {
 
-
     @Test
-    fun testEventFragment() {
-        // The "state" and "factory" arguments are optional.
+    fun testCreation() {
         val fragmentArgs = Bundle().apply {
-            putInt("selectedListItem", 0)
+            putInt("counter", 0)
         }
-//        val factory = MyFragmentFactory()
         val scenario = launchFragmentInContainer<ChildFragment>(
             fragmentArgs, R.style.AppTheme, null
         )
 //        onView(withId(R.id.toolbar)).check(matches(withText("I am Child")))
-        onView(withId(R.id.image)).check(matches(isDisplayed()))
+        onView(withId(R.id.childView)).check(matches(isDisplayed()))
     }
 }

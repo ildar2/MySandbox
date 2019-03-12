@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("kz.ildar.myapplication", appContext.packageName)
+        assertEquals("kz.ildar.sandbox", appContext.packageName)
     }
 }
