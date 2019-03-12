@@ -11,11 +11,14 @@ import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.di.TestContextProvider
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.WebSocket
+import okio.ByteString
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext
+import org.mockito.Mockito.`when`
 
 class WebsocketViewModelTest {
 
@@ -53,9 +56,18 @@ class WebsocketViewModelTest {
 
     @Test
     fun testCreation() = runBlocking {
+        val ws = mock<WebSocket>()
+        `when`(client.newWebSocket(eq(request), any())).thenReturn(ws)
+
         viewModel?.start()
 
         verify(client).newWebSocket(eq(request), any())
+
+        verify(ws).send("Hello!")
+        verify(ws).send("What's up ?")
+        verify(ws).send(ByteString.decodeHex("deadbeef"))
+        verify(ws).close(1000, "Goodbye!")
+
         Unit
     }
 }

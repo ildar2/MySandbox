@@ -9,36 +9,36 @@ import okio.ByteString
 
 
 class WebsocketViewModel(val client: OkHttpClient, val request: Request) : BaseViewModel() {
+    private val NORMAL_CLOSURE_STATUS = 1000
 
     val logLiveData = MutableLiveData<String>()
+    private lateinit var webSocket: WebSocket
 
     fun start() {
         val listener = EchoWebSocketListener()
-        client.newWebSocket(request, listener)
+        webSocket = client.newWebSocket(request, listener)
+        webSocket.send("Hello!")
+        webSocket.send("What's up ?")
+        webSocket.send(ByteString.decodeHex("deadbeef"))
+        webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye!")
     }
-    
-    private fun output(text: String) {
-        scope.launch(Dispatchers.Main) {
-            logLiveData.value = text
-        }
+
+    private fun output(text: String) = scope.launch(Dispatchers.Main) {
+        logLiveData.value = text
     }
 
     private inner class EchoWebSocketListener : WebSocketListener() {
-        private val NORMAL_CLOSURE_STATUS = 1000
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
-            webSocket.send("Hello, it's SSaurel !")
-            webSocket.send("What's up ?")
-            webSocket.send(ByteString.decodeHex("deadbeef"))
-            webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye !")
+            output("onOpen")
         }
 
         override fun onMessage(webSocket: WebSocket?, text: String?) {
-            output("Receiving : " + text!!)
+            output("Receiving : $text")
         }
 
         override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
-            output("Receiving bytes : " + bytes.hex())
+            output("Receiving bytes : ${bytes.hex()}")
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
@@ -47,7 +47,7 @@ class WebsocketViewModel(val client: OkHttpClient, val request: Request) : BaseV
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-            output("Error : " + t.message)
+            output("Error : ${t.message}")
         }
     }
 }
