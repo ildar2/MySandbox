@@ -3,6 +3,7 @@ package kz.ildar.sandbox.ui.main.websocket
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.runBlocking
@@ -54,7 +55,7 @@ class WebsocketViewModelTest {
     fun testCreation() = runBlocking {
         viewModel?.start()
 
-        verify(client).newWebSocket(request, any())
+        verify(client).newWebSocket(eq(request), any())
         Unit
     }
 }
