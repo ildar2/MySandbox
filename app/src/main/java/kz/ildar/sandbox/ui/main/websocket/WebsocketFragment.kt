@@ -32,7 +32,10 @@ class WebsocketFragment : Fragment() {
         })
         viewModel.errorLiveData.observe(this, Observer { error ->
             Timber.w("errorLiveData fired")
-            Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+            activity?.run {
+                val text = error.format(this)
+                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+            }
         })
         viewModel.logLiveData.observe(this, Observer { logEntry ->
             Timber.w("logLiveData fired")

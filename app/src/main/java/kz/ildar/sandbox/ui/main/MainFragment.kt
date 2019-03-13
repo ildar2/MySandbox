@@ -37,7 +37,10 @@ class MainFragment : Fragment() {
         })
         viewModel.errorLiveData.observe(this, Observer { error ->
             Timber.w("errorLiveData fired")
-            Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+            activity?.run {
+                val text = error.format(this)
+                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+            }
         })
         viewModel.parentLiveData.observe(this, Observer { value ->
             Timber.w("parentLiveData fired")

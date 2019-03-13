@@ -34,7 +34,7 @@ val appModule = module {
     viewModel { WebsocketViewModel(get(), get()) }
 }
 
-const val TIMEOUT = 5L
+const val TIMEOUT = 1L
 
 private fun createOkHttp(): OkHttpClient {
     return OkHttpClient.Builder()

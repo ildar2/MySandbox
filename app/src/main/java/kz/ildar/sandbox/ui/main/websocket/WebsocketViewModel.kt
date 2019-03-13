@@ -7,7 +7,6 @@ import kz.ildar.sandbox.ui.BaseViewModel
 import okhttp3.*
 import okio.ByteString
 
-
 class WebsocketViewModel(val client: OkHttpClient, val request: Request) : BaseViewModel() {
     private val NORMAL_CLOSURE_STATUS = 1000
 

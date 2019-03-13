@@ -36,11 +36,17 @@ class HelloFragment : Fragment() {
         })
         viewModel.errorLiveData.observe(this, Observer { error ->
             Timber.w("errorLiveData fired")
-            Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+            activity?.run {
+                val text = error.format(this)
+                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+            }
         })
-        viewModel.greetingLiveData.observe(this, Observer { text ->
+        viewModel.greetingLiveData.observe(this, Observer { message ->
             Timber.w("greetingLiveData fired")
-            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show()
+            activity?.run {
+                val text = message.format(this)
+                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+            }
         })
     }
 

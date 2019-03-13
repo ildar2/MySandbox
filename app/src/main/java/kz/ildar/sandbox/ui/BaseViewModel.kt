@@ -5,13 +5,16 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineContextProvider
+import kz.ildar.sandbox.utils.ResourceString
+import kz.ildar.sandbox.utils.SingleLiveEvent
+import kz.ildar.sandbox.utils.TextResourceString
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import retrofit2.Response
 
 abstract class BaseViewModel : ViewModel(), KoinComponent {
     val statusLiveData = MutableLiveData<Status>()
-    val errorLiveData = MutableLiveData<String>()
+    val errorLiveData = SingleLiveEvent<ResourceString>()
 
     private val scopeProvider: CoroutineContextProvider by inject()
 
@@ -83,7 +86,7 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
     }
 
     suspend infix fun setError(error: String) = withContext(scopeProvider.main) {
-        errorLiveData.value = error
+        errorLiveData.value = TextResourceString(error)
     }
 
     enum class Status {
