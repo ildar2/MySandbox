@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
@@ -9,7 +10,7 @@
         android:id="@+id/mainFragment"
         android:name="kz.ildar.sandbox.ui.main.MainFragment"
         android:label="main_fragment"
-        tools:layout="@layout/main_fragment">
+        tools:layout="@layout/fragment_main">
 
         <action
             android:id="@+id/open_childFragment"
@@ -35,13 +36,21 @@
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/exit_to_right" />
 
+        <action
+            android:id="@+id/open_motionFragment"
+            app:destination="@id/motionFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+
     </fragment>
 
     <fragment
         android:id="@+id/childFragment"
         android:name="kz.ildar.sandbox.ui.main.child.ChildFragment"
         android:label="child_fragment"
-        tools:layout="@layout/child_fragment">
+        tools:layout="@layout/fragment_child">
 
         <action
             android:id="@+id/action_recursive_child"
@@ -64,5 +73,11 @@
         android:name="kz.ildar.sandbox.ui.main.hello.HelloFragment"
         android:label="fragment_hello"
         tools:layout="@layout/fragment_hello" />
+
+    <fragment
+        android:id="@+id/motionFragment"
+        android:name="kz.ildar.sandbox.ui.main.motion.MotionFragment"
+        android:label="fragment_motion"
+        tools:layout="@layout/fragment_motion" />
 
 </navigation>

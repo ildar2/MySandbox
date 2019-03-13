@@ -8,6 +8,7 @@ import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
 import kz.ildar.sandbox.ui.main.hello.HelloViewModel
+import kz.ildar.sandbox.ui.main.motion.MotionViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -34,6 +35,7 @@ val appModule = module {
     viewModel { ChildViewModel(get()) }
     viewModel { HelloViewModel(get(), get()) }
     viewModel { WebsocketViewModel(get(), get()) }
+    viewModel { MotionViewModel() }
 }
 
 const val TIMEOUT = 3L

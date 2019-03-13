@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigator
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.child_fragment.*
+import kotlinx.android.synthetic.main.fragment_child.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.EventObserver
 import org.koin.android.viewmodel.ext.android.getViewModel
@@ -30,7 +30,7 @@ class ChildFragment : Fragment() {
         })
         viewModel.openFragmentEvents.observe(this, EventObserver { view ->
             val extras = FragmentNavigator.Extras.Builder()
-                .addSharedElement(toolbar, "toolbar")//todo
+//                .addSharedElement(toolbar, "toolbar")//todo
                 .build()
             Navigation.findNavController(view).navigate(
                 R.id.action_recursive_child,
@@ -46,7 +46,7 @@ class ChildFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.child_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_child, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
