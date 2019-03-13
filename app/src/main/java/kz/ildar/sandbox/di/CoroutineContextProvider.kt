@@ -9,6 +9,6 @@ import kotlin.coroutines.CoroutineContext
  * should be mocked in tests (see [WebsocketViewModelTest])
  */
 open class CoroutineContextProvider {
-    open val main: CoroutineContext by lazy {Dispatchers.Main }
+    open val main: CoroutineContext by lazy { Dispatchers.Main }
     open val io: CoroutineContext by lazy { Dispatchers.IO }
 }

@@ -64,11 +64,11 @@ sealed class RequestResult<out T : Any?> {
 }
 
 data class ServerError(
-        val timestamp: String?,
-        val status: Int,
-        val error: String?,
-        val message: String?,
-        val path: String?
+    val timestamp: String?,
+    val status: Int,
+    val error: String?,
+    val message: String?,
+    val path: String?
 ) {
     fun print(): String {
         return message ?: error ?: "ServerError"

@@ -45,10 +45,10 @@ private fun createOkHttp(): OkHttpClient {
         .build()
 }
 
-private fun createRequest() : Request {
+private fun createRequest(): Request {
     return Request.Builder()
-            .url("ws://echo.websocket.org")
-            .build()
+        .url("ws://echo.websocket.org")
+        .build()
 }
 
 private fun createApi(client: OkHttpClient): Api {

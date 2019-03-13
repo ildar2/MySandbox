@@ -12,6 +12,7 @@ import androidx.navigation.fragment.FragmentNavigator
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.child_fragment.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.utils.EventObserver
 import org.koin.android.viewmodel.ext.android.getViewModel
 
 class ChildFragment : Fragment() {
@@ -27,6 +28,17 @@ class ChildFragment : Fragment() {
         viewModel.childLiveData.observe(this, Observer { value ->
             toolbar.title = value
         })
+        viewModel.openFragmentEvents.observe(this, EventObserver { view ->
+            val extras = FragmentNavigator.Extras.Builder()
+                .addSharedElement(toolbar, "toolbar")//todo
+                .build()
+            Navigation.findNavController(view).navigate(
+                R.id.action_recursive_child,
+                Bundle().apply { putInt("counter", counter + 1) },
+                null,
+                extras
+            )
+        })
     }
 
     override fun onCreateView(
@@ -41,19 +53,11 @@ class ChildFragment : Fragment() {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel.getData()
+        viewModel.getTitle()
 
         childView.text = getString(R.string.child_fragment_label, counter)
         childView.setOnClickListener {
-            val extras = FragmentNavigator.Extras.Builder()
-                .addSharedElement(toolbar, "toolbar")//todo
-                .build()
-            Navigation.findNavController(view).navigate(
-                R.id.action_recursive_child,
-                Bundle().apply { putInt("counter", ++counter) },
-                null,
-                extras
-            )
+            viewModel.userClicked(it)
         }
 
         Glide.with(this)
