@@ -10,7 +10,6 @@ import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import retrofit2.HttpException
 import retrofit2.Response
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 
@@ -18,7 +17,7 @@ interface CoroutineCaller {
     suspend fun <T : Any> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T>
 }
 
-class BaseRepository : CoroutineCaller {
+class ApiCaller : CoroutineCaller {
     /**
      * Обработчик запросов на `kotlin coroutines`
      * ждет выполнения запроса [deferred]
@@ -27,41 +26,43 @@ class BaseRepository : CoroutineCaller {
      * возвращает [RequestResult.Success] или [RequestResult.Error]
      */
     override suspend fun <T : Any> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
-        val result = deferred.await()
-        if (result.isSuccessful) {
-            RequestResult.Success(result.body())
-        } else {
-            val errorBody = result.errorBody()
-            errorBody?.let {
-                return RequestResult.Error(TextResourceString(ServerError.print(errorBody.string())))
-            }
-            RequestResult.Error(IdResourceString(R.string.request_not_successful))
-        }
+        handleResult(deferred.await())
     } catch (e: Exception) {
-        Timber.w(e, "coroutineApiCall failed");
-        when (e) {
-            is JsonSyntaxException -> {
-                RequestResult.Error(IdResourceString(R.string.request_json_error))
-            }
-            is ConnectException -> {
-                RequestResult.Error(IdResourceString(R.string.request_connection_error))
-            }
-            is SocketTimeoutException -> {
-                RequestResult.Error(IdResourceString(R.string.request_timeout))
-            }
-            is HttpException -> {
-                RequestResult.Error(FormatResourceString(R.string.request_http_error, e.code()))
-            }
-            else -> {
-                RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.name, e.localizedMessage))
-            }
+        handleException(e)
+    }
+
+    private fun <T> handleResult(result: Response<T>): RequestResult<T> = if (result.isSuccessful) {
+        RequestResult.Success(result.body())
+    } else {
+        val errorBody = result.errorBody()
+        errorBody?.let {
+            return RequestResult.Error(TextResourceString(ServerError.print(errorBody.string())))
+        }
+        RequestResult.Error(IdResourceString(R.string.request_not_successful))
+    }
+
+    private fun <T> handleException(e: Exception): RequestResult<T> = when (e) {
+        is JsonSyntaxException -> {
+            RequestResult.Error(IdResourceString(R.string.request_json_error))
+        }
+        is ConnectException -> {
+            RequestResult.Error(IdResourceString(R.string.request_connection_error))
+        }
+        is SocketTimeoutException -> {
+            RequestResult.Error(IdResourceString(R.string.request_timeout))
+        }
+        is HttpException -> {
+            RequestResult.Error(FormatResourceString(R.string.request_http_error, e.code()))
+        }
+        else -> {
+            RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.name, e.localizedMessage))
         }
     }
 }
 
 /**
  * Презентация ответов сервера для `Presentation layer`
- * должно возвращаться репозиториями, наследующими [BaseRepository]
+ * должно возвращаться репозиториями, наследующими [ApiCaller]
  */
 sealed class RequestResult<out T : Any?> {
     data class Success<out T : Any?>(val result: T? = null) : RequestResult<T>()
