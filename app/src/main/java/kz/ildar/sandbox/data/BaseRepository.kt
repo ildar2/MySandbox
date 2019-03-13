@@ -18,19 +18,19 @@ interface CoroutineCaller {
 }
 
 interface MultiCoroutineCaller {
-    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): ArrayList<RequestResult<T>>
+    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<*>>>
 }
 
 interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
 
 class ApiCaller : ApiCallerInterface {
 
-    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): ArrayList<RequestResult<T>> {
+    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<*>>> {
         val response = ArrayList<RequestResult<T>>()
         requests.forEachIndexed { index, deferred ->
             response.add(coroutineApiCall(deferred))
         }
-        return response
+        return RequestResult.Success(response)
     }
 
     /**

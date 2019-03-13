@@ -2,7 +2,6 @@ package kz.ildar.sandbox.ui.main.hello
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.launch
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.RequestResult
@@ -19,7 +18,7 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
         get() = _greetingLiveData
 
     fun loadGreetings(name: String) {
-        if (false) {
+        if (true) {
             runTwo()
             return
         }
@@ -32,9 +31,8 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
     }
 
     private fun runTwo() {
-        scope.launch {
-            val result = multiRepo.callTwoMethods()
-            Timber.w("result: $result");
+        makeRequest({ multiRepo.callTwoMethods() }) {
+            Timber.w("result: ${it}")
         }
     }
 
