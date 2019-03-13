@@ -27,6 +27,9 @@ open class Event<out T>(private val content: T) {
     fun peek(): T = content
 }
 
+/**
+ * Can be used for no-data events
+ */
 class VoidEvent
 
 /**

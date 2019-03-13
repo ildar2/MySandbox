@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Got from https://code.luasoftware.com/tutorials/android/android-use-livedata-to-show-toast-message-from-viewmodel/
+ * @deprecated Is supports only one observer, should use [Event] instead
  */
 @Deprecated("Use Event")
 class SingleLiveEvent<T>() : MutableLiveData<T>() {

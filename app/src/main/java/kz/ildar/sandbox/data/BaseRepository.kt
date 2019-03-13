@@ -3,6 +3,11 @@ package kz.ildar.sandbox.data
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Deferred
+import kz.ildar.sandbox.R
+import kz.ildar.sandbox.utils.FormatResourceString
+import kz.ildar.sandbox.utils.IdResourceString
+import kz.ildar.sandbox.utils.ResourceString
+import kz.ildar.sandbox.utils.TextResourceString
 import retrofit2.HttpException
 import retrofit2.Response
 import timber.log.Timber
@@ -28,27 +33,27 @@ class BaseRepository : CoroutineCaller {
         } else {
             val errorBody = result.errorBody()
             errorBody?.let {
-                return RequestResult.Error(ServerError.print(errorBody.string()))
+                return RequestResult.Error(TextResourceString(ServerError.print(errorBody.string())))
             }
-            RequestResult.Error("request was not successful")
+            RequestResult.Error(IdResourceString(R.string.request_not_successful))
         }
     } catch (e: Exception) {
         Timber.w(e, "coroutineApiCall failed");
         when (e) {
             is JsonSyntaxException -> {
-                RequestResult.Error("Ошибка обработки запроса")
+                RequestResult.Error(IdResourceString(R.string.request_json_error))
             }
             is ConnectException -> {
-                RequestResult.Error("Проверьте подключение к интернету")
+                RequestResult.Error(IdResourceString(R.string.request_connection_error))
             }
             is SocketTimeoutException -> {
-                RequestResult.Error("Сервер не отвечает")
+                RequestResult.Error(IdResourceString(R.string.request_timeout))
             }
             is HttpException -> {
-                RequestResult.Error("Ошибка запроса: ${e.code()}")
+                RequestResult.Error(FormatResourceString(R.string.request_http_error, e.code()))
             }
             else -> {
-                RequestResult.Error("Ошибка: ${e::class.java.name}\n${e.localizedMessage}")
+                RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.name, e.localizedMessage))
             }
         }
     }
@@ -60,7 +65,7 @@ class BaseRepository : CoroutineCaller {
  */
 sealed class RequestResult<out T : Any?> {
     data class Success<out T : Any?>(val result: T? = null) : RequestResult<T>()
-    data class Error(val error: String, val code: Int = 0) : RequestResult<Nothing>()
+    data class Error(val error: ResourceString, val code: Int = 0) : RequestResult<Nothing>()
 }
 
 data class ServerError(

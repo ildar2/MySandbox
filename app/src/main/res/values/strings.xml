@@ -3,6 +3,11 @@
     <string name="child_image_desc">Child image</string>
     <string name="child_fragment_label">ChildFragment %d</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="request_not_successful">Запрос не успешен</string>
+    <string name="request_json_error">Ошибка обработки запроса</string>
+    <string name="request_connection_error">Проверьте подключение к интернету</string>
+    <string name="request_timeout">Сервер не отвечает</string>
+    <string name="request_http_error">Ошибка запроса: %d</string>
+    <string name="request_error">Ошибка: %s \n %s</string>
 </resources>
