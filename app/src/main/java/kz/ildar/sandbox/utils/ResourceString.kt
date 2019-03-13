@@ -13,8 +13,8 @@ class IdResourceString(private val id: Int) : ResourceString() {
     override fun format(context: Context): String = context.getString(id)
 }
 
-class TextResourceString(private val text: String) : ResourceString() {
-    override fun format(context: Context): String = text
+class TextResourceString(private val text: String?) : ResourceString() {
+    override fun format(context: Context): String = text ?: ""
 }
 
 class FormatResourceString(private val id: Int, val values: Array<Any>) : ResourceString() {

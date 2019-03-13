@@ -1,6 +1,6 @@
 package kz.ildar.sandbox.data
 
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Deferred
 import retrofit2.HttpException
@@ -24,16 +24,11 @@ class BaseRepository : CoroutineCaller {
     override suspend fun <T : Any> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
         val result = deferred.await()
         if (result.isSuccessful) {
-            val body = result.body()
-            body?.let {
-                return RequestResult.Success(body)
-            }
-            RequestResult.Error("empty body")
+            RequestResult.Success(result.body())
         } else {
             val errorBody = result.errorBody()
             errorBody?.let {
-                val serverError = GsonBuilder().create().fromJson(it.string(), ServerError::class.java)
-                return RequestResult.Error("Сервер вернул ошибку: ${serverError.status}")
+                return RequestResult.Error(ServerError.print(errorBody.string()))
             }
             RequestResult.Error("request was not successful")
         }
@@ -64,15 +59,29 @@ class BaseRepository : CoroutineCaller {
  * должно возвращаться репозиториями, наследующими [BaseRepository]
  */
 sealed class RequestResult<out T : Any?> {
-    data class Success<out T : Any?>(val result: T) : RequestResult<T>()
-    data class Error(val error: String) : RequestResult<Nothing>()
+    data class Success<out T : Any?>(val result: T? = null) : RequestResult<T>()
+    data class Error(val error: String, val code: Int = 0) : RequestResult<Nothing>()
 }
 
-class ServerError(
-    val timestamp: String,
-    val status: Int,
-    val error: String,
-    val message: String,
-    val path: String
-)
-//{"timestamp":"2019-03-02T07:16:48.119+0000","status":404,"error":"Not Found","message":"No message available","path":"/greetings"}
+data class ServerError(
+        val timestamp: String?,
+        val status: Int,
+        val error: String?,
+        val message: String?,
+        val path: String?
+) {
+    fun print(): String {
+        return message ?: error ?: "ServerError"
+    }
+
+    companion object {
+        private fun from(response: String): ServerError {
+            return Gson().fromJson(response, ServerError::class.java)
+        }
+
+        fun print(response: String): String {
+            val error = from(response)
+            return "${error.status} ${error.print()}"
+        }
+    }
+}

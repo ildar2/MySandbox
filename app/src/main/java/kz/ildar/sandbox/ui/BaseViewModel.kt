@@ -1,12 +1,13 @@
 package kz.ildar.sandbox.ui
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineContextProvider
+import kz.ildar.sandbox.utils.Event
 import kz.ildar.sandbox.utils.ResourceString
-import kz.ildar.sandbox.utils.SingleLiveEvent
 import kz.ildar.sandbox.utils.TextResourceString
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
@@ -14,7 +15,10 @@ import retrofit2.Response
 
 abstract class BaseViewModel : ViewModel(), KoinComponent {
     val statusLiveData = MutableLiveData<Status>()
-    val errorLiveData = SingleLiveEvent<ResourceString>()
+
+    private val _errorLiveData = MutableLiveData<Event<ResourceString>>()
+    val errorLiveData: LiveData<Event<ResourceString>>
+        get() = _errorLiveData
 
     private val scopeProvider: CoroutineContextProvider by inject()
 
@@ -36,8 +40,8 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
      * [resultBlock] - функция, которую нужно выполнить по завершении запроса в UI-потоке
      */
     fun <T> makeRequest(
-        call: suspend () -> RequestResult<T>,
-        resultBlock: suspend (RequestResult<T>) -> Unit
+            call: suspend () -> RequestResult<T>,
+            resultBlock: suspend (RequestResult<T>) -> Unit
     ) = scope.launch(scopeProvider.main) {
         this@BaseViewModel set Status.SHOW_LOADING
         val result = withContext(scopeProvider.io) {
@@ -68,15 +72,15 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
                 }
             } else {
                 when (result.code()) {//todo handle error codes
-                    404 -> setError("no data available")
-                    else -> setError("default error")
+                    404 -> setError(TextResourceString("no data available"))
+                    else -> setError(TextResourceString("default error"))
                 }
             }
         } catch (e: Exception) {
             println("makeRequest failed with: ${e.message}")
             e.printStackTrace()
             set(Status.ERROR)//todo порядок сообщений в statusLiveData
-            setError("there was an error during request")//todo exception handling
+            setError(TextResourceString("there was an error during request"))//todo exception handling
         }
         this@BaseViewModel set Status.HIDE_LOADING
     }
@@ -85,8 +89,8 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         statusLiveData.value = status
     }
 
-    suspend infix fun setError(error: String) = withContext(scopeProvider.main) {
-        errorLiveData.value = TextResourceString(error)
+    suspend infix fun setError(error: ResourceString) = withContext(scopeProvider.main) {
+        _errorLiveData.value = Event(error)
     }
 
     enum class Status {

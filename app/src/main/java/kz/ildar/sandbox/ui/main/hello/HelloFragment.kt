@@ -2,7 +2,6 @@ package kz.ildar.sandbox.ui.main.hello
 
 import android.os.Bundle
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_hello.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.BaseViewModel
+import kz.ildar.sandbox.utils.EventObserver
 import org.koin.android.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
@@ -34,14 +35,14 @@ class HelloFragment : Fragment() {
                 }
             }
         })
-        viewModel.errorLiveData.observe(this, Observer { error ->
+        viewModel.errorLiveData.observe(this, EventObserver { error ->
             Timber.w("errorLiveData fired")
             activity?.run {
                 val text = error.format(this)
                 Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
             }
         })
-        viewModel.greetingLiveData.observe(this, Observer { message ->
+        viewModel.greetingLiveData.observe(this, EventObserver { message ->
             Timber.w("greetingLiveData fired")
             activity?.run {
                 val text = message.format(this)

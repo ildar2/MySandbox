@@ -1,12 +1,9 @@
 package kz.ildar.sandbox.ui.main
 
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -15,6 +12,7 @@ import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.main_fragment.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.BaseViewModel
+import kz.ildar.sandbox.utils.EventObserver
 import org.koin.android.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
@@ -35,7 +33,7 @@ class MainFragment : Fragment() {
                 }
             }
         })
-        viewModel.errorLiveData.observe(this, Observer { error ->
+        viewModel.errorLiveData.observe(this, EventObserver { error ->
             Timber.w("errorLiveData fired")
             activity?.run {
                 val text = error.format(this)
