@@ -38,6 +38,26 @@
         android:imeOptions="actionDone"
         app:layout_constraintTop_toBottomOf="@+id/makeRequest"/>
 
+    <TextView
+        android:id="@+id/multipleCallView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Call multiple methods"
+        android:textSize="20sp"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameInput"/>
+
+    <TextView
+        android:id="@+id/logView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Logging \nLogging"
+        android:textSize="16sp"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/multipleCallView"/>
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"

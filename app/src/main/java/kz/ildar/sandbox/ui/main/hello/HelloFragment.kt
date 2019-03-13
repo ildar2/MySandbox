@@ -49,6 +49,13 @@ class HelloFragment : Fragment() {
                 Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
             }
         })
+        viewModel.logLiveData.observe(this, EventObserver { message ->
+            activity?.run {
+                val text = message.format(this)
+                logView.append(text)
+                logView.append("\n")
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
@@ -60,6 +67,10 @@ class HelloFragment : Fragment() {
         toolbar.title = "Server request"
         makeRequest.setOnClickListener {
             loadGreetings()
+        }
+        multipleCallView.setOnClickListener {
+            logView.text = ""
+            viewModel.multiCall()
         }
 
         nameInput.setOnEditorActionListener(object : TextView.OnEditorActionListener {

@@ -18,11 +18,11 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
     internal val greetingLiveData: LiveData<Event<ResourceString>>
         get() = _greetingLiveData
 
+    private val _logLiveData = MutableLiveData<Event<ResourceString>>()
+    internal val logLiveData: LiveData<Event<ResourceString>>
+        get() = _logLiveData
+
     fun loadGreetings(name: String) {
-        if (true) {
-            runTwo()
-            return
-        }
         Timber.w("loadGreetings called")
         if (name.isBlank()) {
             loadEchoGreeting()
@@ -31,18 +31,15 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
         }
     }
 
-    private fun runTwo() {
-        makeRequest({ multiRepo.callTwoMethods() }) { result ->
+    fun multiCall() {
+        makeRequest({ multiRepo.callAllMethods() }) { result ->
             if (result is RequestResult.Success) {
-                val sb = StringBuilder()
                 result.result?.forEach {
-                    val value = when (it) {
-                        is RequestResult.Success -> (it.result as GreetingWrapper).args.content
-                        is RequestResult.Error -> it.error
+                    _logLiveData.value = when (it) {
+                        is RequestResult.Success -> Event(TextResourceString((it.result as GreetingWrapper).args.content))
+                        is RequestResult.Error -> Event(it.error)
                     }
-                    sb.append(value).append("\n")
                 }
-                _greetingLiveData.value = Event(TextResourceString(sb.toString()))
             }
         }
     }
