@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.RequestResult
-import kz.ildar.sandbox.data.model.GreetingWrapper
 import kz.ildar.sandbox.ui.BaseViewModel
 import kz.ildar.sandbox.utils.Event
 import kz.ildar.sandbox.utils.ResourceString
@@ -33,12 +32,10 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
 
     fun multiCall() {
         makeRequest({ multiRepo.callAllMethods() }) { result ->
-            if (result is RequestResult.Success) {
-                result.result?.forEach {
-                    _logLiveData.value = when (it) {
-                        is RequestResult.Success -> Event(TextResourceString((it.result as GreetingWrapper).args.content))
-                        is RequestResult.Error -> Event(it.error)
-                    }
+            result.forEach {
+                _logLiveData.value = when (it) {
+                    is RequestResult.Success -> Event(TextResourceString(it.result?.args?.content))
+                    is RequestResult.Error -> Event(it.error)
                 }
             }
         }

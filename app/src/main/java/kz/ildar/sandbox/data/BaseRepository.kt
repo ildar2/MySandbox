@@ -18,19 +18,25 @@ interface CoroutineCaller {
 }
 
 interface MultiCoroutineCaller {
-    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<T>>>
+    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>>
 }
 
 interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
 
 class ApiCaller : ApiCallerInterface {
 
-    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<T>>> {
+    /**
+     * Обработчик для нескольких запросов на `kotlin coroutines`
+     * запускает все [requests] и записывает их в массив [RequestResult]
+     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
+     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     */
+    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>> {
         val response = ArrayList<RequestResult<T>>()
         requests.forEachIndexed { index, deferred ->
             response.add(coroutineApiCall(deferred))
         }
-        return RequestResult.Success(response)
+        return response
     }
 
     /**

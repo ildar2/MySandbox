@@ -40,8 +40,8 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
      * [resultBlock] - функция, которую нужно выполнить по завершении запроса в UI-потоке
      */
     fun <T> makeRequest(
-        call: suspend CoroutineScope.() -> RequestResult<T>,
-        resultBlock: suspend (RequestResult<T>) -> Unit
+        call: suspend CoroutineScope.() -> T,
+        resultBlock: suspend (T) -> Unit
     ) = scope.launch(scopeProvider.main) {
         this@BaseViewModel set Status.SHOW_LOADING
         val result = withContext(scopeProvider.io, call)
