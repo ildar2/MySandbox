@@ -3,6 +3,7 @@ package kz.ildar.sandbox.di
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.HelloRepositoryImpl
+import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
@@ -25,16 +26,17 @@ val appModule = module {
     single { createRequest() }
 
     single<HelloRepository> { HelloRepositoryImpl(get()) }
+    single { MultiCallRepository(get()) }
 
     single { CoroutineContextProvider() }
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
-    viewModel { HelloViewModel(get()) }
+    viewModel { HelloViewModel(get(), get()) }
     viewModel { WebsocketViewModel(get(), get()) }
 }
 
-const val TIMEOUT = 1L
+const val TIMEOUT = 3L
 
 private fun createOkHttp(): OkHttpClient {
     return OkHttpClient.Builder()
@@ -53,7 +55,8 @@ private fun createRequest(): Request {
 
 private fun createApi(client: OkHttpClient): Api {
     return Retrofit.Builder()
-        .baseUrl("http://192.168.1.42:8080/")
+//        .baseUrl("http://192.168.1.42:8080/")
+        .baseUrl("https://postman-echo.com")
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(CoroutineCallAdapterFactory())

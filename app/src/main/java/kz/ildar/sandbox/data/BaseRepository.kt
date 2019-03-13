@@ -17,7 +17,22 @@ interface CoroutineCaller {
     suspend fun <T : Any> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T>
 }
 
-class ApiCaller : CoroutineCaller {
+interface MultiCoroutineCaller {
+    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): ArrayList<RequestResult<T>>
+}
+
+interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
+
+class ApiCaller : ApiCallerInterface {
+
+    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): ArrayList<RequestResult<T>> {
+        val response = ArrayList<RequestResult<T>>()
+        requests.forEachIndexed { index, deferred ->
+            response.add(coroutineApiCall(deferred))
+        }
+        return response
+    }
+
     /**
      * Обработчик запросов на `kotlin coroutines`
      * ждет выполнения запроса [deferred]
@@ -34,9 +49,8 @@ class ApiCaller : CoroutineCaller {
     private fun <T> handleResult(result: Response<T>): RequestResult<T> = if (result.isSuccessful) {
         RequestResult.Success(result.body())
     } else {
-        val errorBody = result.errorBody()
-        errorBody?.let {
-            return RequestResult.Error(TextResourceString(ServerError.print(errorBody.string())))
+        result.errorBody()?.let {
+            return RequestResult.Error(TextResourceString(ServerError.print(it.string())))
         }
         RequestResult.Error(IdResourceString(R.string.request_not_successful))
     }

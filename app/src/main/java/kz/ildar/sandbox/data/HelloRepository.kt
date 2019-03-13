@@ -2,12 +2,15 @@ package kz.ildar.sandbox.data
 
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.data.model.Greeting
+import kz.ildar.sandbox.data.model.GreetingWrapper
 
 interface HelloRepository {
     fun giveHello(): String
     fun getImageUrl(): String
     suspend fun greetings(): RequestResult<Greeting>
     suspend fun personalGreeting(name: String): RequestResult<Greeting>
+    suspend fun echoGreetings(): RequestResult<GreetingWrapper>
+    suspend fun echoPersonalGreeting(name: String): RequestResult<GreetingWrapper>
 }
 
 class HelloRepositoryImpl(val api: Api) : HelloRepository, CoroutineCaller by ApiCaller() {
@@ -19,4 +22,8 @@ class HelloRepositoryImpl(val api: Api) : HelloRepository, CoroutineCaller by Ap
     override suspend fun greetings() = coroutineApiCall(api.greetings())
 
     override suspend fun personalGreeting(name: String) = coroutineApiCall(api.personalGreetings(name))
+
+    override suspend fun echoGreetings() = coroutineApiCall(api.postmanEcho())
+
+    override suspend fun echoPersonalGreeting(name: String) = coroutineApiCall(api.postmanEchoNamed(name))
 }

@@ -73,12 +73,6 @@ class HelloFragment : Fragment() {
     }
 
     fun loadGreetings() {
-        Timber.w("loadGreetings called")
-        val name = nameInput.text.toString()
-        if (name.isBlank()) {
-            viewModel.loadGreeting()
-        } else {
-            viewModel.loadPersonalGreeting(name)
-        }
+        viewModel.loadGreetings(nameInput.text.toString())
     }
 }
