@@ -18,14 +18,14 @@ interface CoroutineCaller {
 }
 
 interface MultiCoroutineCaller {
-    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<*>>>
+    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<T>>>
 }
 
 interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
 
 class ApiCaller : ApiCallerInterface {
 
-    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<*>>> {
+    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): RequestResult<List<RequestResult<T>>> {
         val response = ArrayList<RequestResult<T>>()
         requests.forEachIndexed { index, deferred ->
             response.add(coroutineApiCall(deferred))
@@ -66,7 +66,7 @@ class ApiCaller : ApiCallerInterface {
             RequestResult.Error(IdResourceString(R.string.request_timeout))
         }
         is HttpException -> {
-            RequestResult.Error(FormatResourceString(R.string.request_http_error, e.code()))
+            RequestResult.Error(FormatResourceString(R.string.request_http_error, e.code()), e.code())
         }
         else -> {
             RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.name, e.localizedMessage))

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.RequestResult
+import kz.ildar.sandbox.data.model.GreetingWrapper
 import kz.ildar.sandbox.ui.BaseViewModel
 import kz.ildar.sandbox.utils.Event
 import kz.ildar.sandbox.utils.ResourceString
@@ -31,8 +32,18 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
     }
 
     private fun runTwo() {
-        makeRequest({ multiRepo.callTwoMethods() }) {
-            Timber.w("result: ${it}")
+        makeRequest({ multiRepo.callTwoMethods() }) { result ->
+            if (result is RequestResult.Success) {
+                val sb = StringBuilder()
+                result.result?.forEach {
+                    val value = when (it) {
+                        is RequestResult.Success -> (it.result as GreetingWrapper).args.content
+                        is RequestResult.Error -> it.error
+                    }
+                    sb.append(value).append("\n")
+                }
+                _greetingLiveData.value = Event(TextResourceString(sb.toString()))
+            }
         }
     }
 
