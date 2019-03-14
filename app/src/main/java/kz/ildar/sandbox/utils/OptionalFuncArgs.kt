@@ -16,6 +16,9 @@
  */
 package kz.ildar.sandbox.utils
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+
 fun foo(callback: (() -> Unit)? = {
     System.out.println("Default callback called")
 }) {
@@ -26,7 +29,7 @@ fun foo(callback: (() -> Unit)? = {
     }
 }
 
-fun main() {
+fun fooCaller() {
     System.out.println("Calling foo with null callback")
     foo(null)
     System.out.println()
@@ -38,3 +41,23 @@ fun main() {
         System.out.println("Executing callback")
     }
 }
+
+fun main() = runBlocking {
+    refFuncCaller()
+}
+
+fun refFunc(arg: String, func: (String) -> Unit) {
+    System.out.println("Executing refFunc")
+    func(arg)
+}
+
+fun handler(text: String) = runBlocking {
+    delay(600)
+    System.out.println("Executing handler: $text")
+}
+
+fun refFuncCaller() {
+    refFunc("text1", ::handler)
+    refFunc("text2", ::handler)
+}
+

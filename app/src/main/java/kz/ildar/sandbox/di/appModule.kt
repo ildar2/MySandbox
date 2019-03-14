@@ -17,6 +17,7 @@
 package kz.ildar.sandbox.di
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import kz.ildar.sandbox.data.FlatMapRepository
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.HelloRepositoryImpl
 import kz.ildar.sandbox.data.MultiCallRepository
@@ -44,6 +45,7 @@ val appModule = module {
 
     single<HelloRepository> { HelloRepositoryImpl(get()) }
     single { MultiCallRepository(get()) }
+    single { FlatMapRepository(get()) }
 
     single { CoroutineContextProvider() }
 
