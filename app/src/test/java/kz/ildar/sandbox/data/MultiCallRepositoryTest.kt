@@ -44,8 +44,8 @@ class MultiCallRepositoryTest {
         val deferred2 = mock<Deferred<Response<String>>>()
         `when`(deferred2.await()).thenReturn(Response.success("result2"))
 
-        val result = repo.zipArray(deferred1, deferred2) { res1 ->
-            "${(res1[0] as RequestResult.Success).result} ${(res1[1] as RequestResult.Success).result}"
+        val result = repo.zipArray(deferred1, deferred2) { resultList ->
+            "${(resultList[0] as RequestResult.Success).result} ${(resultList[1] as RequestResult.Success).result}"
         }
 
         assertThat(result, `is`("result1 result2"))

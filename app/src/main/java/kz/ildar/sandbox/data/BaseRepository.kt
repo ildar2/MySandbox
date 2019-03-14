@@ -19,7 +19,25 @@ interface CoroutineCaller {
 }
 
 interface MultiCoroutineCaller {
-    suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>>
+    suspend fun <T> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>>
+
+    suspend fun <T1, T2, R> zip(
+        request1: Deferred<Response<T1>>,
+        request2: Deferred<Response<T2>>,
+        zipper: (RequestResult<T1>, RequestResult<T2>) -> R
+    ): R
+
+    suspend fun <T1, T2, T3, R> zip(
+        request1: Deferred<Response<T1>>,
+        request2: Deferred<Response<T2>>,
+        request3: Deferred<Response<T3>>,
+        zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
+    ): R
+
+    suspend fun <T, R> zipArray(
+        vararg requests: Deferred<Response<T>>,
+        zipper: (List<RequestResult<T>>) -> R
+    ): R
 }
 
 interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
@@ -34,10 +52,28 @@ class ApiCaller : ApiCallerInterface {
      *   пока есть ограничение: можно делать только однородные запросы
      *   то есть [requests] должны возвращать либо один тип данных, либо общий интерфейс
      */
-    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>> =
+    override suspend fun <T> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>> =
         requests.map {
             coroutineApiCall(it)
         }
+
+    override suspend fun <T1, T2, R> zip(
+        request1: Deferred<Response<T1>>,
+        request2: Deferred<Response<T2>>,
+        zipper: (RequestResult<T1>, RequestResult<T2>) -> R
+    ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2))
+
+    override suspend fun <T1, T2, T3, R> zip(
+        request1: Deferred<Response<T1>>,
+        request2: Deferred<Response<T2>>,
+        request3: Deferred<Response<T3>>,
+        zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
+    ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2), coroutineApiCall(request3))
+
+    override suspend fun <T, R> zipArray(
+        vararg requests: Deferred<Response<T>>,
+        zipper: (List<RequestResult<T>>) -> R
+    ): R = zipper(requests.map { coroutineApiCall(it) })
 
     /**
      * Обработчик запросов на `kotlin coroutines`

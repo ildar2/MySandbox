@@ -31,12 +31,44 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
     }
 
     fun multiCall() {
+        makeRequest({ multiRepo.callAllMethods() }) { result ->
+            result.forEach {
+                _logLiveData.value = when (it) {
+                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
+                    is RequestResult.Error -> Event(it.error)
+                }
+            }
+        }
+    }
+
+    fun twoCall() {
         makeRequest({ multiRepo.callTwoMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
                     is RequestResult.Error -> Event(it.error)
-                    else -> Event(TextResourceString("Single"))
+                }
+            }
+        }
+    }
+
+    fun threeCall() {
+        makeRequest({ multiRepo.callThreeMethods() }) { result ->
+            result.forEach {
+                _logLiveData.value = when (it) {
+                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
+                    is RequestResult.Error -> Event(it.error)
+                }
+            }
+        }
+    }
+
+    fun arrayCall() {
+        makeRequest({ multiRepo.callArrayOfMethods() }) { result ->
+            result.forEach {
+                _logLiveData.value = when (it) {
+                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
+                    is RequestResult.Error -> Event(it.error)
                 }
             }
         }
