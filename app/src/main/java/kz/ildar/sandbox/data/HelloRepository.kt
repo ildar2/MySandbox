@@ -7,8 +7,8 @@ import kz.ildar.sandbox.data.model.GreetingWrapper
 interface HelloRepository {
     fun giveHello(): String
     fun getImageUrl(): String
-    suspend fun greetings(): RequestResult<Greeting>
-    suspend fun personalGreeting(name: String): RequestResult<Greeting>
+//    suspend fun greetings(): RequestResult<Greeting>
+//    suspend fun personalGreeting(name: String): RequestResult<Greeting>
     suspend fun echoGreetings(): RequestResult<GreetingWrapper>
     suspend fun echoPersonalGreeting(name: String): RequestResult<GreetingWrapper>
 }
@@ -19,11 +19,11 @@ class HelloRepositoryImpl(val api: Api) : HelloRepository, CoroutineCaller by Ap
 
     override fun giveHello() = "Hello Koin"
 
-    override suspend fun greetings() = coroutineApiCall(api.greetings())
+//    override suspend fun greetings() = coroutineApiCall(api.greetings())
 
-    override suspend fun personalGreeting(name: String) = coroutineApiCall(api.personalGreetings(name))
+//    override suspend fun personalGreeting(name: String) = coroutineApiCall(api.personalGreetings(name))
 
-    override suspend fun echoGreetings() = coroutineApiCall(api.postmanEcho())
+    override suspend fun echoGreetings() = coroutineApiCall(api.postmanEchoOld())
 
-    override suspend fun echoPersonalGreeting(name: String) = coroutineApiCall(api.postmanEchoNamed(name))
+    override suspend fun echoPersonalGreeting(name: String) = coroutineApiCall(api.postmanEchoNamedOld(name))
 }

@@ -10,6 +10,7 @@ import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import retrofit2.HttpException
 import retrofit2.Response
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 
@@ -30,14 +31,13 @@ class ApiCaller : ApiCallerInterface {
      * запускает все [requests] и записывает их в массив [RequestResult]
      * обрабатывает ошибки сервера при помощи [coroutineApiCall]
      * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     *   пока есть ограничение: можно делать только однородные запросы
+     *   то есть [requests] должны возвращать либо один тип данных, либо общий интерфейс
      */
-    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>> {
-        val response = ArrayList<RequestResult<T>>()
-        requests.forEachIndexed { index, deferred ->
-            response.add(coroutineApiCall(deferred))
+    override suspend fun <T : Any> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>> =
+        requests.map {
+            coroutineApiCall(it)
         }
-        return response
-    }
 
     /**
      * Обработчик запросов на `kotlin coroutines`
@@ -49,6 +49,7 @@ class ApiCaller : ApiCallerInterface {
     override suspend fun <T : Any> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
         handleResult(deferred.await())
     } catch (e: Exception) {
+        Timber.w(e);
         handleException(e)
     }
 
