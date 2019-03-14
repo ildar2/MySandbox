@@ -45,35 +45,54 @@ interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
 class ApiCaller : ApiCallerInterface {
 
     /**
-     * Обработчик для нескольких запросов на `kotlin coroutines`
+     * Обработчик для однородных запросов на `kotlin coroutines`
+     * [requests] должны возвращать один тип данных
      * запускает все [requests] и записывает их в массив [RequestResult]
      * обрабатывает ошибки сервера при помощи [coroutineApiCall]
      * обрабатывает ошибки соединения при помощи [coroutineApiCall]
-     *   пока есть ограничение: можно делать только однородные запросы
-     *   то есть [requests] должны возвращать либо один тип данных, либо общий интерфейс
      */
     override suspend fun <T> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>> =
         requests.map {
             coroutineApiCall(it)
         }
 
+    /**
+     * Обработчик для однородных запросов на `kotlin coroutines`
+     * [requests] должны возвращать один тип данных
+     * запускает все [requests], записывает их в массив [RequestResult]
+     * и передает в обработчик [zipper]
+     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
+     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     */
+    override suspend fun <T, R> zipArray(
+        vararg requests: Deferred<Response<T>>,
+        zipper: (List<RequestResult<T>>) -> R
+    ): R = zipper(requests.map { coroutineApiCall(it) })
+
+    /**
+     * Обработчик для двух разнородных запросов на `kotlin coroutines`
+     * запускает [request1], [request2] и передает в обработчик [zipper]
+     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
+     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     */
     override suspend fun <T1, T2, R> zip(
         request1: Deferred<Response<T1>>,
         request2: Deferred<Response<T2>>,
         zipper: (RequestResult<T1>, RequestResult<T2>) -> R
     ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2))
 
+    /**
+     * Обработчик для трех разнородных запросов на `kotlin coroutines`
+     * запускает [request1], [request2], [request3] и передает в обработчик [zipper]
+     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
+     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     */
     override suspend fun <T1, T2, T3, R> zip(
         request1: Deferred<Response<T1>>,
         request2: Deferred<Response<T2>>,
         request3: Deferred<Response<T3>>,
         zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
     ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2), coroutineApiCall(request3))
-
-    override suspend fun <T, R> zipArray(
-        vararg requests: Deferred<Response<T>>,
-        zipper: (List<RequestResult<T>>) -> R
-    ): R = zipper(requests.map { coroutineApiCall(it) })
 
     /**
      * Обработчик запросов на `kotlin coroutines`
