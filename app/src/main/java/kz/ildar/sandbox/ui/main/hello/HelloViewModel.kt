@@ -31,7 +31,7 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
     }
 
     fun multiCall() {
-        makeRequest({ multiRepo.callAllMethods() }) { result ->
+        makeRequest({ multiRepo.callTwoMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
@@ -59,21 +59,21 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
         }
     }
 
-//    private fun loadGreeting() {
-//        makeRequest({ repo.greetings() }) {
-//            when (it) {
-//                is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
-//                is RequestResult.Error -> this setError it.error
-//            }
-//        }
-//    }
-//
-//    private fun loadPersonalGreeting(name: String) {
-//        makeRequest({ repo.personalGreeting(name) }) {
-//            when (it) {
-//                is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
-//                is RequestResult.Error -> this setError it.error
-//            }
-//        }
-//    }
+    private fun loadGreeting() {
+        makeRequest({ repo.greetings() }) {
+            when (it) {
+                is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
+                is RequestResult.Error -> this setError it.error
+            }
+        }
+    }
+
+    private fun loadPersonalGreeting(name: String) {
+        makeRequest({ repo.personalGreeting(name) }) {
+            when (it) {
+                is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
+                is RequestResult.Error -> this setError it.error
+            }
+        }
+    }
 }

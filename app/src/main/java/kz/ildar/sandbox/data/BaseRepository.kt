@@ -56,10 +56,11 @@ class ApiCaller : ApiCallerInterface {
     private fun <T> handleResult(result: Response<T>): RequestResult<T> = if (result.isSuccessful) {
         RequestResult.Success(result.body())
     } else {
-        result.errorBody()?.let {
-            return RequestResult.Error(TextResourceString(ServerError.print(it.string())))
+        result.errorBody()?.string().let { errorString ->
+            if (!errorString.isNullOrBlank())
+                return RequestResult.Error(TextResourceString(ServerError.print(errorString)))
         }
-        RequestResult.Error(IdResourceString(R.string.request_not_successful))
+        RequestResult.Error(FormatResourceString(R.string.request_not_successful, result.code()), result.code())
     }
 
     private fun <T> handleException(e: Exception): RequestResult<T> = when (e) {
