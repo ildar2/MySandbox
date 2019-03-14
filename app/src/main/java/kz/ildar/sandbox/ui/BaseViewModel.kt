@@ -57,11 +57,11 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
      */
     fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
-        resultBlock: suspend (T) -> Unit
+        resultBlock: (suspend (T) -> Unit)? = null
     ) = scope.launch(scopeProvider.main) {
         this@BaseViewModel set Status.SHOW_LOADING
         val result = withContext(scopeProvider.io, call)
-        resultBlock(result)
+        resultBlock?.invoke(result)
         this@BaseViewModel set Status.HIDE_LOADING
     }
 
