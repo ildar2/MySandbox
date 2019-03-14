@@ -44,6 +44,14 @@
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/exit_to_right" />
 
+        <action
+            android:id="@+id/open_multiCallFragment"
+            app:destination="@id/multiCallFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+
     </fragment>
 
     <fragment
@@ -71,6 +79,12 @@
     <fragment
         android:id="@+id/helloFragment"
         android:name="kz.ildar.sandbox.ui.main.hello.HelloFragment"
+        android:label="fragment_hello"
+        tools:layout="@layout/fragment_hello" />
+
+    <fragment
+        android:id="@+id/multiCallFragment"
+        android:name="kz.ildar.sandbox.ui.main.multiCall.MultiCallFragment"
         android:label="fragment_hello"
         tools:layout="@layout/fragment_hello" />
 

@@ -6,12 +6,13 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.ui.main.multiCall.MultiCallFragment
 import org.junit.Test
 
 class HelloFragmentTest {
     @Test
     fun testCreation() {
-        val scenario = launchFragmentInContainer<HelloFragment>(themeResId = R.style.AppTheme)
+        val scenario = launchFragmentInContainer<MultiCallFragment>(themeResId = R.style.AppTheme)
         onView(withId(R.id.makeRequest)).check(matches(isDisplayed()))
     }
 }

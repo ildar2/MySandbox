@@ -1,4 +1,4 @@
-package kz.ildar.sandbox.ui.main.hello
+package kz.ildar.sandbox.ui.main.multiCall
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -11,17 +11,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.fragment_hello.*
+import kotlinx.android.synthetic.main.fragment_multi_call.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.BaseViewModel
-import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.utils.EventObserver
 import org.koin.android.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
-class HelloFragment : Fragment() {
+class MultiCallFragment : Fragment() {
 
-    private lateinit var viewModel: HelloViewModel
+    private lateinit var viewModel: MultiCallViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,37 +42,41 @@ class HelloFragment : Fragment() {
                 Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
             }
         })
-        viewModel.greetingLiveData.observe(this, EventObserver { message ->
-            Timber.w("greetingLiveData fired")
+        viewModel.logLiveData.observe(this, EventObserver { message ->
             activity?.run {
                 val text = message.format(this)
-                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+                logView.append(text)
+                logView.append("\n")
             }
         })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        inflater.inflate(R.layout.fragment_hello, container, false)
+        inflater.inflate(R.layout.fragment_multi_call, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.title = "Server request"
-        makeRequest.setOnClickListener {
-            loadGreetings()
+        toolbar.title = "Multi-request"
+
+        multipleCallView.setOnClickListener {
+            logView.text = ""
+            viewModel.multiCall()
         }
 
-        nameInput.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                return if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loadGreetings()
-                    true
-                } else false
-            }
-        })
-    }
+        twoCallView.setOnClickListener {
+            logView.text = ""
+            viewModel.twoCall()
+        }
 
-    fun loadGreetings() {
-        viewModel.loadGreetings(nameInput.text.toString())
+        threeCallView.setOnClickListener {
+            logView.text = ""
+            viewModel.threeCall()
+        }
+
+        arrayCallView.setOnClickListener {
+            logView.text = ""
+            viewModel.arrayCall()
+        }
     }
 }

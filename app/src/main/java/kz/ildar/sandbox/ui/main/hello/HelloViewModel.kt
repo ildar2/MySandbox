@@ -17,60 +17,12 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
     internal val greetingLiveData: LiveData<Event<ResourceString>>
         get() = _greetingLiveData
 
-    private val _logLiveData = MutableLiveData<Event<ResourceString>>()
-    internal val logLiveData: LiveData<Event<ResourceString>>
-        get() = _logLiveData
-
     fun loadGreetings(name: String) {
         Timber.w("loadGreetings called")
         if (name.isBlank()) {
             loadEchoGreeting()
         } else {
             loadEchoPersonalGreeting(name)
-        }
-    }
-
-    fun multiCall() {
-        makeRequest({ multiRepo.callAllMethods() }) { result ->
-            result.forEach {
-                _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
-                }
-            }
-        }
-    }
-
-    fun twoCall() {
-        makeRequest({ multiRepo.callTwoMethods() }) { result ->
-            result.forEach {
-                _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
-                }
-            }
-        }
-    }
-
-    fun threeCall() {
-        makeRequest({ multiRepo.callThreeMethods() }) { result ->
-            result.forEach {
-                _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
-                }
-            }
-        }
-    }
-
-    fun arrayCall() {
-        makeRequest({ multiRepo.callArrayOfMethods() }) { result ->
-            result.forEach {
-                _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
-                }
-            }
         }
     }
 

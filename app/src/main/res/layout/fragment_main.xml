@@ -64,4 +64,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/websocketView" />
 
+    <TextView
+        android:id="@+id/multiCallView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Proceed to MultiCall"
+        android:textSize="20sp"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/motionView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

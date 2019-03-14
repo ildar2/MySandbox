@@ -44,5 +44,7 @@ class MainFragment : Fragment() {
         websocketView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_websocketFragment))
 
         motionView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_motionFragment))
+
+        multiCallView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_multiCallFragment))
     }
 }

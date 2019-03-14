@@ -7,7 +7,7 @@ import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
-import kz.ildar.sandbox.ui.main.hello.HelloViewModel
+import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.motion.MotionViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
@@ -33,7 +33,7 @@ val appModule = module {
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
-    viewModel { HelloViewModel(get(), get()) }
+    viewModel { MultiCallViewModel(get(), get()) }
     viewModel { WebsocketViewModel(get(), get()) }
     viewModel { MotionViewModel() }
 }
