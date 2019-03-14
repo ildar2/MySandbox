@@ -15,7 +15,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 
 interface CoroutineCaller {
-    suspend fun <T : Any> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T>
+    suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T>
 }
 
 interface MultiCoroutineCaller {
@@ -46,7 +46,7 @@ class ApiCaller : ApiCallerInterface {
      * обрабатывает ошибки соединения
      * возвращает [RequestResult.Success] или [RequestResult.Error]
      */
-    override suspend fun <T : Any> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
+    override suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
         handleResult(deferred.await())
     } catch (e: Exception) {
         Timber.w(e);

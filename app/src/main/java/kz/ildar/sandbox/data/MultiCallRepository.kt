@@ -11,21 +11,34 @@ class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCalle
         return multiCall(api.postmanEcho(), api.postmanEcho(), api.postmanEchoNamed("Hello Carol!"))
     }
 
-    suspend fun <T1 : Any, T2 : Any, R> zip2(
-        deferred1: Deferred<Response<T1>>,
-        deferred2: Deferred<Response<T2>>,
-        zipFunc: (RequestResult<T1>, RequestResult<T2>) -> R
-    ): R {
-        return zipFunc(coroutineApiCall(deferred1), coroutineApiCall(deferred2))
-    }
+    suspend fun <T1, T2, R> zip(
+        request1: Deferred<Response<T1>>,
+        request2: Deferred<Response<T2>>,
+        zipper: (RequestResult<T1>, RequestResult<T2>) -> R
+    ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2))
 
-    suspend fun callTwoMethods(): List<RequestResult<GreetingsResponse>> {
-        val ans = ArrayList<RequestResult<GreetingsResponse>>()
-        return zip2(api.greetings(), api.postmanEcho()) { res1, res2 ->
-            ans.add(res1)
-            ans.add(res2)
-            ans
+    suspend fun <T1, T2, T3, R> zip(
+        request1: Deferred<Response<T1>>,
+        request2: Deferred<Response<T2>>,
+        request3: Deferred<Response<T3>>,
+        zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
+    ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2), coroutineApiCall(request3))
+
+    suspend fun <T, R> zipArray(
+        vararg requests: Deferred<Response<T>>,
+        zipper: (List<RequestResult<T>>) -> R
+    ): R = zipper(requests.map { coroutineApiCall(it) })
+
+    suspend fun callTwoMethods(): List<RequestResult<GreetingsResponse>> =
+        zip(api.greetings(), api.postmanEcho()) { res1, res2 ->
+            listOf(res1, res2)
         }
-    }
 
+    suspend fun callThreeMethods(): List<RequestResult<GreetingsResponse>> =
+        zip(api.greetings(), api.postmanEcho(), api.postmanEchoNamed("Sarah")) { res1, res2, res3 ->
+            listOf(res1, res2, res3)
+        }
+
+    suspend fun callArrayOfMethods(): List<RequestResult<GreetingWrapper>> =
+        zipArray(api.postmanEcho(), api.postmanEchoNamed("Sarah")) { it }
 }

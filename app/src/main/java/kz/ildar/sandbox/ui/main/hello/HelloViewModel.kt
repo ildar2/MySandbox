@@ -36,6 +36,7 @@ class HelloViewModel(private val repo: HelloRepository, private val multiRepo: M
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
                     is RequestResult.Error -> Event(it.error)
+                    else -> Event(TextResourceString("Single"))
                 }
             }
         }
