@@ -66,6 +66,20 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
     }
 
     /**
+     * Обработчик для ответов [RequestResult] репозитория.
+     * [errorBlock] - функция обработки ошибок, можно передать `null`, чтобы никак не обрабатывать.
+     * [successBlock] - обработка непустого результата
+     */
+    protected fun <T> unwrap(
+        result: RequestResult<T>,
+        errorBlock: ((ResourceString) -> Unit)? = { setError(it) },
+        successBlock: (T) -> Unit
+    ) = when (result) {
+        is RequestResult.Success -> result.result?.let { successBlock(it) }
+        is RequestResult.Error -> errorBlock?.invoke(result.error)
+    }
+
+    /**
      * Обработчик для запросов через `kotlin coroutines` - запускает [Job] в [scope],
      * вызывает прогресс на [statusLiveData],
      * разворачивает [Response] - вытаскивает тело запроса и вызывает [successBlock] с ним,
@@ -99,11 +113,11 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         this@BaseViewModel set Status.HIDE_LOADING
     }
 
-    suspend infix fun set(status: Status) = withContext(scopeProvider.main) {
+    infix fun set(status: Status) = scope.launch(scopeProvider.main) {
         statusLiveData.value = status
     }
 
-    suspend infix fun setError(error: ResourceString) = withContext(scopeProvider.main) {
+    infix fun setError(error: ResourceString) = scope.launch(scopeProvider.main) {
         _errorLiveData.value = Event(error)
     }
 

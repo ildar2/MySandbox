@@ -56,7 +56,7 @@ class HelloFragment : Fragment() {
             Timber.w("errorLiveData fired")
             activity?.run {
                 val text = error.format(this)
-                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, text, Toast.LENGTH_LONG).show()
             }
         })
         viewModel.greetingLiveData.observe(this, EventObserver { message ->
