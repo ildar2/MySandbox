@@ -129,9 +129,18 @@ class ApiCaller : ApiCallerInterface {
     } else {
         result.errorBody()?.string().let { errorString ->
             if (!errorString.isNullOrBlank())
-                return RequestResult.Error(TextResourceString(ServerError.print(errorString)))
+                return handleServerError(result.code(), ServerError.print(errorString))
         }
-        RequestResult.Error(FormatResourceString(R.string.request_not_successful, result.code()), result.code())
+        handleServerError(result.code(), result.message())
+    }
+
+    private fun handleServerError(code: Int, message: String?): RequestResult.Error = when (code) {
+        404 -> {
+            RequestResult.Error(IdResourceString(R.string.request_http_error_404), code)
+        }
+        else -> {
+            RequestResult.Error(FormatResourceString(R.string.request_http_error_format, code, message ?: ""), code)
+        }
     }
 
     private fun <T> handleException(e: Exception): RequestResult<T> = when (e) {
@@ -145,7 +154,7 @@ class ApiCaller : ApiCallerInterface {
             RequestResult.Error(IdResourceString(R.string.request_timeout))
         }
         is HttpException -> {
-            RequestResult.Error(FormatResourceString(R.string.request_http_error, e.code()), e.code())
+            handleServerError(e.code(), e.message())
         }
         else -> {
             RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.name, e.localizedMessage))
@@ -158,6 +167,7 @@ class ApiCaller : ApiCallerInterface {
  * должно возвращаться репозиториями, наследующими [ApiCaller]
  */
 sealed class RequestResult<out T : Any?> {
+
     data class Success<out T : Any?>(val result: T? = null) : RequestResult<T>()
     data class Error(val error: ResourceString, val code: Int = 0) : RequestResult<Nothing>()
 }
@@ -169,6 +179,7 @@ data class ServerError(
     val message: String?,
     val path: String?
 ) {
+
     fun print(): String {
         return message ?: error ?: "ServerError"
     }

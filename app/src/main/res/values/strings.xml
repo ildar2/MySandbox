@@ -9,5 +9,7 @@
     <string name="request_connection_error">Проверьте подключение к интернету</string>
     <string name="request_timeout">Сервер не отвечает</string>
     <string name="request_http_error">Ошибка запроса: %d</string>
+    <string name="request_http_error_format">Ошибка запроса: %d %s</string>
+    <string name="request_http_error_404">Нет такой страницы</string>
     <string name="request_error">Ошибка: %s \n %s</string>
 </resources>
