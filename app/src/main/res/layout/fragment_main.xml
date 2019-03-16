@@ -1,85 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.MainFragment">
+    android:layout_height="match_parent">
 
-    <include
-        layout="@layout/include_toolbar"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/parentView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Proceed to Child"
-        android:textSize="20sp"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        android:layout_height="match_parent"
+        tools:context=".ui.main.MainFragment">
 
-    <TextView
-        android:id="@+id/helloView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Proceed to Requests"
-        android:textSize="20sp"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/parentView" />
+        <include
+            layout="@layout/include_toolbar"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/websocketView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Proceed to Websocket"
-        android:textSize="20sp"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/helloView" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/motionView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Proceed to MotionView"
-        android:textSize="20sp"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/websocketView" />
+        <TextView
+            android:id="@+id/parentView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Child"
+            android:textSize="20sp"
+            android:padding="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <TextView
-        android:id="@+id/multiCallView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Proceed to MultiCall"
-        android:textSize="20sp"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/motionView" />
+        <TextView
+            android:id="@+id/helloView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Requests"
+            android:textSize="20sp"
+            android:padding="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/parentView" />
 
-    <TextView
-        android:id="@+id/colorView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Proceed to Color"
-        android:textSize="20sp"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/multiCallView" />
+        <TextView
+            android:id="@+id/websocketView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Websocket"
+            android:textSize="20sp"
+            android:padding="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/helloView" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/motionView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to MotionView"
+            android:textSize="20sp"
+            android:padding="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/websocketView" />
+
+        <TextView
+            android:id="@+id/multiCallView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to MultiCall"
+            android:textSize="20sp"
+            android:padding="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/motionView" />
+
+        <TextView
+            android:id="@+id/colorView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Color"
+            android:textSize="20sp"
+            android:padding="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/multiCallView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -8,6 +8,7 @@
     tools:context=".ui.main.color.ColorFragment">
 
     <include
+        android:id="@+id/toolbar_include"
         layout="@layout/include_toolbar"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -16,21 +17,22 @@
         android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_include"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.12" />
 
     <TextView
         android:id="@+id/hexView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="#121212"
+        tools:text="#121212"
         android:layout_marginTop="16dp"
         android:textSize="36sp"
         app:layout_constraintTop_toBottomOf="@+id/colorView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintHorizontal_bias="0.15" />
 
     <SeekBar
         android:id="@+id/alphaSeekbar"
@@ -41,15 +43,15 @@
         android:layout_marginEnd="16dp"
         android:padding="4dp"
         android:max="255"
-        app:layout_constraintTop_toBottomOf="@id/hexView"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_include"
+        app:layout_constraintStart_toEndOf="@id/colorView"
         app:layout_constraintEnd_toStartOf="@id/alphaValue" />
 
     <TextView
         android:id="@+id/alphaValue"
         android:layout_width="45dp"
         android:layout_height="wrap_content"
-        tools:text="255"
+        tools:text="128"
         android:textSize="24sp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@id/alphaSeekbar"
@@ -65,7 +67,7 @@
         android:padding="4dp"
         android:max="255"
         app:layout_constraintTop_toBottomOf="@id/alphaSeekbar"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/colorView"
         app:layout_constraintEnd_toStartOf="@id/redValue" />
 
     <TextView
@@ -88,7 +90,7 @@
         android:padding="4dp"
         android:max="255"
         app:layout_constraintTop_toBottomOf="@id/redSeekbar"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/colorView"
         app:layout_constraintEnd_toStartOf="@id/greenValue" />
 
     <TextView
@@ -111,7 +113,7 @@
         android:padding="4dp"
         android:max="255"
         app:layout_constraintTop_toBottomOf="@id/greenSeekbar"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/colorView"
         app:layout_constraintEnd_toStartOf="@id/blueValue" />
 
     <TextView
