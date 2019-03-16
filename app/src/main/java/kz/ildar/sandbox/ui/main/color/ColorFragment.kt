@@ -50,7 +50,7 @@ class ColorFragment : Fragment() {
         val green = viewModel.greenLiveData.value ?: 0
         val blue = viewModel.blueLiveData.value ?: 0
         val color = Color.argb(alpha, red, green, blue)
-        hexView.text = "#" + Integer.toHexString(color).toUpperCase()
+        hexView.text = String.format("#%08X", 0xFFFFFFFF and color.toLong())
         colorView.setBackgroundColor(color)
     }
 
