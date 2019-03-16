@@ -66,4 +66,15 @@ class MainFragment : Fragment() {
 
         colorView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_colorFragment))
     }
+
+    override fun onPause() {
+        super.onPause()
+        curtain.visibility = View.VISIBLE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        curtain.visibility = View.GONE
+    }
+
 }
