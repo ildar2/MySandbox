@@ -18,6 +18,7 @@
         android:text="Call multiple methods"
         android:textSize="20sp"
         android:padding="12dp"
+        android:background="@drawable/ripple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
@@ -28,6 +29,7 @@
         android:text="Call two methods"
         android:textSize="20sp"
         android:padding="12dp"
+        android:background="@drawable/ripple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/multipleCallView"/>
 
@@ -39,6 +41,7 @@
         android:text="Call three methods"
         android:textSize="20sp"
         android:padding="12dp"
+        android:background="@drawable/ripple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/twoCallView"/>
 
@@ -50,6 +53,7 @@
         android:text="Call array of methods"
         android:textSize="20sp"
         android:padding="12dp"
+        android:background="@drawable/ripple"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/threeCallView"/>
 

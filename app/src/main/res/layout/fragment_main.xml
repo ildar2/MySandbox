@@ -33,6 +33,7 @@
             android:text="Proceed to Child"
             android:textSize="20sp"
             android:padding="12dp"
+            android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
@@ -43,6 +44,7 @@
             android:text="Proceed to Requests"
             android:textSize="20sp"
             android:padding="12dp"
+            android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/parentView" />
 
@@ -53,6 +55,7 @@
             android:text="Proceed to Websocket"
             android:textSize="20sp"
             android:padding="12dp"
+            android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/helloView" />
 
@@ -63,6 +66,7 @@
             android:text="Proceed to MotionView"
             android:textSize="20sp"
             android:padding="12dp"
+            android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/websocketView" />
 
@@ -73,6 +77,7 @@
             android:text="Proceed to MultiCall"
             android:textSize="20sp"
             android:padding="12dp"
+            android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/motionView" />
 
@@ -83,6 +88,7 @@
             android:text="Proceed to Color"
             android:textSize="20sp"
             android:padding="12dp"
+            android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/multiCallView" />
 
@@ -92,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="800dp"
             android:visibility="gone"
-            tools:visibility="visible"
+            tools:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

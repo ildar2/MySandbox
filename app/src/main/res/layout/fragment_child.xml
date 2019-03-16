@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        tools:context=".ui.main.child.ChildFragment">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.child.ChildFragment">
 
     <include
-        layout="@layout/include_toolbar"/>
+        layout="@layout/include_toolbar" />
 
     <TextView
-            android:id="@+id/childView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Child"
-            android:padding="16dp"
-            android:textSize="20sp"
-            android:visibility="visible"
-            android:layout_gravity="center"/>
+        android:id="@+id/childView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Child"
+        android:padding="16dp"
+        android:textSize="20sp"
+        android:background="@drawable/ripple"
+        android:visibility="visible"
+        android:layout_gravity="center" />
 
     <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_marginTop="56dp"
-            android:visibility="gone"
-            android:layout_height="300dp"
-            android:contentDescription="@string/child_image_desc"/>
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_marginTop="56dp"
+        android:visibility="gone"
+        android:layout_height="300dp"
+        android:contentDescription="@string/child_image_desc" />
 
 </FrameLayout>

@@ -50,7 +50,7 @@ class ColorFragment : Fragment() {
         val green = viewModel.greenLiveData.value ?: 0
         val blue = viewModel.blueLiveData.value ?: 0
         val color = Color.argb(alpha, red, green, blue)
-        hexView.text = String.format("#%08X", 0xFFFFFFFF and color.toLong())
+        hexView.text = String.format("#%08X", color)
         colorView.setBackgroundColor(color)
     }
 
@@ -68,6 +68,9 @@ class ColorFragment : Fragment() {
         redSeekbar.setOnSeekBarChangeListener(seekBarListener)
         greenSeekbar.setOnSeekBarChangeListener(seekBarListener)
         blueSeekbar.setOnSeekBarChangeListener(seekBarListener)
+
+        minusView.setOnClickListener { viewModel.minusClick() }
+        plusView.setOnClickListener { viewModel.plusClick() }
     }
 
     val seekBarListener = object : SeekBar.OnSeekBarChangeListener {
