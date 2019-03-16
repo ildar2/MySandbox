@@ -74,4 +74,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/motionView" />
 
+    <TextView
+        android:id="@+id/colorView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Proceed to Color"
+        android:textSize="20sp"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/multiCallView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

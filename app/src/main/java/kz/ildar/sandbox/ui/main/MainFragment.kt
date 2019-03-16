@@ -62,5 +62,7 @@ class MainFragment : Fragment() {
         motionView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_motionFragment))
 
         multiCallView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_multiCallFragment))
+
+        colorView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_colorFragment))
     }
 }

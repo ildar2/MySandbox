@@ -24,6 +24,7 @@ import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
+import kz.ildar.sandbox.ui.main.color.ColorViewModel
 import kz.ildar.sandbox.ui.main.hello.HelloViewModel
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.motion.MotionViewModel
@@ -53,9 +54,10 @@ val appModule = module {
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
     viewModel { HelloViewModel(get()) }
-    viewModel { MultiCallViewModel(get(), get()) }
     viewModel { WebsocketViewModel(get(), get()) }
     viewModel { MotionViewModel() }
+    viewModel { MultiCallViewModel(get(), get()) }
+    viewModel { ColorViewModel() }
 }
 
 const val TIMEOUT = 3L
