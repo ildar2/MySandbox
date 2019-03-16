@@ -7,11 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.motion.MotionFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include
+        layout="@layout/include_toolbar"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:layout_width="wrap_content"

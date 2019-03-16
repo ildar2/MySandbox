@@ -7,11 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.websocket.WebsocketFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include
+        layout="@layout/include_toolbar"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -29,6 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        tools:text="Websocket request log" />
+        android:text="Websocket request log" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
