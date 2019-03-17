@@ -60,6 +60,14 @@
             app:popEnterAnim="@anim/slide_from_left"
             app:popExitAnim="@anim/exit_to_right" />
 
+        <action
+            android:id="@+id/open_colorListFragment"
+            app:destination="@id/colorListFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+
     </fragment>
 
     <fragment
@@ -107,5 +115,11 @@
         android:name="kz.ildar.sandbox.ui.main.color.ColorFragment"
         android:label="fragment_color"
         tools:layout="@layout/fragment_color" />
+
+    <fragment
+        android:id="@+id/colorListFragment"
+        android:name="kz.ildar.sandbox.ui.main.list.ColorListFragment"
+        android:label="fragment_color_list"
+        tools:layout="@layout/fragment_color_list" />
 
 </navigation>

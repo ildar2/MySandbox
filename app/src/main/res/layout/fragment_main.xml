@@ -85,12 +85,23 @@
             android:id="@+id/colorView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Proceed to Color"
+            android:text="Proceed to Color picker"
             android:textSize="20sp"
             android:padding="12dp"
             android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/multiCallView" />
+
+        <TextView
+            android:id="@+id/colorListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Color list"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:background="@drawable/ripple"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/colorView" />
 
         <View
             android:id="@+id/curtain"

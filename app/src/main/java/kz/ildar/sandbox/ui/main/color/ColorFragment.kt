@@ -3,13 +3,13 @@ package kz.ildar.sandbox.ui.main.color
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
@@ -99,7 +99,7 @@ class ColorFragment : Fragment() {
     var autoIncrement = false
     var autoDecrement = false
     val AUTO_DELAY = 50L
-    val autoPressHandler : Handler = Handler()
+    val autoPressHandler: Handler = Handler()
 
     internal inner class AutoPressEvent : Runnable {
         override fun run() {

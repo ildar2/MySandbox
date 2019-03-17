@@ -65,6 +65,8 @@ class MainFragment : Fragment() {
         multiCallView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_multiCallFragment))
 
         colorView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_colorFragment))
+
+        colorListView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_colorListFragment))
     }
 
     override fun onPause() {
@@ -76,5 +78,4 @@ class MainFragment : Fragment() {
         super.onResume()
         curtain.visibility = View.GONE
     }
-
 }

@@ -17,15 +17,13 @@
 package kz.ildar.sandbox.di
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import kz.ildar.sandbox.data.FlatMapRepository
-import kz.ildar.sandbox.data.HelloRepository
-import kz.ildar.sandbox.data.HelloRepositoryImpl
-import kz.ildar.sandbox.data.MultiCallRepository
+import kz.ildar.sandbox.data.*
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
 import kz.ildar.sandbox.ui.main.color.ColorViewModel
 import kz.ildar.sandbox.ui.main.hello.HelloViewModel
+import kz.ildar.sandbox.ui.main.list.ColorListViewModel
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.motion.MotionViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
@@ -48,6 +46,7 @@ val appModule = module {
     single<HelloRepository> { HelloRepositoryImpl(get()) }
     single { MultiCallRepository(get()) }
     single { FlatMapRepository(get()) }
+    single { ColorRepository() }
 
     single { CoroutineContextProvider() }
 
@@ -58,6 +57,7 @@ val appModule = module {
     viewModel { MotionViewModel() }
     viewModel { MultiCallViewModel(get(), get()) }
     viewModel { ColorViewModel() }
+    viewModel { ColorListViewModel(get()) }
 }
 
 const val TIMEOUT = 3L
