@@ -1,6 +1,5 @@
 package kz.ildar.sandbox.ui.main.color
 
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -14,54 +13,42 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
-import kz.ildar.sandbox.data.model.ColorModel
 import org.koin.android.viewmodel.ext.android.getViewModel
 
 class ColorFragment : Fragment() {
 
     private lateinit var viewModel: ColorViewModel
+    private var title = "Color picker"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = getViewModel()
         if (savedInstanceState == null) {
-            arguments?.getParcelable<ColorModel>("colorModel")?.run {
+            arguments?.getParcelable<ColorMutable>("colorModel")?.run {
                 viewModel.setAlpha(alpha)
                 viewModel.setRed(red)
                 viewModel.setGreen(green)
                 viewModel.setBlue(blue)
+                title = name
             }
         }
-        viewModel.alphaLiveData.observe(this, Observer {
-            alphaSeekbar.progress = it
-            alphaValue.text = it.toString()
-            updateColor()
-        })
-        viewModel.redLiveData.observe(this, Observer {
-            redSeekbar.progress = it
-            redValue.text = it.toString()
-            updateColor()
-        })
-        viewModel.greenLiveData.observe(this, Observer {
-            greenSeekbar.progress = it
-            greenValue.text = it.toString()
-            updateColor()
-        })
-        viewModel.blueLiveData.observe(this, Observer {
-            blueSeekbar.progress = it
-            blueValue.text = it.toString()
-            updateColor()
+        viewModel.colorLiveData.observe(this, Observer {
+            updateColor(it)
         })
     }
 
-    private fun updateColor() {
-        val alpha = viewModel.alphaLiveData.value ?: 0
-        val red = viewModel.redLiveData.value ?: 0
-        val green = viewModel.greenLiveData.value ?: 0
-        val blue = viewModel.blueLiveData.value ?: 0
-        val color = Color.argb(alpha, red, green, blue)
-        hexView.text = String.format("#%08X", color)
-        colorView.setBackgroundColor(color)
+    private fun updateColor(colorModel: ColorMutable) {
+        colorView.setBackgroundColor(colorModel.getColor())
+        hexView.text = colorModel.getHexString()
+
+        alphaSeekbar.progress = colorModel.alpha
+        alphaValue.text = colorModel.alpha.toString()
+        redSeekbar.progress = colorModel.red
+        redValue.text = colorModel.red.toString()
+        greenSeekbar.progress = colorModel.green
+        greenValue.text = colorModel.green.toString()
+        blueSeekbar.progress = colorModel.blue
+        blueValue.text = colorModel.blue.toString()
     }
 
     override fun onCreateView(
@@ -72,7 +59,7 @@ class ColorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar?.title = "Color picker"
+        toolbar?.title = title
 
         initSeekers()
         initPlusMinus()
