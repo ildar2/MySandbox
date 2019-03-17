@@ -2,8 +2,10 @@ package kz.ildar.sandbox.ui.main.color
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
@@ -64,13 +66,8 @@ class ColorFragment : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar?.title = "Color picker"
 
-        alphaSeekbar.setOnSeekBarChangeListener(seekBarListener)
-        redSeekbar.setOnSeekBarChangeListener(seekBarListener)
-        greenSeekbar.setOnSeekBarChangeListener(seekBarListener)
-        blueSeekbar.setOnSeekBarChangeListener(seekBarListener)
-
-        minusView.setOnClickListener { viewModel.minusClick() }
-        plusView.setOnClickListener { viewModel.plusClick() }
+        initSeekers()
+        initPlusMinus()
     }
 
     val seekBarListener = object : SeekBar.OnSeekBarChangeListener {
@@ -89,6 +86,58 @@ class ColorFragment : Fragment() {
         }
 
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        }
+    }
+
+    private fun initSeekers() {
+        alphaSeekbar.setOnSeekBarChangeListener(seekBarListener)
+        redSeekbar.setOnSeekBarChangeListener(seekBarListener)
+        greenSeekbar.setOnSeekBarChangeListener(seekBarListener)
+        blueSeekbar.setOnSeekBarChangeListener(seekBarListener)
+    }
+
+    var autoIncrement = false
+    var autoDecrement = false
+    val AUTO_DELAY = 50L
+    val autoPressHandler : Handler = Handler()
+
+    internal inner class AutoPressEvent : Runnable {
+        override fun run() {
+            if (autoIncrement) {
+                viewModel.plusClick()
+                autoPressHandler.postDelayed(AutoPressEvent(), AUTO_DELAY)
+            } else if (autoDecrement) {
+                viewModel.minusClick()
+                autoPressHandler.postDelayed(AutoPressEvent(), AUTO_DELAY)
+            }
+        }
+    }
+
+    private fun initPlusMinus() {
+        minusView.setOnClickListener { viewModel.minusClick() }
+        minusView.setOnLongClickListener {
+            autoDecrement = true
+            autoPressHandler.post(AutoPressEvent())
+            true
+        }
+        minusView.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP && autoDecrement) {
+                autoDecrement = false
+            }
+            false
+        }
+
+        plusView.setOnClickListener { viewModel.plusClick() }
+        plusView.setOnLongClickListener {
+            autoIncrement = true
+            autoPressHandler.post(AutoPressEvent())
+            true
+        }
+        plusView.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP && autoIncrement) {
+                autoIncrement = false
+            }
+            false
         }
     }
 }
