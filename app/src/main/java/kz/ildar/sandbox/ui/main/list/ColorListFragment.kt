@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_color_list.*
 import kotlinx.android.synthetic.main.include_toolbar.*
@@ -18,7 +19,10 @@ class ColorListFragment : Fragment() {
 
     private lateinit var viewModel: ColorListViewModel
     private val adapter = ColorListAdapter {
-        Toast.makeText(activity, "${it.getHexString()} clicked", Toast.LENGTH_SHORT).show()
+        val args = Bundle().apply {
+            putParcelable("colorModel", it)
+        }
+        Navigation.findNavController(recyclerView).navigate(R.id.open_colorFragment, args)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

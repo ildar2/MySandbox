@@ -14,16 +14,24 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.data.model.ColorModel
 import org.koin.android.viewmodel.ext.android.getViewModel
 
 class ColorFragment : Fragment() {
 
     private lateinit var viewModel: ColorViewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         viewModel = getViewModel()
-
+        if (savedInstanceState == null) {
+            arguments?.getParcelable<ColorModel>("colorModel")?.run {
+                viewModel.setAlpha(alpha)
+                viewModel.setRed(red)
+                viewModel.setGreen(green)
+                viewModel.setBlue(blue)
+            }
+        }
         viewModel.alphaLiveData.observe(this, Observer {
             alphaSeekbar.progress = it
             alphaValue.text = it.toString()

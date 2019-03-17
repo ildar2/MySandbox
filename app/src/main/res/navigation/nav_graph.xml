@@ -120,6 +120,16 @@
         android:id="@+id/colorListFragment"
         android:name="kz.ildar.sandbox.ui.main.list.ColorListFragment"
         android:label="fragment_color_list"
-        tools:layout="@layout/fragment_color_list" />
+        tools:layout="@layout/fragment_color_list" >
+
+        <action
+            android:id="@+id/open_colorFragment"
+            app:destination="@id/colorFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+
+    </fragment>
 
 </navigation>
