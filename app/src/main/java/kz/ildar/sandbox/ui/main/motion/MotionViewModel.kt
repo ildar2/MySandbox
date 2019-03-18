@@ -16,7 +16,6 @@
  */
 package kz.ildar.sandbox.ui.main.motion
 
-import kz.ildar.sandbox.ui.BaseViewModel
+import androidx.lifecycle.ViewModel
 
-class MotionViewModel : BaseViewModel() {
-}
+class MotionViewModel : ViewModel()

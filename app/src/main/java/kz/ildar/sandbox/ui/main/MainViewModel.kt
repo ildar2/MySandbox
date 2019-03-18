@@ -17,10 +17,10 @@
 package kz.ildar.sandbox.ui.main
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import kz.ildar.sandbox.data.model.Parent
-import kz.ildar.sandbox.ui.BaseViewModel
 
-class MainViewModel : BaseViewModel() {
+class MainViewModel : ViewModel() {
     val parentLiveData = MutableLiveData<String>()
 
     fun getData() {

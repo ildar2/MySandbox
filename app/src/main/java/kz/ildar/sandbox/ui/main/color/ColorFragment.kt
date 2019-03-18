@@ -65,7 +65,7 @@ class ColorFragment : Fragment() {
         initPlusMinus()
     }
 
-    val seekBarListener = object : SeekBar.OnSeekBarChangeListener {
+    private val seekBarListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             if (fromUser) {
                 when (seekBar) {
@@ -93,17 +93,17 @@ class ColorFragment : Fragment() {
 
     var autoIncrement = false
     var autoDecrement = false
-    val AUTO_DELAY = 50L
+    val delay = 50L
     val autoPressHandler: Handler = Handler()
 
     internal inner class AutoPressEvent : Runnable {
         override fun run() {
             if (autoIncrement) {
                 viewModel.plusClick()
-                autoPressHandler.postDelayed(AutoPressEvent(), AUTO_DELAY)
+                autoPressHandler.postDelayed(AutoPressEvent(), delay)
             } else if (autoDecrement) {
                 viewModel.minusClick()
-                autoPressHandler.postDelayed(AutoPressEvent(), AUTO_DELAY)
+                autoPressHandler.postDelayed(AutoPressEvent(), delay)
             }
         }
     }
@@ -115,7 +115,7 @@ class ColorFragment : Fragment() {
             autoPressHandler.post(AutoPressEvent())
             true
         }
-        minusView.setOnTouchListener { v, event ->
+        minusView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP && autoDecrement) {
                 autoDecrement = false
             }
@@ -128,7 +128,7 @@ class ColorFragment : Fragment() {
             autoPressHandler.post(AutoPressEvent())
             true
         }
-        plusView.setOnTouchListener { v, event ->
+        plusView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP && autoIncrement) {
                 autoIncrement = false
             }

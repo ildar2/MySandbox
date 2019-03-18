@@ -8,8 +8,8 @@ import kotlinx.android.synthetic.main.item_color.view.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.main.color.ColorMutable
 
-class ColorListAdapter(val listener: (ColorMutable) -> Unit) : RecyclerView.Adapter<ColorListAdapter.ViewHolder>() {
-    val items = ArrayList<ColorMutable>()
+class ColorListAdapter(private val listener: (ColorMutable) -> Unit) : RecyclerView.Adapter<ColorListAdapter.ViewHolder>() {
+    private val items = ArrayList<ColorMutable>()
 
     fun setItems(list: List<ColorMutable>) {
         items.clear()
@@ -26,7 +26,7 @@ class ColorListAdapter(val listener: (ColorMutable) -> Unit) : RecyclerView.Adap
         holder.bind(items[position])
     }
 
-    open class ViewHolder(itemView: View, val listener: (ColorMutable) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    open class ViewHolder(itemView: View, private val listener: (ColorMutable) -> Unit) : RecyclerView.ViewHolder(itemView) {
         open fun bind(color: ColorMutable) {
             itemView.colorView.setBackgroundColor(color.getColor())
             itemView.hexView.text = color.getHexString()

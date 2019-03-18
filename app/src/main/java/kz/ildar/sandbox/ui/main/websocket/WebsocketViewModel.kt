@@ -19,11 +19,16 @@ package kz.ildar.sandbox.ui.main.websocket
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 import okhttp3.*
 import okio.ByteString
 
-class WebsocketViewModel(val client: OkHttpClient, val request: Request) : BaseViewModel() {
+class WebsocketViewModel(
+    private val client: OkHttpClient,
+    private val request: Request,
+    contextProvider: CoroutineContextProvider
+) : BaseViewModel(contextProvider) {
     private val NORMAL_CLOSURE_STATUS = 1000
 
     val logLiveData = MutableLiveData<String>()

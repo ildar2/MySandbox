@@ -6,11 +6,12 @@ import androidx.annotation.ColorInt
 import androidx.lifecycle.MutableLiveData
 import kotlinx.android.parcel.Parcelize
 import kz.ildar.sandbox.data.model.ColorModel
+import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 
-class ColorViewModel : BaseViewModel() {
+class ColorViewModel(contextProvider: CoroutineContextProvider) : BaseViewModel(contextProvider) {
     val colorLiveData = MutableLiveData(ColorMutable(255, 12, 36, 128))
-    var currentSeeker = 3
+    private var currentSeeker = 3
 
     fun setAlpha(progress: Int) {
         val color = colorLiveData.value

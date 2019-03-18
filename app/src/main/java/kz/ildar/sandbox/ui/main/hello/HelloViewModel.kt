@@ -20,13 +20,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.RequestResult
+import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 import kz.ildar.sandbox.utils.Event
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import timber.log.Timber
 
-class HelloViewModel(private val repo: HelloRepository) : BaseViewModel() {
+class HelloViewModel(
+    private val repo: HelloRepository,
+    contextProvider: CoroutineContextProvider
+) : BaseViewModel(contextProvider) {
 
     private val _greetingLiveData = MutableLiveData<Event<ResourceString>>()
     internal val greetingLiveData: LiveData<Event<ResourceString>>

@@ -19,43 +19,28 @@ package kz.ildar.sandbox.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.*
-import kz.ildar.sandbox.data.RequestResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.utils.Event
 import kz.ildar.sandbox.utils.ResourceString
 import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
 
-abstract class BaseViewModel : ViewModel(), KoinComponent, UiCaller {
-    val statusLiveData = MutableLiveData<Status>()
+abstract class BaseViewModel(
+    private val contextProvider: CoroutineContextProvider,
+    private val coroutineJob: Job = Job(),
+    protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.io),
+    val statusLiveData: MutableLiveData<Status> = MutableLiveData(),
+    private val _errorLiveData: MutableLiveData<Event<ResourceString>> = MutableLiveData()
+) : ViewModel(), KoinComponent, UiCaller by UiCallerImpl(scope, contextProvider, statusLiveData, _errorLiveData) {
 
-    private val _errorLiveData = MutableLiveData<Event<ResourceString>>()
     val errorLiveData: LiveData<Event<ResourceString>>
         get() = _errorLiveData
-
-    private val scopeProvider: CoroutineContextProvider by inject()
-
-    private val coroutineJob = Job()
-
-    protected val scope = CoroutineScope(coroutineJob + scopeProvider.io)
 
     override fun onCleared() {
         super.onCleared()
         coroutineJob.cancel()
     }
-
-    private val caller: UiCaller = UiCallerImpl(scope, scopeProvider, statusLiveData, _errorLiveData)
-
-    override fun <T> makeRequest(call: suspend CoroutineScope.() -> T, resultBlock: (suspend (T) -> Unit)?) =
-        caller.makeRequest(call, resultBlock)
-
-    override fun <T> unwrap(result: RequestResult<T>, errorBlock: ((ResourceString) -> Unit)?, successBlock: (T) -> Unit) =
-        caller.unwrap(result, errorBlock, successBlock)
-
-    override fun set(status: Status) = caller.set(status)
-
-    override fun setError(error: ResourceString) = caller.setError(error)
 
     enum class Status {
         SHOW_LOADING,

@@ -28,15 +28,15 @@ interface UiCaller {
 }
 
 class UiCallerImpl(
-    val scope: CoroutineScope,
-    val scopeProvider: CoroutineContextProvider,
-    val statusLiveData: MutableLiveData<BaseViewModel.Status>,
-    val _errorLiveData: MutableLiveData<Event<ResourceString>>
+    private val scope: CoroutineScope,
+    private val scopeProvider: CoroutineContextProvider,
+    private val statusLiveData: MutableLiveData<BaseViewModel.Status>,
+    private val _errorLiveData: MutableLiveData<Event<ResourceString>>
 ) : UiCaller {
     /**
      * Presentation-layer-обработчик для запросов через `kotlin coroutines`:
      * запускает [Job] в [scope],
-     * вызывает прогресс на [statusLiveData] или [view]
+     * вызывает прогресс на [statusLiveData]
      *
      * [call] - `suspend`-функция запроса из репозитория
      * [resultBlock] - функция, которую нужно выполнить по завершении запроса в UI-потоке

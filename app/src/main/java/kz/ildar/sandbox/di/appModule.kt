@@ -52,11 +52,11 @@ val appModule = module {
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
-    viewModel { HelloViewModel(get()) }
-    viewModel { WebsocketViewModel(get(), get()) }
+    viewModel { HelloViewModel(get(), get()) }
+    viewModel { WebsocketViewModel(get(), get(), get()) }
     viewModel { MotionViewModel() }
     viewModel { MultiCallViewModel(get(), get()) }
-    viewModel { ColorViewModel() }
+    viewModel { ColorViewModel(get()) }
     viewModel { ColorListViewModel(get()) }
 }
 

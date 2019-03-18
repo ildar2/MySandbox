@@ -24,7 +24,7 @@ import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.model.Child
 import kz.ildar.sandbox.utils.Event
 
-class ChildViewModel(val repo: HelloRepository) : ViewModel() {
+class ChildViewModel(private val repo: HelloRepository) : ViewModel() {
     private val _openFragmentEvents = MutableLiveData<Event<View>>()
     val openFragmentEvents: LiveData<Event<View>>
         get() = _openFragmentEvents

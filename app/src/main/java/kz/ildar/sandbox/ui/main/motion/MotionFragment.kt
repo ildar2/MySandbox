@@ -17,12 +17,11 @@
 package kz.ildar.sandbox.ui.main.motion
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.fragment_motion.*
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import org.koin.android.viewmodel.ext.android.getViewModel

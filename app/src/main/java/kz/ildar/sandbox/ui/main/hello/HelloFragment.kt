@@ -31,7 +31,6 @@ import kotlinx.android.synthetic.main.fragment_hello.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.BaseViewModel
-import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.utils.EventObserver
 import org.koin.android.viewmodel.ext.android.getViewModel
 import timber.log.Timber
