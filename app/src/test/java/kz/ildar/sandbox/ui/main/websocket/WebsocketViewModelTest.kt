@@ -57,7 +57,7 @@ class WebsocketViewModelTest {
                 )
         )
 
-        viewModel = WebsocketViewModel(client, request)
+        viewModel = WebsocketViewModel(client, request, TestContextProvider())
 
         //to observe livedata
         //https://proandroiddev.com/how-to-unit-test-livedata-and-lifecycle-components-8a0af41c90d9

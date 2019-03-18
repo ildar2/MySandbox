@@ -28,7 +28,7 @@ import org.junit.Test
 class HelloFragmentTest {
     @Test
     fun testCreation() {
-        val scenario = launchFragmentInContainer<MultiCallFragment>(themeResId = R.style.AppTheme)
+        launchFragmentInContainer<MultiCallFragment>(themeResId = R.style.AppTheme)
         onView(withId(R.id.makeRequest)).check(matches(isDisplayed()))
     }
 }
