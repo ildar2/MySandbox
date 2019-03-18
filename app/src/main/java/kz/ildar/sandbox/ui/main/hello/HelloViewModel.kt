@@ -61,7 +61,7 @@ class HelloViewModel(private val repo: HelloRepository) : BaseViewModel() {
         makeRequest({ repo.greetings() }) {
             when (it) {
                 is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
-                is RequestResult.Error -> this setError it.error
+                is RequestResult.Error -> setError(it.error)
             }
         }
     }
@@ -70,7 +70,7 @@ class HelloViewModel(private val repo: HelloRepository) : BaseViewModel() {
         makeRequest({ repo.personalGreeting(name) }) {
             when (it) {
                 is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
-                is RequestResult.Error -> this setError it.error
+                is RequestResult.Error -> setError(it.error)
             }
         }
     }

@@ -24,12 +24,10 @@ import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.utils.Event
 import kz.ildar.sandbox.utils.ResourceString
-import kz.ildar.sandbox.utils.TextResourceString
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
-import retrofit2.Response
 
-abstract class BaseViewModel : ViewModel(), KoinComponent {
+abstract class BaseViewModel : ViewModel(), KoinComponent, UiCaller {
     val statusLiveData = MutableLiveData<Status>()
 
     private val _errorLiveData = MutableLiveData<Event<ResourceString>>()
@@ -47,79 +45,17 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         coroutineJob.cancel()
     }
 
-    /**
-     * Presentation-layer-обработчик для запросов через `kotlin coroutines`:
-     * запускает [Job] в [scope],
-     * вызывает прогресс на [statusLiveData] или [view]
-     *
-     * [call] - `suspend`-функция запроса из репозитория
-     * [resultBlock] - функция, которую нужно выполнить по завершении запроса в UI-потоке
-     */
-    fun <T> makeRequest(
-        call: suspend CoroutineScope.() -> T,
-        resultBlock: (suspend (T) -> Unit)? = null
-    ) = scope.launch(scopeProvider.main) {
-        this@BaseViewModel set Status.SHOW_LOADING
-        val result = withContext(scopeProvider.io, call)
-        resultBlock?.invoke(result)
-        this@BaseViewModel set Status.HIDE_LOADING
-    }
+    private val caller: UiCaller = UiCallerImpl(scope, scopeProvider, statusLiveData, _errorLiveData)
 
-    /**
-     * Обработчик для ответов [RequestResult] репозитория.
-     * [errorBlock] - функция обработки ошибок, можно передать `null`, чтобы никак не обрабатывать.
-     * [successBlock] - обработка непустого результата
-     */
-    protected fun <T> unwrap(
-        result: RequestResult<T>,
-        errorBlock: ((ResourceString) -> Unit)? = { setError(it) },
-        successBlock: (T) -> Unit
-    ) = when (result) {
-        is RequestResult.Success -> result.result?.let { successBlock(it) }
-        is RequestResult.Error -> errorBlock?.invoke(result.error)
-    }
+    override fun <T> makeRequest(call: suspend CoroutineScope.() -> T, resultBlock: (suspend (T) -> Unit)?) =
+        caller.makeRequest(call, resultBlock)
 
-    /**
-     * Обработчик для запросов через `kotlin coroutines` - запускает [Job] в [scope],
-     * вызывает прогресс на [statusLiveData],
-     * разворачивает [Response] - вытаскивает тело запроса и вызывает [successBlock] с ним,
-     * обрабатывает коды ошибок [Response],
-     * обрабатывает исключения во время исполнения [deferred]
-     */
-    @Deprecated("обработка ошибок и исключений должна проходить на уровне репозитория")
-    fun <T> makeRequestWrong(deferred: Deferred<Response<T>>, successBlock: suspend (T) -> Unit) = scope.launch {
-        this@BaseViewModel set Status.SHOW_LOADING
-        try {
-            val result = deferred.await()
-            if (result.isSuccessful) {
-                val body = result.body()
-                body?.let {
-                    withContext(scopeProvider.main) {
-                        successBlock(it)
-                    }
-                }
-            } else {
-                when (result.code()) {//todo handle error codes
-                    404 -> setError(TextResourceString("no data available"))
-                    else -> setError(TextResourceString("default error"))
-                }
-            }
-        } catch (e: Exception) {
-            println("makeRequest failed with: ${e.message}")
-            e.printStackTrace()
-            set(Status.ERROR)//todo порядок сообщений в statusLiveData
-            setError(TextResourceString("there was an error during request"))//todo exception handling
-        }
-        this@BaseViewModel set Status.HIDE_LOADING
-    }
+    override fun <T> unwrap(result: RequestResult<T>, errorBlock: ((ResourceString) -> Unit)?, successBlock: (T) -> Unit) =
+        caller.unwrap(result, errorBlock, successBlock)
 
-    infix fun set(status: Status) = scope.launch(scopeProvider.main) {
-        statusLiveData.value = status
-    }
+    override fun set(status: Status) = caller.set(status)
 
-    infix fun setError(error: ResourceString) = scope.launch(scopeProvider.main) {
-        _errorLiveData.value = Event(error)
-    }
+    override fun setError(error: ResourceString) = caller.setError(error)
 
     enum class Status {
         SHOW_LOADING,
