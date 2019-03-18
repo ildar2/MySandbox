@@ -27,7 +27,7 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_multi_call.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
-import kz.ildar.sandbox.ui.BaseViewModel
+import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.EventObserver
 import org.koin.android.viewmodel.ext.android.getViewModel
 import timber.log.Timber
@@ -41,10 +41,10 @@ class MultiCallFragment : Fragment() {
         viewModel = getViewModel()
         viewModel.statusLiveData.observe(this, Observer { status ->
             when (status) {
-                BaseViewModel.Status.SHOW_LOADING -> {
+                Status.SHOW_LOADING -> {
                     progressBar.visibility = View.VISIBLE
                 }
-                BaseViewModel.Status.HIDE_LOADING -> {
+                Status.HIDE_LOADING -> {
                     progressBar.visibility = View.GONE
                 }
             }

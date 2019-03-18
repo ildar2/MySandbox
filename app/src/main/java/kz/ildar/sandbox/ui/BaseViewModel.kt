@@ -30,9 +30,12 @@ abstract class BaseViewModel(
     private val contextProvider: CoroutineContextProvider,
     private val coroutineJob: Job = Job(),
     protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.io),
-    val statusLiveData: MutableLiveData<Status> = MutableLiveData(),
+    private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
     private val _errorLiveData: MutableLiveData<Event<ResourceString>> = MutableLiveData()
-) : ViewModel(), KoinComponent, UiCaller by UiCallerImpl(scope, contextProvider, statusLiveData, _errorLiveData) {
+) : ViewModel(), KoinComponent, UiCaller by UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData) {
+
+    val statusLiveData: LiveData<Status>
+        get() = _statusLiveData
 
     val errorLiveData: LiveData<Event<ResourceString>>
         get() = _errorLiveData
@@ -40,12 +43,5 @@ abstract class BaseViewModel(
     override fun onCleared() {
         super.onCleared()
         coroutineJob.cancel()
-    }
-
-    enum class Status {
-        SHOW_LOADING,
-        HIDE_LOADING,
-        ERROR,
-        SUCCESS
     }
 }
