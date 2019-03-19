@@ -31,7 +31,7 @@ abstract class BaseViewModel(
     private val coroutineJob: Job = Job(),
     protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.io),
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
-    private val _errorLiveData: MutableLiveData<Event<ResourceString>> = MutableLiveData()
+    protected val _errorLiveData: MutableLiveData<Event<ResourceString>> = MutableLiveData()
 ) : ViewModel(), KoinComponent, UiCaller by UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData) {
 
     val statusLiveData: LiveData<Status>

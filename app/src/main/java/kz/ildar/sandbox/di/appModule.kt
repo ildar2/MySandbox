@@ -56,7 +56,7 @@ val appModule = module {
     viewModel { WebsocketViewModel(get(), get(), get()) }
     viewModel { MotionViewModel() }
     viewModel { MultiCallViewModel(get(), get()) }
-    viewModel { ColorViewModel(get()) }
+    viewModel { ColorViewModel(get(), get()) }
     viewModel { ColorListViewModel(get()) }
 }
 
