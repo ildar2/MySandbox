@@ -3,46 +3,55 @@ package kz.ildar.sandbox.ui.main.color
 import android.graphics.Color
 import android.os.Parcelable
 import androidx.annotation.ColorInt
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.android.parcel.Parcelize
+import kz.ildar.sandbox.data.ColorRepository
 import kz.ildar.sandbox.data.model.ColorModel
 import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 
-class ColorViewModel(contextProvider: CoroutineContextProvider) : BaseViewModel(contextProvider) {
-    val colorLiveData = MutableLiveData(ColorMutable(255, 12, 36, 128))
-    private var currentSeeker = 3
+class ColorViewModel(
+    private val colorRepository: ColorRepository,
+    contextProvider: CoroutineContextProvider
+) : BaseViewModel(contextProvider) {
+
+    private val _colorLiveData = MutableLiveData(ColorMutable(255, 12, 36, 128))
+    val colorLiveData = MediatorLiveData<ColorMutable>()
+
+    init {
+        colorLiveData.addSource(_colorLiveData) {
+            if (it.id != -1) {
+                colorRepository.updateColor(it.toColorModel())
+            }
+            colorLiveData.value = it
+        }
+    }
+
+    var currentSeeker = 3
 
     fun setAlpha(progress: Int) {
-        val color = colorLiveData.value
-        color!!.alpha = progress
-        colorLiveData.value = color
+        _colorLiveData.value = _colorLiveData.value!!.apply { alpha = progress }
         currentSeeker = 0
     }
 
     fun setRed(progress: Int) {
-        val color = colorLiveData.value
-        color!!.red = progress
-        colorLiveData.value = color
+        _colorLiveData.value = _colorLiveData.value!!.apply { red = progress }
         currentSeeker = 1
     }
 
     fun setGreen(progress: Int) {
-        val color = colorLiveData.value
-        color!!.green = progress
-        colorLiveData.value = color
+        _colorLiveData.value = _colorLiveData.value!!.apply { green = progress }
         currentSeeker = 2
     }
 
     fun setBlue(progress: Int) {
-        val color = colorLiveData.value
-        color!!.blue = progress
-        colorLiveData.value = color
+        _colorLiveData.value = _colorLiveData.value!!.apply { blue = progress }
         currentSeeker = 3
     }
 
     fun minusClick() {
-        val color = colorLiveData.value!!
+        val color = _colorLiveData.value!!
         when (currentSeeker) {
             0 -> {
                 val value = color.alpha
@@ -61,11 +70,11 @@ class ColorViewModel(contextProvider: CoroutineContextProvider) : BaseViewModel(
                 if (value > 0) color.blue = value - 1
             }
         }
-        colorLiveData.value = color
+        _colorLiveData.value = color
     }
 
     fun plusClick() {
-        val color = colorLiveData.value!!
+        val color = _colorLiveData.value!!
         when (currentSeeker) {
             0 -> {
                 val value = color.alpha
@@ -84,7 +93,11 @@ class ColorViewModel(contextProvider: CoroutineContextProvider) : BaseViewModel(
                 if (value < 255) color.blue = value + 1
             }
         }
-        colorLiveData.value = color
+        _colorLiveData.value = color
+    }
+
+    fun initColor(colorMutable: ColorMutable) {
+        _colorLiveData.value = colorMutable
     }
 }
 
@@ -102,6 +115,17 @@ class ColorMutable(
 
     @ColorInt
     fun getColor() = Color.argb(alpha, red, green, blue)
+
+    fun toColorModel(): ColorModel {
+        return ColorModel(
+            alpha,
+            red,
+            green,
+            blue,
+            id,
+            name
+        )
+    }
 
     companion object {
         fun from(item: ColorModel): ColorMutable {

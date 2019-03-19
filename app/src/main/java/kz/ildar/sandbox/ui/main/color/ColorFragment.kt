@@ -16,20 +16,18 @@ import kz.ildar.sandbox.R
 import org.koin.android.viewmodel.ext.android.getViewModel
 
 class ColorFragment : Fragment() {
+    companion object {
+        const val EXTRA_COLOR = "extra.color"
+    }
 
     private lateinit var viewModel: ColorViewModel
-    private var title = "Color picker"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = getViewModel()
-        if (savedInstanceState == null) {
-            arguments?.getParcelable<ColorMutable>("colorModel")?.run {
-                viewModel.setAlpha(alpha)
-                viewModel.setRed(red)
-                viewModel.setGreen(green)
-                viewModel.setBlue(blue)
-                title = name
+        arguments?.getParcelable<ColorMutable>(EXTRA_COLOR)?.let {
+            if (savedInstanceState == null) {
+                viewModel.initColor(it)
             }
         }
         viewModel.colorLiveData.observe(this, Observer {
@@ -38,6 +36,8 @@ class ColorFragment : Fragment() {
     }
 
     private fun updateColor(colorModel: ColorMutable) {
+        if (!colorModel.name.isBlank())
+            toolbar.title = colorModel.name
         colorView.setBackgroundColor(colorModel.getColor())
         hexView.text = colorModel.getHexString()
 
@@ -59,7 +59,7 @@ class ColorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar?.title = title
+        toolbar?.title = "Color picker"
 
         initSeekers()
         initPlusMinus()
