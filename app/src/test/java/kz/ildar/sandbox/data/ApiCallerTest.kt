@@ -13,6 +13,7 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import retrofit2.HttpException
 import retrofit2.Response
 import java.net.ConnectException
 
@@ -27,7 +28,16 @@ class ApiCallerTest {
         val result = apiCaller.coroutineApiCall(deferred1) as RequestResult.Success
 
         assertThat(result.result, `is`("result1"))
-        Unit
+    }
+
+    @Test
+    fun `test successful raw api call`() = runBlocking {
+        val deferred1 = mock<Deferred<String>>()
+        Mockito.`when`(deferred1.await()).thenReturn("result1")
+
+        val result = apiCaller.coroutineApiCallRaw(deferred1) as RequestResult.Success
+
+        assertThat(result.result, `is`("result1"))
     }
 
     @Test
@@ -39,7 +49,17 @@ class ApiCallerTest {
         val error = result.error as IdResourceString
 
         assertThat(error, `is`(IdResourceString(R.string.request_http_error_500)))
-        Unit
+    }
+
+    @Test
+    fun `test raw 500 response`() = runBlocking {
+        val deferred1 = mock<Deferred<String>>()
+        Mockito.`when`(deferred1.await()).doAnswer { throw HttpException(Response.error<String>(500, ResponseBody.create(null, "internal error"))) }
+
+        val result = apiCaller.coroutineApiCallRaw(deferred1) as RequestResult.Error
+        val error = result.error as IdResourceString
+
+        assertThat(error, `is`(IdResourceString(R.string.request_http_error_500)))
     }
 
     @Test
@@ -51,7 +71,6 @@ class ApiCallerTest {
         val error = result.error as IdResourceString
 
         assertThat(error, `is`(IdResourceString(R.string.request_http_error_404)))
-        Unit
     }
 
     @Test
@@ -63,7 +82,6 @@ class ApiCallerTest {
         val error = result.error as TextResourceString
 
         assertThat(error, `is`(TextResourceString("406 test message")))
-        Unit
     }
 
     @Test

@@ -45,5 +45,5 @@ class FormatResourceString(private val id: Int, vararg val args: Any) : Resource
     override fun format(context: Context): String = context.getString(id, *args)
     override fun equals(other: Any?) = other is FormatResourceString && id == other.id && args.contentEquals(other.args)
     override fun hashCode() = id * 37 xor args.contentHashCode()
-    override fun toString() = "FormatResourceString: $id $args"
+    override fun toString() = "FormatResourceString: $id ${args.contentToString()}"
 }
