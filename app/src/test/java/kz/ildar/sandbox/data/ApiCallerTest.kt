@@ -106,4 +106,15 @@ class ApiCallerTest {
 
         assertThat(error, `is`(IdResourceString(R.string.request_connection_error)))
     }
+
+    @Test
+    fun `test unexpected exception`() = runBlocking {
+        val deferred1 = mock<Deferred<Response<String>>>()
+        `when`(deferred1.await()).doAnswer { throw RuntimeException("test error") }
+
+        val result = apiCaller.coroutineApiCall(deferred1) as RequestResult.Error
+        val error = result.error as FormatResourceString
+
+        assertThat(error, `is`(FormatResourceString(R.string.request_error, "RuntimeException", "test error")))
+    }
 }

@@ -174,7 +174,7 @@ class ApiCaller : ApiCallerInterface {
             }
         }
         else -> {
-            RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.name, e.localizedMessage))
+            RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.simpleName, e.localizedMessage))
         }
     }
 }
