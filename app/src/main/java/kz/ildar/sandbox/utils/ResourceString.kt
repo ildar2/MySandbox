@@ -25,20 +25,24 @@ import android.content.Context
  */
 sealed class ResourceString {
     abstract fun format(context: Context): String
-    abstract fun equals(string: ResourceString): Boolean
+    abstract override fun equals(other: Any?): Boolean
+    abstract override fun hashCode(): Int
 }
 
 class IdResourceString(private val id: Int) : ResourceString() {
     override fun format(context: Context): String = context.getString(id)
-    override fun equals(string: ResourceString) = string is IdResourceString && id == string.id
+    override fun equals(other: Any?) = other is IdResourceString && id == other.id
+    override fun hashCode() = id
 }
 
 class TextResourceString(private val text: String?) : ResourceString() {
     override fun format(context: Context): String = text ?: ""
-    override fun equals(string: ResourceString) = string is TextResourceString && text == string.text
+    override fun equals(other: Any?) = other is TextResourceString && text == other.text
+    override fun hashCode() = text.hashCode()
 }
 
 class FormatResourceString(private val id: Int, vararg val args: Any) : ResourceString() {
     override fun format(context: Context): String = context.getString(id, *args)
-    override fun equals(string: ResourceString) = string is FormatResourceString && id == string.id && args.contentEquals(string.args)
+    override fun equals(other: Any?) = other is FormatResourceString && id == other.id && args.contentEquals(other.args)
+    override fun hashCode() = id * 37 xor args.contentHashCode()
 }
