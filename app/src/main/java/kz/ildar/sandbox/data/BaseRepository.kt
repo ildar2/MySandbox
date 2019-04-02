@@ -165,9 +165,10 @@ class ApiCaller : ApiCallerInterface {
                 }
                 else -> {
                     e.response().errorBody()?.let {
-                        return RequestResult.Error(ServerError.wrapPrint(it.string()), e.code())
+                        return RequestResult.Error(ServerError.wrapPrint(it.string(), e.code()), e.code())
                     }
-                    RequestResult.Error(FormatResourceString(R.string.request_http_error_format, e.code(), e.message() ?: ""), e.code())
+                    RequestResult.Error(FormatResourceString(R.string.request_http_error_format, e.code(), e.message()
+                        ?: ""), e.code())
                 }
             }
         }
@@ -203,13 +204,13 @@ data class ServerError(
             return Gson().fromJson(response, ServerError::class.java)
         }
 
-        fun print(response: String): String {
+        fun print(response: String, code: Int): String {
             val error = from(response)
-            return "${error.status} ${error.print()}"
+            return "$code ${error.print()}"
         }
 
-        fun wrapPrint(response: String): ResourceString {
-            return TextResourceString(print(response))
+        fun wrapPrint(response: String, code: Int): ResourceString {
+            return TextResourceString(print(response, code))
         }
     }
 }
