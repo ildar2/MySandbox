@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.utils.FormatResourceString
 import kz.ildar.sandbox.utils.IdResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import okhttp3.ResponseBody
@@ -82,6 +83,17 @@ class ApiCallerTest {
         val error = result.error as TextResourceString
 
         assertThat(error, `is`(TextResourceString("406 test message")))
+    }
+
+    @Test
+    fun `test response with no errorBody`() = runBlocking {
+        val deferred1 = mock<Deferred<Response<String>>>()
+        Mockito.`when`(deferred1.await()).thenReturn(Response.error(406, ResponseBody.create(null, "")))
+
+        val result = apiCaller.coroutineApiCall(deferred1) as RequestResult.Error
+        val error = result.error as FormatResourceString
+
+        assertThat(error, `is`(FormatResourceString(R.string.request_http_error_format, 406)))
     }
 
     @Test

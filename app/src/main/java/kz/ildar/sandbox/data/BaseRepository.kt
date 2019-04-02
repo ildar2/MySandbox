@@ -164,11 +164,12 @@ class ApiCaller : ApiCallerInterface {
                     RequestResult.Error(IdResourceString(R.string.request_http_error_500), e.code())
                 }
                 else -> {
-                    e.response().errorBody()?.let {
-                        return RequestResult.Error(ServerError.wrapPrint(it.string(), e.code()), e.code())
+                    val errorBody = e.response().errorBody()?.string()
+                    if (errorBody.isNullOrBlank()) {
+                        RequestResult.Error(FormatResourceString(R.string.request_http_error_format, e.code()))
+                    } else {
+                        RequestResult.Error(ServerError.wrapPrint(errorBody, e.code()), e.code())
                     }
-                    RequestResult.Error(FormatResourceString(R.string.request_http_error_format, e.code(), e.message()
-                        ?: ""), e.code())
                 }
             }
         }
