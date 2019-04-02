@@ -11,5 +11,6 @@
     <string name="request_http_error">Ошибка запроса: %d</string>
     <string name="request_http_error_format">Ошибка запроса: %d %s</string>
     <string name="request_http_error_404">Нет такой страницы</string>
+    <string name="request_http_error_500">Внутренняя ошибка сервера</string>
     <string name="request_error">Ошибка: %s \n %s</string>
 </resources>

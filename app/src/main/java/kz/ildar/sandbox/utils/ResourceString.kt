@@ -25,16 +25,20 @@ import android.content.Context
  */
 sealed class ResourceString {
     abstract fun format(context: Context): String
+    abstract fun equals(string: ResourceString): Boolean
 }
 
 class IdResourceString(private val id: Int) : ResourceString() {
     override fun format(context: Context): String = context.getString(id)
+    override fun equals(string: ResourceString) = string is IdResourceString && id == string.id
 }
 
 class TextResourceString(private val text: String?) : ResourceString() {
     override fun format(context: Context): String = text ?: ""
+    override fun equals(string: ResourceString) = string is TextResourceString && text == string.text
 }
 
 class FormatResourceString(private val id: Int, vararg val args: Any) : ResourceString() {
     override fun format(context: Context): String = context.getString(id, *args)
+    override fun equals(string: ResourceString) = string is FormatResourceString && id == string.id && args.contentEquals(string.args)
 }

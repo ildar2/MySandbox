@@ -28,10 +28,13 @@ import retrofit2.HttpException
 import retrofit2.Response
 import timber.log.Timber
 import java.net.ConnectException
+import java.net.HttpURLConnection.HTTP_INTERNAL_ERROR
+import java.net.HttpURLConnection.HTTP_NOT_FOUND
 import java.net.SocketTimeoutException
 
 interface CoroutineCaller {
     suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T>
+    suspend fun <T> coroutineApiCallRaw(deferred: Deferred<T>): RequestResult<T>
 }
 
 interface MultiCoroutineCaller {
@@ -111,10 +114,9 @@ class ApiCaller : ApiCallerInterface {
     ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2), coroutineApiCall(request3))
 
     /**
-     * Обработчик запросов на `kotlin coroutines`
+     * Обработчик запросов, обернутых в [Response] на `kotlin coroutines`
      * ждет выполнения запроса [deferred]
-     * обрабатывает ошибки сервера
-     * обрабатывает ошибки соединения
+     * обрабатывает ошибки сервера и соединения
      * возвращает [RequestResult.Success] или [RequestResult.Error]
      */
     override suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
@@ -124,23 +126,23 @@ class ApiCaller : ApiCallerInterface {
         handleException(e)
     }
 
+    /**
+     * Обработчик запросов на `kotlin coroutines`
+     * ждет выполнения запроса [deferred]
+     * обрабатывает ошибки сервера и соединения
+     * возвращает [RequestResult.Success] или [RequestResult.Error]
+     */
+    override suspend fun <T> coroutineApiCallRaw(deferred: Deferred<T>): RequestResult<T> = try {
+        RequestResult.Success(deferred.await())
+    } catch (e: Exception) {
+        Timber.w(e);
+        handleException(e)
+    }
+
     private fun <T> handleResult(result: Response<T>): RequestResult<T> = if (result.isSuccessful) {
         RequestResult.Success(result.body())
     } else {
-        result.errorBody()?.string().let { errorString ->
-            if (!errorString.isNullOrBlank())
-                return handleServerError(result.code(), ServerError.print(errorString))
-        }
-        handleServerError(result.code(), result.message())
-    }
-
-    private fun handleServerError(code: Int, message: String?): RequestResult.Error = when (code) {
-        404 -> {
-            RequestResult.Error(IdResourceString(R.string.request_http_error_404), code)
-        }
-        else -> {
-            RequestResult.Error(FormatResourceString(R.string.request_http_error_format, code, message ?: ""), code)
-        }
+        throw HttpException(result)
     }
 
     private fun <T> handleException(e: Exception): RequestResult<T> = when (e) {
@@ -154,7 +156,20 @@ class ApiCaller : ApiCallerInterface {
             RequestResult.Error(IdResourceString(R.string.request_timeout))
         }
         is HttpException -> {
-            handleServerError(e.code(), e.message())
+            when (e.code()) {
+                HTTP_NOT_FOUND -> {
+                    RequestResult.Error(IdResourceString(R.string.request_http_error_404), e.code())
+                }
+                HTTP_INTERNAL_ERROR -> {
+                    RequestResult.Error(IdResourceString(R.string.request_http_error_500), e.code())
+                }
+                else -> {
+                    e.response().errorBody()?.let {
+                        return RequestResult.Error(ServerError.wrapPrint(it.string()), e.code())
+                    }
+                    RequestResult.Error(FormatResourceString(R.string.request_http_error_format, e.code(), e.message() ?: ""), e.code())
+                }
+            }
         }
         else -> {
             RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.name, e.localizedMessage))
@@ -164,10 +179,9 @@ class ApiCaller : ApiCallerInterface {
 
 /**
  * Презентация ответов сервера для `Presentation layer`
- * должно возвращаться репозиториями, наследующими [ApiCaller]
+ * должно возвращаться репозиториями, использующими [ApiCaller]
  */
 sealed class RequestResult<out T : Any?> {
-
     data class Success<out T : Any?>(val result: T? = null) : RequestResult<T>()
     data class Error(val error: ResourceString, val code: Int = 0) : RequestResult<Nothing>()
 }
@@ -192,6 +206,10 @@ data class ServerError(
         fun print(response: String): String {
             val error = from(response)
             return "${error.status} ${error.print()}"
+        }
+
+        fun wrapPrint(response: String): ResourceString {
+            return TextResourceString(print(response))
         }
     }
 }
