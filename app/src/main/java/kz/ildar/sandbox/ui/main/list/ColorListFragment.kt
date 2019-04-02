@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_color_list.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.ui.main.color.ColorFragment
 import org.koin.android.viewmodel.ext.android.getViewModel
 
 class ColorListFragment : Fragment() {
@@ -19,7 +20,7 @@ class ColorListFragment : Fragment() {
     private lateinit var viewModel: ColorListViewModel
     private val adapter = ColorListAdapter {
         val args = Bundle().apply {
-            putParcelable("colorModel", it)
+            putParcelable(ColorFragment.EXTRA_COLOR, it)
         }
         Navigation.findNavController(recyclerView).navigate(R.id.open_colorFragment, args)
     }

@@ -16,66 +16,23 @@
  */
 package kz.ildar.sandbox.ui.main.hello
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import kz.ildar.sandbox.data.HelloRepository
-import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineContextProvider
 import kz.ildar.sandbox.ui.BaseViewModel
-import kz.ildar.sandbox.utils.Event
-import kz.ildar.sandbox.utils.ResourceString
-import kz.ildar.sandbox.utils.TextResourceString
 import timber.log.Timber
 
 class HelloViewModel(
     private val repo: HelloRepository,
     contextProvider: CoroutineContextProvider
-) : BaseViewModel(contextProvider) {
-
-    private val _greetingLiveData = MutableLiveData<Event<ResourceString>>()
-    internal val greetingLiveData: LiveData<Event<ResourceString>>
-        get() = _greetingLiveData
+) : BaseViewModel(contextProvider),
+    HelloInteractor by HelloEchoImpl(repo) {
 
     fun loadGreetings(name: String) {
         Timber.w("loadGreetings called")
         if (name.isBlank()) {
-            loadEchoGreeting()
+            makeRequest({ loadGreeting(_errorLiveData) })
         } else {
-            loadEchoPersonalGreeting(name)
-        }
-    }
-
-    private fun loadEchoGreeting() {
-        makeRequest({ repo.echoGreetings() }) {
-            unwrap(it) {
-                _greetingLiveData.value = Event(TextResourceString(it.args.content))
-            }
-        }
-    }
-
-    private fun loadEchoPersonalGreeting(name: String) {
-        makeRequest({ repo.echoPersonalGreeting(name) }) {
-            unwrap(it) {
-                _greetingLiveData.value = Event(TextResourceString(it.args.content))
-            }
-        }
-    }
-
-    private fun loadGreeting() {
-        makeRequest({ repo.greetings() }) {
-            when (it) {
-                is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
-                is RequestResult.Error -> setError(it.error)
-            }
-        }
-    }
-
-    private fun loadPersonalGreeting(name: String) {
-        makeRequest({ repo.personalGreeting(name) }) {
-            when (it) {
-                is RequestResult.Success -> _greetingLiveData.value = Event(TextResourceString(it.result?.content))
-                is RequestResult.Error -> setError(it.error)
-            }
+            makeRequest({ loadPersonalGreeting(name, _errorLiveData) })
         }
     }
 }
