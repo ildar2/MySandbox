@@ -8,12 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.android.parcel.Parcelize
 import kz.ildar.sandbox.data.ColorRepository
 import kz.ildar.sandbox.data.model.ColorModel
-import kz.ildar.sandbox.di.CoroutineContextProvider
+import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 
 class ColorViewModel(
     private val colorRepository: ColorRepository,
-    contextProvider: CoroutineContextProvider
+    contextProvider: CoroutineProvider
 ) : BaseViewModel(contextProvider) {
 
     private val _colorLiveData = MutableLiveData(ColorMutable(255, 12, 36, 128))

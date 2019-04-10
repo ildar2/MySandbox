@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * https://android.jlelse.eu/mastering-coroutines-android-unit-tests-8bc0d082bf15
  */
-class TestContextProvider : CoroutineContextProvider() {
-    override val main: CoroutineContext = Dispatchers.Unconfined
-    override val io: CoroutineContext = Dispatchers.Unconfined
+class TestContextProvider : CoroutineProvider() {
+    override val Main: CoroutineContext = Dispatchers.Unconfined
+    override val IO: CoroutineContext = Dispatchers.Unconfined
 }

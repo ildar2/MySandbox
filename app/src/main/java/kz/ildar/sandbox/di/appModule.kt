@@ -48,7 +48,7 @@ val appModule = module {
     single { FlatMapRepository(get()) }
     single { ColorRepository() }
 
-    single { CoroutineContextProvider() }
+    single { CoroutineProvider() }
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }

@@ -22,11 +22,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.model.Child
-import kz.ildar.sandbox.utils.Event
+import kz.ildar.sandbox.utils.EventWrapper
 
 class ChildViewModel(private val repo: HelloRepository) : ViewModel() {
-    private val _openFragmentEvents = MutableLiveData<Event<View>>()
-    val openFragmentEvents: LiveData<Event<View>>
+    private val _openFragmentEvents = MutableLiveData<EventWrapper<View>>()
+    val openFragmentEvents: LiveData<EventWrapper<View>>
         get() = _openFragmentEvents
 
     val childLiveData = MutableLiveData<String>()
@@ -40,6 +40,6 @@ class ChildViewModel(private val repo: HelloRepository) : ViewModel() {
     }
 
     fun userClicked(view: View) {
-        _openFragmentEvents.value = Event(view)
+        _openFragmentEvents.value = EventWrapper(view)
     }
 }

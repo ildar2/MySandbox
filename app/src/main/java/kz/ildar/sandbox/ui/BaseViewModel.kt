@@ -21,23 +21,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kz.ildar.sandbox.di.CoroutineContextProvider
-import kz.ildar.sandbox.utils.Event
+import kz.ildar.sandbox.di.CoroutineProvider
+import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 import org.koin.standalone.KoinComponent
 
 abstract class BaseViewModel(
-    private val contextProvider: CoroutineContextProvider,
+    private val contextProvider: CoroutineProvider,
     private val coroutineJob: Job = Job(),
-    protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.io),
+    protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.IO),
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
-    protected val _errorLiveData: MutableLiveData<Event<ResourceString>> = MutableLiveData()
+    protected val _errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData()
 ) : ViewModel(), KoinComponent, UiCaller by UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData) {
 
     val statusLiveData: LiveData<Status>
         get() = _statusLiveData
 
-    val errorLiveData: LiveData<Event<ResourceString>>
+    val errorLiveData: LiveData<EventWrapper<ResourceString>>
         get() = _errorLiveData
 
     override fun onCleared() {

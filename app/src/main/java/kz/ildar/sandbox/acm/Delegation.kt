@@ -2,7 +2,7 @@ package kz.ildar.sandbox.acm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kz.ildar.sandbox.di.CoroutineContextProvider
+import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 
 class Problem {
@@ -40,7 +40,7 @@ class Solution1 {
         }
     }
 
-    class MyViewModel : BaseViewModel(CoroutineContextProvider()), Confirmation {
+    class MyViewModel : BaseViewModel(CoroutineProvider()), Confirmation {
 
         private val confirmation by lazy { ConfirmationImpl() }
         override val confLiveData: LiveData<String> = confirmation.confLiveData

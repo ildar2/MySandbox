@@ -17,13 +17,13 @@
 package kz.ildar.sandbox.ui.main.hello
 
 import kz.ildar.sandbox.data.HelloRepository
-import kz.ildar.sandbox.di.CoroutineContextProvider
+import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 import timber.log.Timber
 
 class HelloViewModel(
     private val repo: HelloRepository,
-    contextProvider: CoroutineContextProvider
+    contextProvider: CoroutineProvider
 ) : BaseViewModel(contextProvider),
     HelloInteractor by HelloEchoImpl(repo) {
 

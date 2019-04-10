@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
  * Used in [BaseViewModel] to make coroutine scope
  * should be mocked in tests (see [WebsocketViewModelTest])
  */
-open class CoroutineContextProvider {
-    open val main: CoroutineContext by lazy { Dispatchers.Main }
-    open val io: CoroutineContext by lazy { Dispatchers.IO }
+open class CoroutineProvider {
+    open val Main: CoroutineContext by lazy { Dispatchers.Main }
+    open val IO: CoroutineContext by lazy { Dispatchers.IO }
 }

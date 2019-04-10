@@ -22,8 +22,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kz.ildar.sandbox.data.RequestResult
-import kz.ildar.sandbox.di.CoroutineContextProvider
-import kz.ildar.sandbox.utils.Event
+import kz.ildar.sandbox.di.CoroutineProvider
+import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 
 interface UiCaller {
@@ -45,9 +45,9 @@ interface UiCaller {
 
 class UiCallerImpl(
     private val scope: CoroutineScope,
-    private val scopeProvider: CoroutineContextProvider,
+    private val scopeProvider: CoroutineProvider,
     private val statusLiveData: MutableLiveData<Status>,
-    private val errorLiveData: MutableLiveData<Event<ResourceString>>
+    private val errorLiveData: MutableLiveData<EventWrapper<ResourceString>>
 ) : UiCaller {
     /**
      * Presentation-layer-обработчик для запросов через `kotlin coroutines`:
@@ -60,9 +60,9 @@ class UiCallerImpl(
     override fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
         resultBlock: (suspend (T) -> Unit)?
-    ) = scope.launch(scopeProvider.main) {
+    ) = scope.launch(scopeProvider.Main) {
         set(Status.SHOW_LOADING)
-        val result = withContext(scopeProvider.io, call)
+        val result = withContext(scopeProvider.IO, call)
         resultBlock?.invoke(result)
         set(Status.HIDE_LOADING)
     }
@@ -72,7 +72,7 @@ class UiCallerImpl(
     }
 
     override fun setError(error: ResourceString) {
-        errorLiveData.postValue(Event(error))
+        errorLiveData.postValue(EventWrapper(error))
     }
 
     /**

@@ -20,27 +20,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.RequestResult
-import kz.ildar.sandbox.di.CoroutineContextProvider
+import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.ui.BaseViewModel
-import kz.ildar.sandbox.utils.Event
+import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 
 class MultiCallViewModel(
     private val multiRepo: MultiCallRepository,
-    contextProvider: CoroutineContextProvider
+    contextProvider: CoroutineProvider
 ) : BaseViewModel(contextProvider) {
 
-    private val _logLiveData = MutableLiveData<Event<ResourceString>>()
-    internal val logLiveData: LiveData<Event<ResourceString>>
+    private val _logLiveData = MutableLiveData<EventWrapper<ResourceString>>()
+    internal val logLiveData: LiveData<EventWrapper<ResourceString>>
         get() = _logLiveData
 
     fun multiCall() {
         makeRequest({ multiRepo.callAllMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
+                    is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))
+                    is RequestResult.Error -> EventWrapper(it.error)
                 }
             }
         }
@@ -50,8 +50,8 @@ class MultiCallViewModel(
         makeRequest({ multiRepo.callTwoMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
+                    is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))
+                    is RequestResult.Error -> EventWrapper(it.error)
                 }
             }
         }
@@ -61,8 +61,8 @@ class MultiCallViewModel(
         makeRequest({ multiRepo.callThreeMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
+                    is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))
+                    is RequestResult.Error -> EventWrapper(it.error)
                 }
             }
         }
@@ -72,8 +72,8 @@ class MultiCallViewModel(
         makeRequest({ multiRepo.callArrayOfMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
-                    is RequestResult.Success -> Event(TextResourceString(it.result?.getContents()))
-                    is RequestResult.Error -> Event(it.error)
+                    is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))
+                    is RequestResult.Error -> EventWrapper(it.error)
                 }
             }
         }

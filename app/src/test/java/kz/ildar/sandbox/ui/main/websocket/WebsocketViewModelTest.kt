@@ -23,7 +23,7 @@ import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.runBlocking
-import kz.ildar.sandbox.di.CoroutineContextProvider
+import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.di.TestContextProvider
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -50,7 +50,7 @@ class WebsocketViewModelTest {
         StandAloneContext.startKoin(//https://proandroiddev.com/testing-with-koin-ade8a46eb4d
                 listOf(
                         module {
-                            single<CoroutineContextProvider> {
+                            single<CoroutineProvider> {
                                 TestContextProvider()
                             }
                         }
