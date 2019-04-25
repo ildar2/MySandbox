@@ -4,7 +4,7 @@ import kz.ildar.sandbox.data.model.ColorModel
 import timber.log.Timber
 
 class ColorRepository {
-    val colorList = ArrayList<ColorModel>().apply {
+    private val colorList = ArrayList<ColorModel>().apply {
         add(ColorModel(122, 34, 68, 155, 0, "Bluish"))
         add(ColorModel(176, 220, 50, 23, 1, "Reddish"))
         add(ColorModel(122, 2, 128, 55, 2, "Greenish"))
@@ -17,7 +17,7 @@ class ColorRepository {
     fun getColorList(): List<ColorModel> = colorList
 
     fun updateColor(color: ColorModel) {
-        Timber.w("updateColor called");
+        Timber.w("updateColor called")
         val item = colorList.find { it.id == color.id }
         val index = colorList.indexOf(item)
         colorList[index] = color

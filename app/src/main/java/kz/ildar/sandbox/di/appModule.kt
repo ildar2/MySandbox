@@ -45,7 +45,6 @@ val appModule = module {
 
     single<HelloRepository> { HelloRepositoryImpl(get()) }
     single { MultiCallRepository(get()) }
-    single { FlatMapRepository(get()) }
     single { ColorRepository() }
 
     single { CoroutineProvider() }
@@ -59,7 +58,6 @@ val appModule = module {
     viewModel { ColorViewModel(get(), get()) }
     viewModel { ColorListViewModel(get()) }
 }
-
 const val TIMEOUT = 3L
 
 private fun createOkHttp(): OkHttpClient {

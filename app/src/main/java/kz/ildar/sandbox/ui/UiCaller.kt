@@ -49,6 +49,7 @@ class UiCallerImpl(
     private val statusLiveData: MutableLiveData<Status>,
     private val errorLiveData: MutableLiveData<EventWrapper<ResourceString>>
 ) : UiCaller {
+
     /**
      * Presentation-layer-обработчик для запросов через `kotlin coroutines`:
      * запускает [Job] в [scope],

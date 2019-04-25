@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
@@ -32,11 +33,27 @@ abstract class BaseViewModel(
     protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.IO),
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
     protected val _errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData()
-) : ViewModel(), KoinComponent, UiCaller by UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData) {
+) : ViewModel(), KoinComponent, UiCaller {
+
+    protected val uiCaller: UiCaller by lazy { UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData) }
+
+    override fun <T> makeRequest(
+        call: suspend CoroutineScope.() -> T,
+        resultBlock: (suspend (T) -> Unit)?
+    ) = uiCaller.makeRequest(call, resultBlock)
+
+    override fun <T> unwrap(
+        result: RequestResult<T>,
+        errorBlock: ((ResourceString) -> Unit)?,
+        successBlock: (T) -> Unit
+    ) = uiCaller.unwrap(result, errorBlock, successBlock)
+
+    override fun set(status: Status) = uiCaller.set(status)
+
+    override fun setError(error: ResourceString) = uiCaller.setError(error)
 
     val statusLiveData: LiveData<Status>
         get() = _statusLiveData
-
     val errorLiveData: LiveData<EventWrapper<ResourceString>>
         get() = _errorLiveData
 

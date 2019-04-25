@@ -122,7 +122,7 @@ class ApiCaller : ApiCallerInterface {
     override suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
         handleResult(deferred.await())
     } catch (e: Exception) {
-        Timber.w(e);
+        Timber.w(e)
         handleException(e)
     }
 
@@ -135,7 +135,7 @@ class ApiCaller : ApiCallerInterface {
     override suspend fun <T> coroutineApiCallRaw(deferred: Deferred<T>): RequestResult<T> = try {
         RequestResult.Success(deferred.await())
     } catch (e: Exception) {
-        Timber.w(e);
+        Timber.w(e)
         handleException(e)
     }
 

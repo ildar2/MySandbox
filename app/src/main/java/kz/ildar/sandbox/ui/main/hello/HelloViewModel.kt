@@ -25,14 +25,25 @@ class HelloViewModel(
     private val repo: HelloRepository,
     contextProvider: CoroutineProvider
 ) : BaseViewModel(contextProvider),
-    HelloInteractor by HelloEchoImpl(repo) {
+    HelloExtension {
+
+    private val helloDelegate: HelloExtension by lazy { HelloEchoImpl(repo, _errorLiveData) }
+    override val greetingLiveData = helloDelegate.greetingLiveData
+
+    override fun loadGreeting() {
+        makeRequest({ helloDelegate.loadGreeting() })
+    }
+
+    override fun loadPersonalGreeting(name: String) {
+        makeRequest({ helloDelegate.loadPersonalGreeting(name) })
+    }
 
     fun loadGreetings(name: String) {
         Timber.w("loadGreetings called")
         if (name.isBlank()) {
-            makeRequest({ loadGreeting(_errorLiveData) })
+            loadGreeting()
         } else {
-            makeRequest({ loadPersonalGreeting(name, _errorLiveData) })
+            loadPersonalGreeting(name)
         }
     }
 }
