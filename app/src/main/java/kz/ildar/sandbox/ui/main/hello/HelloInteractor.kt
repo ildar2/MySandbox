@@ -52,7 +52,6 @@ class HelloEchoImpl(
             } else {
                 repo.echoPersonalGreeting(name)
             }
-            repo.echoPersonalGreeting(name)
         }) {
             when (it) {
                 is RequestResult.Success -> greetingLiveData.postValue(EventWrapper(TextResourceString(it.result?.args?.content)))
