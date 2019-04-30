@@ -23,13 +23,11 @@ interface GreetingsResponse {
 /**
  * Postman echo model
  */
-data class GreetingWrapper(val args: Greeting, val url: String) : GreetingsResponse {
-    override fun getContents() = args.content
-}
+data class GreetingWrapper(private val args: Greeting, private val url: String) : GreetingsResponse by args
 
 /**
  * Local server model
  */
-data class Greeting(val id: Long, val content: String) : GreetingsResponse {
+data class Greeting(private val id: Long, private val content: String) : GreetingsResponse {
     override fun getContents() = content
 }
