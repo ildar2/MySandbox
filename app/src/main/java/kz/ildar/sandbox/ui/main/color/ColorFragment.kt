@@ -36,19 +36,20 @@ class ColorFragment : Fragment() {
     }
 
     private fun updateColor(colorModel: ColorMutable) {
-        if (!colorModel.name.isBlank())
-            toolbar.title = colorModel.name
-        colorView.setBackgroundColor(colorModel.getColor())
-        hexView.text = colorModel.getHexString()
+        with(colorModel) {
+            if (!name.isBlank()) toolbar.title = name
+            colorView.setBackgroundColor(getColor())
+            hexView.text = getHexString()
 
-        alphaSeekbar.progress = colorModel.alpha
-        alphaValue.text = colorModel.alpha.toString()
-        redSeekbar.progress = colorModel.red
-        redValue.text = colorModel.red.toString()
-        greenSeekbar.progress = colorModel.green
-        greenValue.text = colorModel.green.toString()
-        blueSeekbar.progress = colorModel.blue
-        blueValue.text = colorModel.blue.toString()
+            alphaSeekbar.progress = alpha
+            alphaValue.text = alpha.toString()
+            redSeekbar.progress = red
+            redValue.text = red.toString()
+            greenSeekbar.progress = green
+            greenValue.text = green.toString()
+            blueSeekbar.progress = blue
+            blueValue.text = blue.toString()
+        }
     }
 
     override fun onCreateView(

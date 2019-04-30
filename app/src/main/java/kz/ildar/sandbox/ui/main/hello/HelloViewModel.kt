@@ -23,8 +23,7 @@ import kz.ildar.sandbox.ui.BaseViewModel
 class HelloViewModel(
     private val repo: HelloRepository,
     contextProvider: CoroutineProvider
-) : BaseViewModel(contextProvider),
-    HelloInteractor {
+) : BaseViewModel(contextProvider), HelloInteractor {
 
     private val helloDelegate: HelloInteractor by lazy { HelloEchoImpl(repo, uiCaller) }
 

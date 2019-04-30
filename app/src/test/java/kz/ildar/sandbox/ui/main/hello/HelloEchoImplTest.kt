@@ -24,6 +24,7 @@ class HelloEchoImplTest {
     private lateinit var repo: HelloRepository
     private lateinit var uiCaller: UiCaller
 
+    @Suppress("UNCHECKED_CAST")
     @Before
     fun setUp() {
         repo = mock()
