@@ -17,11 +17,10 @@
 package kz.ildar.sandbox.data
 
 import kz.ildar.sandbox.data.api.Api
-import kz.ildar.sandbox.data.model.GreetingWrapper
 import kz.ildar.sandbox.data.model.GreetingsResponse
 
 class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCaller() {
-    suspend fun callAllMethods(): List<RequestResult<GreetingWrapper>> {
+    suspend fun callAllMethods(): List<RequestResult<GreetingsResponse>> {
         return multiCall(api.postmanEcho(), api.postmanEcho(), api.postmanEchoNamed("Hello Carol!"))
     }
 
@@ -35,6 +34,6 @@ class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCalle
             listOf(res1, res2, res3)
         }
 
-    suspend fun callArrayOfMethods(): List<RequestResult<GreetingWrapper>> =
+    suspend fun callArrayOfMethods(): List<RequestResult<GreetingsResponse>> =
         zipArray(api.postmanEcho(), api.postmanEchoNamed("Sarah")) { it }
 }

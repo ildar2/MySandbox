@@ -30,7 +30,7 @@ interface UiCaller {
     fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
         resultBlock: (suspend (T) -> Unit)? = null
-    ): Job
+    )
 
     fun <T> unwrap(
         result: RequestResult<T>,
@@ -61,11 +61,13 @@ class UiCallerImpl(
     override fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
         resultBlock: (suspend (T) -> Unit)?
-    ) = scope.launch(scopeProvider.Main) {
-        set(Status.SHOW_LOADING)
-        val result = withContext(scopeProvider.IO, call)
-        resultBlock?.invoke(result)
-        set(Status.HIDE_LOADING)
+    ) {
+        scope.launch(scopeProvider.Main) {
+            set(Status.SHOW_LOADING)
+            val result = withContext(scopeProvider.IO, call)
+            resultBlock?.invoke(result)
+            set(Status.HIDE_LOADING)
+        }
     }
 
     override fun set(status: Status) {

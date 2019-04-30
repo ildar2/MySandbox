@@ -20,12 +20,16 @@ interface GreetingsResponse {
     fun getContents(): String
 }
 
-data class GreetingWrapper(val args: Greeting, val url: String) : GreetingsResponse//for postman echo
-{
+/**
+ * Postman echo model
+ */
+data class GreetingWrapper(val args: Greeting, val url: String) : GreetingsResponse {
     override fun getContents() = args.content
 }
 
-data class Greeting(val id: Long, val content: String) : GreetingsResponse//local server
-{
+/**
+ * Local server model
+ */
+data class Greeting(val id: Long, val content: String) : GreetingsResponse {
     override fun getContents() = content
 }

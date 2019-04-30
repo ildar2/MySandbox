@@ -55,6 +55,7 @@ class BridgesCalculatorTest {
     }
 
     @Test
+    @Ignore
     fun testPossiblePillarPlacements() {
         val calculator = BridgesCalculator()
         assertThat(calculator.possiblePlacements(), `is`(setOf(
@@ -70,6 +71,7 @@ class BridgesCalculatorTest {
     }
 
     @Test
+    @Ignore
     fun testPermute() {
         val calculator = BridgesCalculator()
         assertThat(calculator.permute(), `is`(setOf()))

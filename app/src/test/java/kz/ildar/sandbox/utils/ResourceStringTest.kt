@@ -61,7 +61,7 @@ class ResourceStringTest {
         assertEquals(string2.hashCode(), string3.hashCode())
     }
 
-    val context = ApplicationProvider.getApplicationContext<Context>()
+    private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test
     fun testIdResourceStringFormat() {

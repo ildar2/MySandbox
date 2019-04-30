@@ -31,7 +31,7 @@ class HelloLocalImpl(
             }
         }) {
             when (it) {
-                is RequestResult.Success -> greetingLiveData.postValue(EventWrapper(TextResourceString(it.result?.content)))
+                is RequestResult.Success -> greetingLiveData.postValue(EventWrapper(TextResourceString(it.result?.getContents())))
                 is RequestResult.Error -> uiCaller.setError(it.error)
             }
         }
@@ -54,7 +54,7 @@ class HelloEchoImpl(
             }
         }) {
             when (it) {
-                is RequestResult.Success -> greetingLiveData.postValue(EventWrapper(TextResourceString(it.result?.args?.content)))
+                is RequestResult.Success -> greetingLiveData.postValue(EventWrapper(TextResourceString(it.result?.getContents())))
                 is RequestResult.Error -> uiCaller.setError(it.error)
             }
         }

@@ -38,7 +38,7 @@ import org.mockito.Mockito.`when`
 
 class WebsocketViewModelTest {
 
-    var viewModel: WebsocketViewModel? = null
+    private var viewModel: WebsocketViewModel? = null
     private lateinit var client: OkHttpClient
     private lateinit var request: Request
 

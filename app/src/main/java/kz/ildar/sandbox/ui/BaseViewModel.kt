@@ -28,7 +28,7 @@ import kz.ildar.sandbox.utils.ResourceString
 import org.koin.standalone.KoinComponent
 
 abstract class BaseViewModel(
-    private val contextProvider: CoroutineProvider,
+    private val contextProvider: CoroutineProvider = CoroutineProvider(),
     private val coroutineJob: Job = Job(),
     protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.IO),
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
