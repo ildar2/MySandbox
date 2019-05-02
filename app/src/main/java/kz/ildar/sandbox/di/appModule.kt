@@ -54,7 +54,7 @@ val appModule = module {
     single { ColorRepository() }
 
     single<CoroutineContext>("io") { Dispatchers.IO }
-    single<CoroutineContext>("main") { Dispatchers.Main }
+    single<CoroutineContext> { Dispatchers.Main }
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }

@@ -24,6 +24,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kz.ildar.sandbox.di.initTestKoin
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
@@ -33,6 +34,7 @@ import org.junit.Before
 import org.junit.Test
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext
+import org.koin.standalone.StandAloneContext.stopKoin
 import org.mockito.Mockito.`when`
 import kotlin.coroutines.CoroutineContext
 
@@ -47,17 +49,9 @@ class WebsocketViewModelTest {
         client = mock()
         request = mock()
 
-        StandAloneContext.startKoin(//https://proandroiddev.com/testing-with-koin-ade8a46eb4d
-                listOf(
-                        module {
-                            single<CoroutineContext>("io") { Dispatchers.Unconfined }
-                            single<CoroutineContext>("main") { Dispatchers.Unconfined }
-                        }
-                )
-        )
+        initTestKoin()
 
         viewModel = WebsocketViewModel(client, request)
-
         //to observe livedata
         //https://proandroiddev.com/how-to-unit-test-livedata-and-lifecycle-components-8a0af41c90d9
         val lifecycle = LifecycleRegistry(mock())
@@ -66,7 +60,7 @@ class WebsocketViewModelTest {
 
     @After
     fun tearDown() {
-        StandAloneContext.stopKoin()
+        stopKoin()
     }
 
     @Test
