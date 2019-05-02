@@ -17,15 +17,19 @@
 package kz.ildar.sandbox.di
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import kz.ildar.sandbox.data.*
+import kotlinx.coroutines.Dispatchers
+import kz.ildar.sandbox.data.ColorRepository
+import kz.ildar.sandbox.data.HelloRepository
+import kz.ildar.sandbox.data.HelloRepositoryImpl
+import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
 import kz.ildar.sandbox.ui.main.color.ColorViewModel
 import kz.ildar.sandbox.ui.main.hello.HelloViewModel
 import kz.ildar.sandbox.ui.main.list.ColorListViewModel
-import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.motion.MotionViewModel
+import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -35,6 +39,7 @@ import org.koin.dsl.module.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 val appModule = module {
     factory { createOkHttp() }
@@ -47,15 +52,16 @@ val appModule = module {
     single { MultiCallRepository(get()) }
     single { ColorRepository() }
 
-    single { CoroutineProvider() }
+    single<CoroutineContext>("io") { Dispatchers.IO }
+    single<CoroutineContext>("main") { Dispatchers.Main }
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
-    viewModel { HelloViewModel(get(), get()) }
-    viewModel { WebsocketViewModel(get(), get(), get()) }
+    viewModel { HelloViewModel(get()) }
+    viewModel { WebsocketViewModel(get(), get()) }
     viewModel { MotionViewModel() }
-    viewModel { MultiCallViewModel(get(), get()) }
-    viewModel { ColorViewModel(get(), get()) }
+    viewModel { MultiCallViewModel(get()) }
+    viewModel { ColorViewModel(get()) }
     viewModel { ColorListViewModel(get()) }
 }
 const val TIMEOUT = 3L

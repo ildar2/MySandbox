@@ -16,15 +16,16 @@
  */
 package kz.ildar.sandbox.di
 
-import kotlinx.coroutines.Dispatchers
 import kz.ildar.sandbox.ui.BaseViewModel
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.inject
 import kotlin.coroutines.CoroutineContext
 
 /**
  * Used in [BaseViewModel] to make coroutine scope
  * should be mocked in tests (see [WebsocketViewModelTest])
  */
-open class CoroutineProvider {
-    open val Main: CoroutineContext by lazy { Dispatchers.Main }
-    open val IO: CoroutineContext by lazy { Dispatchers.IO }
+open class CoroutineProvider : KoinComponent {
+    open val Main: CoroutineContext by inject("main")
+    open val IO: CoroutineContext by inject("io")
 }

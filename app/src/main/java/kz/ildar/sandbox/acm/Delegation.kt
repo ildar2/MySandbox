@@ -40,7 +40,7 @@ class Solution1 {
         }
     }
 
-    class MyViewModel : BaseViewModel(CoroutineProvider()), Confirmation {
+    class MyViewModel : BaseViewModel(), Confirmation {
 
         private val confirmation by lazy { ConfirmationImpl() }
         override val confLiveData: LiveData<String> = confirmation.confLiveData

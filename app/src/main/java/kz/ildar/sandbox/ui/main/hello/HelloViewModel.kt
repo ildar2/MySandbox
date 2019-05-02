@@ -17,13 +17,11 @@
 package kz.ildar.sandbox.ui.main.hello
 
 import kz.ildar.sandbox.data.HelloRepository
-import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 
 class HelloViewModel(
-    private val repo: HelloRepository,
-    contextProvider: CoroutineProvider
-) : BaseViewModel(contextProvider), HelloInteractor {
+    private val repo: HelloRepository
+) : BaseViewModel(), HelloInteractor {
 
     private val helloDelegate: HelloInteractor by lazy { HelloEchoImpl(repo, uiCaller) }
 

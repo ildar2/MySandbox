@@ -33,7 +33,7 @@ abstract class BaseViewModel(
     protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.IO),
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
     protected val _errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData()
-) : ViewModel(), KoinComponent, UiCaller {
+) : ViewModel(), UiCaller {
 
     protected val uiCaller: UiCaller by lazy { UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData) }
 

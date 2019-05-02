@@ -20,16 +20,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.RequestResult
-import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.ui.BaseViewModel
 import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 
 class MultiCallViewModel(
-    private val multiRepo: MultiCallRepository,
-    contextProvider: CoroutineProvider
-) : BaseViewModel(contextProvider) {
+    private val multiRepo: MultiCallRepository
+) : BaseViewModel() {
 
     private val _logLiveData = MutableLiveData<EventWrapper<ResourceString>>()
     internal val logLiveData: LiveData<EventWrapper<ResourceString>>
