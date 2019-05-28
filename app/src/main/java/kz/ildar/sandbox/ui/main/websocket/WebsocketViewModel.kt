@@ -17,7 +17,6 @@
 package kz.ildar.sandbox.ui.main.websocket
 
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kz.ildar.sandbox.ui.BaseViewModel
 import okhttp3.*
@@ -41,7 +40,7 @@ class WebsocketViewModel(
         webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye!")
     }
 
-    private fun output(text: String) = scope.launch(Dispatchers.Main) {
+    private fun output(text: String) = scope.launch(coroutineProvider.Main) {
         logLiveData.value = text
     }
 

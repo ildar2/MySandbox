@@ -30,6 +30,7 @@ import kz.ildar.sandbox.ui.main.hello.HelloViewModel
 import kz.ildar.sandbox.ui.main.list.ColorListViewModel
 import kz.ildar.sandbox.ui.main.motion.MotionViewModel
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
+import kz.ildar.sandbox.ui.main.rainbow.RainbowViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -57,6 +58,7 @@ val appModule = module {
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
+    viewModel { RainbowViewModel() }
     viewModel { HelloViewModel(get()) }
     viewModel { WebsocketViewModel(get(), get()) }
     viewModel { MotionViewModel() }

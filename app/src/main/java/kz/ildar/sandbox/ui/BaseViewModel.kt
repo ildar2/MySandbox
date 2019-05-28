@@ -25,12 +25,12 @@ import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 
 abstract class BaseViewModel(
-    private val contextProvider: CoroutineProvider = CoroutineProvider(),
+    protected val coroutineProvider: CoroutineProvider = CoroutineProvider(),
     private val coroutineJob: Job = Job(),
-    protected val scope: CoroutineScope = CoroutineScope(coroutineJob + contextProvider.IO),
+    protected val scope: CoroutineScope = CoroutineScope(coroutineJob + coroutineProvider.IO),
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
     private val _errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData(),
-    protected val uiCaller: UiCaller = UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData)
+    protected val uiCaller: UiCaller = UiCallerImpl(scope, coroutineProvider, _statusLiveData, _errorLiveData)
 ) : ViewModel(), UiProvider by uiCaller {
     override fun onCleared() {
         super.onCleared()

@@ -27,7 +27,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/parentView"
+            android:id="@+id/childView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Proceed to Child"
@@ -38,15 +38,26 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <TextView
-            android:id="@+id/helloView"
+            android:id="@+id/rainbowView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Proceed to Requests"
+            android:text="Proceed to Rainbow"
             android:textSize="20sp"
             android:padding="12dp"
             android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/parentView" />
+            app:layout_constraintTop_toBottomOf="@id/childView" />
+
+        <TextView
+            android:id="@+id/helloView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Hello Requests"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:background="@drawable/ripple"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rainbowView" />
 
         <TextView
             android:id="@+id/websocketView"
