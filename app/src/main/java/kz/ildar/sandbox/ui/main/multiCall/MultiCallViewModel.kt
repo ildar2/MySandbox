@@ -34,7 +34,7 @@ class MultiCallViewModel(
         get() = _logLiveData
 
     fun multiCall() {
-        makeRequest({ multiRepo.callAllMethods() }) { result ->
+        uiCaller.makeRequest({ multiRepo.callAllMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))
@@ -45,7 +45,7 @@ class MultiCallViewModel(
     }
 
     fun twoCall() {
-        makeRequest({ multiRepo.callTwoMethods() }) { result ->
+        uiCaller.makeRequest({ multiRepo.callTwoMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))
@@ -56,7 +56,7 @@ class MultiCallViewModel(
     }
 
     fun threeCall() {
-        makeRequest({ multiRepo.callThreeMethods() }) { result ->
+        uiCaller.makeRequest({ multiRepo.callThreeMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))
@@ -67,7 +67,7 @@ class MultiCallViewModel(
     }
 
     fun arrayCall() {
-        makeRequest({ multiRepo.callArrayOfMethods() }) { result ->
+        uiCaller.makeRequest({ multiRepo.callArrayOfMethods() }) { result ->
             result.forEach {
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result?.getContents()))

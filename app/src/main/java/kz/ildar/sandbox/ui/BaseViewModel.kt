@@ -16,7 +16,6 @@
  */
 package kz.ildar.sandbox.ui
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -32,13 +31,7 @@ abstract class BaseViewModel(
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
     private val _errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData(),
     protected val uiCaller: UiCaller = UiCallerImpl(scope, contextProvider, _statusLiveData, _errorLiveData)
-) : ViewModel(), UiCaller by uiCaller {
-
-    val statusLiveData: LiveData<Status>
-        get() = _statusLiveData
-    val errorLiveData: LiveData<EventWrapper<ResourceString>>
-        get() = _errorLiveData
-
+) : ViewModel(), UiProvider by uiCaller {
     override fun onCleared() {
         super.onCleared()
         coroutineJob.cancel()

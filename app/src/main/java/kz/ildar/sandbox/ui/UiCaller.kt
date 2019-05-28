@@ -16,6 +16,7 @@
  */
 package kz.ildar.sandbox.ui
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -26,7 +27,12 @@ import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 
-interface UiCaller {
+interface UiProvider {
+    val statusLiveData: LiveData<Status>
+    val errorLiveData: LiveData<EventWrapper<ResourceString>>
+}
+
+interface UiCaller : UiProvider {
     fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
         resultBlock: (suspend (T) -> Unit)? = null
@@ -46,9 +52,11 @@ interface UiCaller {
 class UiCallerImpl(
     private val scope: CoroutineScope,
     private val scopeProvider: CoroutineProvider,
-    private val statusLiveData: MutableLiveData<Status>,
-    private val errorLiveData: MutableLiveData<EventWrapper<ResourceString>>
+    _statusLiveData: MutableLiveData<Status>,
+    _errorLiveData: MutableLiveData<EventWrapper<ResourceString>>
 ) : UiCaller {
+    override val statusLiveData: MutableLiveData<Status> = _statusLiveData
+    override val errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = _errorLiveData
 
     /**
      * Presentation-layer-обработчик для запросов через `kotlin coroutines`:
