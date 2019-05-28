@@ -20,7 +20,7 @@ class HelloEchoImplTest {
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()//for livedata
 
-    private lateinit var interactor: HelloInteractor
+    private lateinit var interactor: HelloEchoImpl
     private lateinit var repo: HelloRepository
     private lateinit var uiCaller: UiCaller
 
@@ -29,7 +29,8 @@ class HelloEchoImplTest {
     fun setUp() {
         repo = mock()
         uiCaller = mock()
-        interactor = HelloEchoImpl(repo, uiCaller)
+        interactor = HelloEchoImpl(repo)
+        interactor.uiCaller = uiCaller
         doAnswer {
             runBlocking {
                 val result = (it.arguments[0] as? suspend CoroutineScope.() -> RequestResult<GreetingsResponse>)?.invoke(this)

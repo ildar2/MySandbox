@@ -20,12 +20,10 @@ import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.ui.BaseViewModel
 
 class HelloViewModel(
-    private val repo: HelloRepository
-) : BaseViewModel(), HelloInteractor {
-
-    private val helloDelegate: HelloInteractor by lazy { HelloEchoImpl(repo, uiCaller) }
-
-    override val greetingLiveData = helloDelegate.greetingLiveData
-
-    override fun loadGreetings(name: String) = helloDelegate.loadGreetings(name)
+    private val repo: HelloRepository,
+    private val helloDelegate: HelloEchoImpl = HelloEchoImpl(repo)
+) : BaseViewModel(), HelloInteractor by helloDelegate {
+    init {
+        helloDelegate.uiCaller = uiCaller
+    }
 }

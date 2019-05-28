@@ -55,9 +55,9 @@ class HelloLocalImpl(
 }
 
 class HelloEchoImpl(
-    private val repo: HelloRepository,
-    private val uiCaller: UiCaller
+    private val repo: HelloRepository
 ) : HelloInteractor {
+    lateinit var uiCaller: UiCaller
 
     override val greetingLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData()
 
