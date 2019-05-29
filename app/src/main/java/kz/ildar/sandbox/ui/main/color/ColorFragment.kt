@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,6 +15,12 @@ import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import org.koin.android.viewmodel.ext.android.getViewModel
+import android.R.attr.label
+import android.content.ClipData
+import android.content.Context.CLIPBOARD_SERVICE
+import androidx.core.content.ContextCompat.getSystemService
+import android.content.ClipboardManager
+import android.content.Context
 
 class ColorFragment : Fragment() {
     companion object {
@@ -64,6 +71,20 @@ class ColorFragment : Fragment() {
 
         initSeekers()
         initPlusMinus()
+
+        hexView.setOnLongClickListener {
+            viewModel.colorLiveData.value?.let {
+                val clipboard = context?.getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager
+                val clip = ClipData.newPlainText("Скопировано в буфер обмена", it.getHexString())
+                clipboard?.primaryClip = clip
+                Toast.makeText(
+                    context,
+                    "Скопировано в буфер обмена",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            true
+        }
     }
 
     private val seekBarListener = object : SeekBar.OnSeekBarChangeListener {
