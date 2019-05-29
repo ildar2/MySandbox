@@ -22,7 +22,7 @@ class ColorListAdapter(private val listener: (ColorMutable) -> Unit) : RecyclerV
 
     override fun getItemCount() = items.size
 
-    override fun onBindViewHolder(holder: ColorListAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(items[position])
     }
 

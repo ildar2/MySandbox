@@ -58,7 +58,7 @@ val appModule = module {
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
-    viewModel { RainbowViewModel() }
+    viewModel { RainbowViewModel(get()) }
     viewModel { HelloViewModel(get()) }
     viewModel { WebsocketViewModel(get(), get()) }
     viewModel { MotionViewModel() }
