@@ -1,5 +1,8 @@
 package kz.ildar.sandbox.ui.main.color
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -15,12 +18,6 @@ import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import org.koin.android.viewmodel.ext.android.getViewModel
-import android.R.attr.label
-import android.content.ClipData
-import android.content.Context.CLIPBOARD_SERVICE
-import androidx.core.content.ContextCompat.getSystemService
-import android.content.ClipboardManager
-import android.content.Context
 
 class ColorFragment : Fragment() {
     companion object {

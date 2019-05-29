@@ -26,7 +26,7 @@ import kz.ildar.sandbox.utils.ResourceString
 
 abstract class BaseViewModel(
     protected val coroutineProvider: CoroutineProvider = CoroutineProvider(),
-    private val coroutineJob: Job = Job(),
+    protected val coroutineJob: Job = Job(),
     protected val scope: CoroutineScope = CoroutineScope(coroutineJob + coroutineProvider.IO),
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
     private val _errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData(),
