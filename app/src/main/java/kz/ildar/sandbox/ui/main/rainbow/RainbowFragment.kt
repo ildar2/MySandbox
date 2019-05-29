@@ -59,6 +59,7 @@ class RainbowFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.visibility = View.GONE
 
         viewModel.getNewItem()
 

@@ -23,16 +23,31 @@ class RainbowViewModel : BaseViewModel() {
         rainbowItemLiveData.value = item
     }
 
-    private val texts = arrayOf("Хлопок", "Синий", "Оранжевый", "Красный", "Зеленый")
+    private val texts = arrayOf(
+        "Хлопок",
+        "Черный",
+        "Серый",
+        "Белый",
+        "Синий",
+        "Зеленый",
+        "Красный",
+        "Оранжевый",
+        "Желтый",
+        "Фиолетовый",
+        "Голубой",
+        "Коричневый"
+    )
     private val colors = arrayOf(
-        ColorModel(255, 29, 98, 255, 0, "Blue"),
-        ColorModel(176, 212, 100, 0, 1, "Orange"),
-        ColorModel(233, 255, 59, 74, 2, "Red"),
-        ColorModel(255, 34, 128, 55, 4, "Green")
-
-//        ColorModel(110, 197, 224, 242, 6, "Light"),
-//        ColorModel(122, 2, 128, 55, 2, "Greenish"),
-//        ColorModel(122, 134, 128, 0, 3, "Sand"),
-//        ColorModel(200, 34, 23, 55, 5, "Dark")
+        ColorModel(255, 0, 0, 0, name = "Черный"),
+        ColorModel(255, 188, 188, 188, name = "Серый"),
+        ColorModel(255, 255, 255, 255, name = "Белый"),
+        ColorModel(255, 29, 98, 255, name = "Синий"),
+        ColorModel(255, 34, 128, 55, name = "Зеленый"),
+        ColorModel(233, 192, 0, 0, name = "Красный"),
+        ColorModel(176, 255, 102, 0, name = "Оранжевый"),
+        ColorModel(192, 228, 228, 0, name = "Желтый"),
+        ColorModel(255, 90, 0, 157, name = "Фиолетовый"),
+        ColorModel(255, 117, 187, 253, name = "Голубой"),
+        ColorModel(255, 101, 67, 33, name = "Коричневый")
     )
 }
