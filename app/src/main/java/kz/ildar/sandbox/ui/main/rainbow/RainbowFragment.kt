@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -50,11 +51,18 @@ class RainbowFragment : Fragment() {
             when (it) {
                 Status.SHOW_LOADING -> {
                     startView.visibility = View.GONE
+                    minutePickerLabel.visibility = View.GONE
+                    minutePicker.visibility = View.GONE
                     rainbowView.visibility = View.VISIBLE
                 }
                 Status.HIDE_LOADING -> {
                     startView.visibility = View.VISIBLE
+                    minutePickerLabel.visibility = View.VISIBLE
+                    minutePicker.visibility = View.VISIBLE
                     rainbowView.visibility = View.GONE
+                }
+                Status.SUCCESS -> {
+                    Toast.makeText(activity, "Игра закончилась!", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     //do nothing
@@ -74,8 +82,11 @@ class RainbowFragment : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.visibility = View.GONE
 
+        minutePicker.minValue = 1
+        minutePicker.maxValue = 10
+
         startView.setOnClickListener {
-            viewModel.start()
+            viewModel.start(terminate = minutePicker.value * 60000L)
         }
         contentView.setOnClickListener {
             viewModel.stop()

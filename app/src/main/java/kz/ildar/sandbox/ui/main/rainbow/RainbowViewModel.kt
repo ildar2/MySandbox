@@ -24,12 +24,17 @@ class RainbowViewModel(
             launch {
                 delay(terminate)
                 stop()
+                success()
             }
             while (true) {
                 newItem()
                 delay(delay)
             }
         }
+    }
+
+    private fun success() {
+        uiCaller.set(Status.SUCCESS)
     }
 
     fun stop() {

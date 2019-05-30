@@ -20,12 +20,31 @@
         android:gravity="center"
         android:padding="16dp"
         android:textSize="20sp"
-        android:background="@drawable/ripple"
+        android:background="?android:attr/selectableItemBackground"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/minutePickerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Длительность (мин):"
+        app:layout_constraintTop_toTopOf="@id/minutePicker"
+        app:layout_constraintBottom_toBottomOf="@id/minutePicker"
+        app:layout_constraintEnd_toStartOf="@id/minutePicker"/>
+
+    <NumberPicker
+        android:id="@+id/minutePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tooltipText="Количество минут"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/startView"/>
 
     <TextView
         android:id="@+id/rainbowView"
