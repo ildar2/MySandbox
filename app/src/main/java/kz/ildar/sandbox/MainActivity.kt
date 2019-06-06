@@ -19,6 +19,10 @@ package kz.ildar.sandbox
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
+import kotlinx.android.synthetic.main.activity_main.*
+import kz.ildar.sandbox.ui.main.child.ChildFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +33,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?) = when (item?.itemId) {
         android.R.id.home -> {
-            onBackPressed()
+            val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+            val fragment = navHost?.childFragmentManager?.fragments?.get(0)
+            if (fragment is ChildFragment) {
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                    .navigate(
+                        R.id.mainFragment, null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.mainFragment, true)
+                            .setEnterAnim(R.anim.slide_from_left)
+                            .build()
+                    )
+            } else {
+                onBackPressed()
+            }
             true
         }
         else -> super.onOptionsItemSelected(item)

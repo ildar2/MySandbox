@@ -30,6 +30,7 @@ import kz.ildar.sandbox.ui.main.hello.HelloViewModel
 import kz.ildar.sandbox.ui.main.list.ColorListViewModel
 import kz.ildar.sandbox.ui.main.motion.MotionViewModel
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
+import kz.ildar.sandbox.ui.main.playground.PlaygroundViewModel
 import kz.ildar.sandbox.ui.main.rainbow.RainbowViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
@@ -54,7 +55,7 @@ val appModule = module {
     single { ColorRepository() }
 
     single<CoroutineContext>("io") { Dispatchers.IO }
-    single<CoroutineContext> { Dispatchers.Main }
+    single<CoroutineContext>("main") { Dispatchers.Main }
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }
@@ -62,6 +63,7 @@ val appModule = module {
     viewModel { HelloViewModel(get()) }
     viewModel { WebsocketViewModel(get(), get()) }
     viewModel { MotionViewModel() }
+    viewModel { PlaygroundViewModel() }
     viewModel { MultiCallViewModel(get()) }
     viewModel { ColorViewModel(get()) }
     viewModel { ColorListViewModel(get()) }

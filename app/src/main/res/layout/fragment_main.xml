@@ -27,6 +27,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/playgroundView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceed to Playground"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:background="@drawable/ripple"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <TextView
             android:id="@+id/childView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +46,7 @@
             android:padding="12dp"
             android:background="@drawable/ripple"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/playgroundView" />
 
         <TextView
             android:id="@+id/rainbowView"

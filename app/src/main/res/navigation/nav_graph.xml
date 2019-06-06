@@ -21,6 +21,14 @@
             app:popExitAnim="@anim/exit_to_right" />
 
         <action
+            android:id="@+id/open_playgroundFragment"
+            app:destination="@id/playgroundFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+
+        <action
             android:id="@+id/open_rainbowFragment"
             app:destination="@id/rainbowFragment"
             app:enterAnim="@anim/slide_from_right"
@@ -99,6 +107,12 @@
         android:name="kz.ildar.sandbox.ui.main.rainbow.RainbowFragment"
         android:label="fragment_rainbow"
         tools:layout="@layout/fragment_rainbow" />
+
+    <fragment
+        android:id="@+id/playgroundFragment"
+        android:name="kz.ildar.sandbox.ui.main.playground.PlaygroundFragment"
+        android:label="fragment_playground"
+        tools:layout="@layout/fragment_playground" />
 
     <fragment
         android:id="@+id/helloFragment"

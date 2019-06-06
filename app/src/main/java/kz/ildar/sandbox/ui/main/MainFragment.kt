@@ -54,6 +54,8 @@ class MainFragment : Fragment() {
 
         viewModel.getData()
 
+        playgroundView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_playgroundFragment))
+
         childView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_childFragment))
 
         rainbowView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_rainbowFragment))
