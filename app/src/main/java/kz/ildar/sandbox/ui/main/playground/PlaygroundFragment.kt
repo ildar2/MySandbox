@@ -17,6 +17,7 @@
 package kz.ildar.sandbox.ui.main.playground
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,23 +45,24 @@ class PlaygroundFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_playground, container, false)
     }
 
+    private var switch = true
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         button.setOnClickListener {
-            switcher.isEnabled = !switcher.isEnabled
+            if (switch) {
+                et.inputType =
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
+            } else {
+                et.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            }
             Toast.makeText(
                 activity,
-                "Switcher is ${if (switcher.isEnabled) "enabled" else "disabled"}",
+                "inputType is ${if (switch) "number" else "text"}",
                 Toast.LENGTH_SHORT
             ).show()
-        }
-        switcher.setOnCheckedChangeListener { _, isChecked ->
-            Toast.makeText(
-                activity,
-                "Switcher is ${if (isChecked) "checked" else "not checked"}",
-                Toast.LENGTH_SHORT
-            ).show()
+            switch = !switch
         }
     }
 }

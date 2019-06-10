@@ -29,9 +29,9 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:text="Websocket request log" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switcher"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/et"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,9 +43,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Flip switch enabled"
+        android:text="Flip et inputType"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/switcher"/>
+        app:layout_constraintTop_toBottomOf="@id/et"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
