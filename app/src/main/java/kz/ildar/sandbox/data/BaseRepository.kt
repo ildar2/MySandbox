@@ -16,6 +16,7 @@
  */
 package kz.ildar.sandbox.data
 
+import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Deferred
@@ -188,6 +189,7 @@ sealed class RequestResult<out T : Any?> {
     data class Error(val error: ResourceString, val code: Int = 0) : RequestResult<Nothing>()
 }
 
+@Keep
 data class ServerError(
     val timestamp: String?,
     val status: Int,
