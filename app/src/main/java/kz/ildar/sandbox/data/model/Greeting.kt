@@ -16,6 +16,8 @@
  */
 package kz.ildar.sandbox.data.model
 
+import androidx.annotation.Keep
+
 interface GreetingsResponse {
     fun getContents(): String
 }
@@ -23,11 +25,19 @@ interface GreetingsResponse {
 /**
  * Postman echo model
  */
-data class GreetingWrapper(private val args: Greeting, private val url: String) : GreetingsResponse by args
+@Keep
+data class GreetingWrapper(
+    private val args: Greeting,
+    private val url: String
+) : GreetingsResponse by args
 
 /**
  * Local server model
  */
-data class Greeting(private val id: Long, private val content: String) : GreetingsResponse {
+@Keep
+data class Greeting(
+    private val id: Long,
+    private val content: String
+) : GreetingsResponse {
     override fun getContents() = content
 }
