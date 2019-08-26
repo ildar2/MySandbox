@@ -1,37 +1,35 @@
 package kz.ildar.sandbox.ui.main.list
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_color.view.*
 import kz.ildar.sandbox.R
-import kz.ildar.sandbox.ui.main.color.ColorMutable
+import kz.ildar.sandbox.utils.DisplayAdapter
+import kz.ildar.sandbox.utils.DisplayItem
+import kz.ildar.sandbox.utils.DisplayViewHolder
 
-class ColorListAdapter(private val listener: (ColorMutable) -> Unit) : RecyclerView.Adapter<ColorListAdapter.ViewHolder>() {
-    private val items = ArrayList<ColorMutable>()
+class ColorListAdapter : DisplayAdapter() {
 
-    fun setItems(list: List<ColorMutable>) {
-        items.clear()
-        items.addAll(list)
-        notifyDataSetChanged()
+    @Suppress("UNCHECKED_CAST")
+    override fun createViewHolder(view: View, viewType: Int): DisplayViewHolder<DisplayItem> {
+        return when (viewType) {
+            R.layout.item_color -> ColorDisplay.ViewHolder(view)
+            else -> throw RuntimeException("Unknown viewType: $viewType. You should modify createViewHolder")
+        } as DisplayViewHolder<DisplayItem>
     }
+}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_color, parent, false), listener)
-
-    override fun getItemCount() = items.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
-    }
-
-    open class ViewHolder(itemView: View, private val listener: (ColorMutable) -> Unit) : RecyclerView.ViewHolder(itemView) {
-        open fun bind(color: ColorMutable) {
-            itemView.colorView.setBackgroundColor(color.getColor())
-            itemView.hexView.text = color.getHexString()
-            itemView.nameView.text = color.name
-            itemView.setOnClickListener { listener.invoke(color) }
+data class ColorDisplay(
+    val name: String,
+    val hexString: String,
+    val color: Int,
+    val click: (ColorDisplay) -> Unit
+) : DisplayItem(R.layout.item_color) {
+    class ViewHolder(itemView: View) : DisplayViewHolder<ColorDisplay>(itemView) {
+        override fun bind(item: ColorDisplay) {
+            itemView.colorView.setBackgroundColor(item.color)
+            itemView.hexView.text = item.hexString
+            itemView.nameView.text = item.name
+            itemView.setOnClickListener { item.click.invoke(item) }
         }
     }
 }
