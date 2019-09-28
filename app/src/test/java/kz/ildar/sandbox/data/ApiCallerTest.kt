@@ -19,7 +19,7 @@ import retrofit2.Response
 import java.net.ConnectException
 
 class ApiCallerTest {
-    val apiCaller = ApiCaller()
+    private val apiCaller = ApiCaller
 
     @Test
     fun `test successful api call`() = runBlocking {
@@ -82,7 +82,7 @@ class ApiCallerTest {
         val result = apiCaller.coroutineApiCall(deferred1) as RequestResult.Error
         val error = result.error as TextResourceString
 
-        assertThat(error, `is`(TextResourceString("406 test message")))
+        assertThat(error, `is`(TextResourceString("test message")))
     }
 
     @Test

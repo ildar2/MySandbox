@@ -1,6 +1,12 @@
 package kz.ildar.sandbox.di
 
+import androidx.lifecycle.MutableLiveData
+import com.nhaarman.mockitokotlin2.spy
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kz.ildar.sandbox.ui.UiCaller
+import kz.ildar.sandbox.ui.UiCallerImpl
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext
@@ -11,7 +17,8 @@ fun initTestKoin(vararg modules: Module) {
         listOf(
             module {
                 single<CoroutineContext>("io") { Dispatchers.Unconfined }
-                single<CoroutineContext> { Dispatchers.Unconfined }
+                single<CoroutineContext>("main") { Dispatchers.Unconfined }
+                single<UiCaller> { spy(UiCallerImpl(CoroutineScope(Job()), CoroutineProvider(), MutableLiveData(), MutableLiveData())) }
             },
             *modules
         )

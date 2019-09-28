@@ -20,6 +20,7 @@ import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.coroutineScope
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.FormatResourceString
 import kz.ildar.sandbox.utils.IdResourceString
@@ -36,6 +37,7 @@ import java.net.SocketTimeoutException
 interface CoroutineCaller {
     suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T>
     suspend fun <T> coroutineApiCallRaw(deferred: Deferred<T>): RequestResult<T>
+    suspend fun <T> apiCall(result: suspend () -> T): RequestResult<T>
 }
 
 interface MultiCoroutineCaller {
@@ -62,7 +64,9 @@ interface MultiCoroutineCaller {
 
 interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
 
-class ApiCaller : ApiCallerInterface {
+object ApiCaller : ApiCallerInterface {
+
+    private const val HTTP_CODE_ACCOUNT_BLOCKED = 419
 
     /**
      * Обработчик для однородных запросов на `kotlin coroutines`
@@ -140,11 +144,25 @@ class ApiCaller : ApiCallerInterface {
         handleException(e)
     }
 
-    private fun <T> handleResult(result: Response<T>): RequestResult<T> = if (result.isSuccessful) {
-        RequestResult.Success(result.body())
-    } else {
-        throw HttpException(result)
+    /**
+     * Обработчик запросов на `kotlin coroutines`
+     * ждет выполнения запроса [result]
+     * обрабатывает ошибки сервера и соединения
+     * возвращает [RequestResult.Success] или [RequestResult.Error]
+     * Применяется для suspend-функций Retrofit-api
+     */
+    override suspend fun <T> apiCall(result: suspend () -> T): RequestResult<T> = try {
+        coroutineScope { RequestResult.Success(result.invoke()) }
+    } catch (e: Exception) {
+        handleException(e)
     }
+
+    private fun <T> handleResult(result: Response<T>): RequestResult<T> =
+        if (result.isSuccessful) result.body()?.let {
+            RequestResult.Success(it)
+        } ?: RequestResult.Empty else {
+            throw HttpException(result)
+        }
 
     private fun <T> handleException(e: Exception): RequestResult<T> = when (e) {
         is JsonSyntaxException -> {
@@ -156,22 +174,25 @@ class ApiCaller : ApiCallerInterface {
         is SocketTimeoutException -> {
             RequestResult.Error(IdResourceString(R.string.request_timeout))
         }
-        is HttpException -> {
-            when (e.code()) {
-                HTTP_NOT_FOUND -> {
-                    RequestResult.Error(IdResourceString(R.string.request_http_error_404), e.code())
-                }
-                HTTP_INTERNAL_ERROR -> {
+        is HttpException -> when (e.code()) {
+            HTTP_NOT_FOUND -> {
+                RequestResult.Error(IdResourceString(R.string.request_http_error_404), e.code())
+            }
+            HTTP_INTERNAL_ERROR -> {
+                val errorBody = e.response()?.errorBody()?.string() ?: ""
+                if (ServerError.checkCondition(errorBody) { error == "user blocked" }) {
+                    RequestResult.Error(
+                        IdResourceString(R.string.request_http_error_user_blocked),
+                        HTTP_CODE_ACCOUNT_BLOCKED
+                    )
+                } else
                     RequestResult.Error(IdResourceString(R.string.request_http_error_500), e.code())
-                }
-                else -> {
-                    val errorBody = e.response().errorBody()?.string()
-                    if (errorBody.isNullOrBlank()) {
-                        RequestResult.Error(FormatResourceString(R.string.request_http_error_format, e.code()))
-                    } else {
-                        RequestResult.Error(ServerError.wrapPrint(errorBody, e.code()), e.code())
-                    }
-                }
+            }
+            else -> {
+                RequestResult.Error(ServerError.print(
+                    e.response()?.errorBody()?.string(),
+                    FormatResourceString(R.string.request_http_error_format, e.code())
+                ), e.code())
             }
         }
         else -> {
@@ -185,8 +206,9 @@ class ApiCaller : ApiCallerInterface {
  * должно возвращаться репозиториями, использующими [ApiCaller]
  */
 sealed class RequestResult<out T : Any?> {
-    data class Success<out T : Any?>(val result: T? = null) : RequestResult<T>()
+    data class Success<out T : Any?>(val result: T) : RequestResult<T>()
     data class Error(val error: ResourceString, val code: Int = 0) : RequestResult<Nothing>()
+    object Empty : RequestResult<Nothing>()
 }
 
 @Keep
@@ -198,22 +220,35 @@ data class ServerError(
     val path: String?
 ) {
 
-    fun print(): String {
-        return message ?: error ?: "ServerError"
+    fun print(default: ResourceString): ResourceString {
+        return TextResourceString(message ?: error ?: return default)
     }
 
     companion object {
-        private fun from(response: String): ServerError {
+        /**
+         * Парсинг ответа сервера вручную в объект [ServerError]
+         */
+        @Throws(JsonSyntaxException::class)
+        private fun from(response: String?): ServerError {
             return Gson().fromJson(response, ServerError::class.java)
         }
 
-        fun print(response: String, code: Int): String {
-            val error = from(response)
-            return "$code ${error.print()}"
+        fun print(response: String?, default: ResourceString) = try {
+            from(response).print(default)
+        } catch (e: Exception) {
+            default
         }
 
-        fun wrapPrint(response: String, code: Int): ResourceString {
-            return TextResourceString(print(response, code))
+        /**
+         * Проверка условия для ответа сервера
+         *
+         * например, мы хотим выяснить, есть ли в ответе поле [error]
+         * и равно ли оно "user locked"
+         */
+        fun checkCondition(response: String, condition: ServerError.() -> Boolean) = try {
+            from(response).condition()
+        } catch (e: Exception) {
+            false
         }
     }
 }

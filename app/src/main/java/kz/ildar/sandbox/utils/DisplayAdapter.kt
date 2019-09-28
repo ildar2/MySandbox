@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.extensions.LayoutContainer
 import kz.ildar.sandbox.ui.main.list.ColorListAdapter
 
 /**
@@ -32,9 +33,11 @@ import kz.ildar.sandbox.ui.main.list.ColorListAdapter
  *
  * см. [ColorListAdapter] для примера
  */
-abstract class DisplayAdapter : RecyclerView.Adapter<DisplayViewHolder<DisplayItem>>() {
+abstract class DisplayAdapter(
+    items: List<DisplayItem> = emptyList()
+) : RecyclerView.Adapter<DisplayViewHolder<DisplayItem>>() {
 
-    var items = mutableListOf<DisplayItem>()
+    var items = items
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -64,10 +67,12 @@ abstract class DisplayAdapter : RecyclerView.Adapter<DisplayViewHolder<DisplayIt
 abstract class DisplayItem(val layout: Int)
 
 /**
- * Общий интерфейс для вьюхолдеров (связь элементов и вьюшек)
+ * Общий интерфейс для вьюхолдеров
+ * Связывает элементы [DisplayItem] и их вьюшки [DisplayItem.layout]
+ * Обычно лучше делать inner-классом элемента для понятности, но не обязательно
  */
-abstract class DisplayViewHolder<E : DisplayItem>(
-    itemView: View
-) : RecyclerView.ViewHolder(itemView) {
+abstract class DisplayViewHolder<E>(
+    override val containerView: View
+) : RecyclerView.ViewHolder(containerView), LayoutContainer {
     abstract fun bind(item: E)
 }

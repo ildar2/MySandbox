@@ -26,6 +26,7 @@ import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
+import timber.log.Timber
 
 interface UiProvider {
     val statusLiveData: LiveData<Status>
@@ -35,6 +36,7 @@ interface UiProvider {
 interface UiCaller : UiProvider {
     fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
+        silent: Boolean = false,
         resultBlock: (suspend (T) -> Unit)? = null
     )
 
@@ -64,26 +66,48 @@ class UiCallerImpl(
      * вызывает прогресс на [statusLiveData]
      *
      * [call] - `suspend`-функция запроса из репозитория
+     * [silent] - для тихих запросов, которые не должны быть видны пользователю
      * [resultBlock] - функция, которую нужно выполнить по завершении запроса в UI-потоке
      */
     override fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
+        silent: Boolean,
         resultBlock: (suspend (T) -> Unit)?
     ) {
         scope.launch(scopeProvider.Main) {
-            set(Status.SHOW_LOADING)
+            if (!silent) {
+                set(Status.SHOW_LOADING)
+            }
             val result = withContext(scopeProvider.IO, call)
             resultBlock?.invoke(result)
-            set(Status.HIDE_LOADING)
+            if (!silent) {
+                set(Status.HIDE_LOADING)
+            }
         }
     }
 
+    private var requestCounter = 0
+
     override fun set(status: Status) {
-        statusLiveData.postValue(status)
+        when (status) {
+            Status.SHOW_LOADING -> {
+                requestCounter++
+            }
+            Status.HIDE_LOADING -> {
+                requestCounter--
+                if (requestCounter > 0) return
+                requestCounter = 0
+            }
+        }
+        scope.launch(scopeProvider.Main) {
+            statusLiveData.value = status
+        }
     }
 
     override fun setError(error: ResourceString) {
-        errorLiveData.postValue(EventWrapper(error))
+        scope.launch(scopeProvider.Main) {
+            errorLiveData.value = EventWrapper(error)
+        }
     }
 
     /**
@@ -96,7 +120,8 @@ class UiCallerImpl(
         errorBlock: ((ResourceString) -> Unit)?,
         successBlock: (T) -> Unit
     ) = when (result) {
-        is RequestResult.Success -> result.result?.let { successBlock(it) }
+        is RequestResult.Success -> successBlock(result.result)
         is RequestResult.Error -> errorBlock?.invoke(result.error)
+        RequestResult.Empty -> Timber.e("Should not use unwrap for Empty requests")
     }
 }

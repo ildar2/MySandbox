@@ -1,50 +1,51 @@
 package kz.ildar.sandbox.ui.main.hello
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.CoroutineScope
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.runBlocking
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.data.model.GreetingsResponse
+import kz.ildar.sandbox.di.initTestKoin
 import kz.ildar.sandbox.ui.UiCaller
 import kz.ildar.sandbox.utils.TextResourceString
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.koin.standalone.KoinComponent
+import org.koin.standalone.StandAloneContext.stopKoin
+import org.koin.standalone.inject
 import org.mockito.Mockito.`when`
 
-class HelloEchoImplTest {
+class HelloEchoImplTest : KoinComponent {
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()//for livedata
 
     private lateinit var interactor: HelloEchoImpl
     private lateinit var repo: HelloRepository
-    private lateinit var uiCaller: UiCaller
+    private val uiCaller: UiCaller by inject()
 
-    @Suppress("UNCHECKED_CAST")
     @Before
     fun setUp() {
+        initTestKoin()
         repo = mock()
-        uiCaller = mock()
         interactor = HelloEchoImpl(repo)
         interactor.uiCaller = uiCaller
-        doAnswer {
-            runBlocking {
-                val result = (it.arguments[0] as? suspend CoroutineScope.() -> RequestResult<GreetingsResponse>)?.invoke(this)
-                (it.arguments[1] as? suspend (RequestResult<GreetingsResponse>) -> Unit)
-                    ?.invoke(result ?: return@runBlocking)
-            }
-        }.whenever(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any())
     }
+
+    @After
+    fun tearDown() = stopKoin()
 
     @Test
     fun `test calling loadGreetings with name - should call echoPersonalGreeting`() = runBlocking {
         interactor.loadGreetings("name")
 
-        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any())
+        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any(), any())
         verify(repo).echoPersonalGreeting("name")
         Unit
     }
@@ -53,7 +54,7 @@ class HelloEchoImplTest {
     fun `test calling loadGreetings without name - should call echoGreetings`() = runBlocking {
         interactor.loadGreetings("")
 
-        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any())
+        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any(), any())
         verify(repo).echoGreetings()
         Unit
     }
@@ -65,7 +66,7 @@ class HelloEchoImplTest {
         `when`(repo.echoGreetings()).thenReturn(RequestResult.Success(successValue))
         interactor.loadGreetings("")
 
-        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any())
+        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any(), any())
         verify(repo).echoGreetings()
         assertEquals(TextResourceString("content"), interactor.greetingLiveData.value?.peek())
         Unit
@@ -76,7 +77,7 @@ class HelloEchoImplTest {
         `when`(repo.echoGreetings()).thenReturn(RequestResult.Error(TextResourceString("error")))
         interactor.loadGreetings("")
 
-        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any())
+        verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any(), any())
         verify(repo).echoGreetings()
         verify(uiCaller).setError(TextResourceString("error"))
         Unit

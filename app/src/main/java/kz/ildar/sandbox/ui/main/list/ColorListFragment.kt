@@ -43,7 +43,7 @@ class ColorListFragment : Fragment() {
     private fun initViewModel() {
         viewModel = getViewModel()
         viewModel.listLiveData.observe(viewLifecycleOwner, Observer {
-            adapter.items = it.toMutableList()
+            adapter.items = it
         })
         viewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             Navigation.findNavController(recyclerView).navigate(
