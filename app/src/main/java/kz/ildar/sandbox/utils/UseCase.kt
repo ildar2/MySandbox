@@ -16,9 +16,9 @@
  */
 package kz.ildar.sandbox.utils;
 
-import android.util.Log
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
+import kz.ildar.sandbox.di.CoroutineProvider
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -32,11 +32,8 @@ import kotlin.coroutines.CoroutineContext
 abstract class UseCase<T> {
 
     protected var parentJob: Job = Job()
-    //var backgroundContext: CoroutineContext = IO
-    var backgroundContext: CoroutineContext = IO
-    var foregroundContext: CoroutineContext = Dispatchers.Main
-    var scope: CoroutineScope = CoroutineScope(parentJob + backgroundContext)
-
+    private val provider = CoroutineProvider()
+    var scope: CoroutineScope = CoroutineScope(parentJob + provider.IO)
 
     protected abstract suspend fun executeOnBackground(): T
 
@@ -44,29 +41,28 @@ abstract class UseCase<T> {
         parentJob.cancel()
         parentJob = Job()
 
-
-        scope.launch(foregroundContext) {
+        scope.launch(provider.Main) {
             try {
-                val result = withContext(backgroundContext) {
+                val result = withContext(provider.IO) {
                     executeOnBackground()
                 }
                 onComplete.invoke(result)
             } catch (e: CancellationException) {
-                Log.d("UseCase", "canceled by user")
+                Timber.d("canceled by user")
             } catch (e: Exception) {
                 onError(e)
             }
         }
     }
 
-    protected suspend fun <X> background(context: CoroutineContext = backgroundContext, block: suspend () -> X): Deferred<X> {
-        return scope.async(context) {
-            block.invoke()
-        }
+    protected suspend fun <X> background(
+        context: CoroutineContext = provider.IO,
+        block: suspend () -> X
+    ): Deferred<X> = scope.async(context) {
+        block.invoke()
     }
 
     fun unsubscribe() {
         parentJob.cancel()
     }
-
 }

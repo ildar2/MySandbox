@@ -27,17 +27,13 @@ sealed class ResourceString {
     abstract fun format(context: Context): String
 }
 
-class IdResourceString(private val id: Int) : ResourceString() {
+data class IdResourceString(private val id: Int) : ResourceString() {
     override fun format(context: Context): String = context.getString(id)
-    override fun equals(other: Any?) = other is IdResourceString && id == other.id
-    override fun hashCode() = id
     override fun toString() = "IdResourceString: $id"
 }
 
-class TextResourceString(private val text: String?) : ResourceString() {
+data class TextResourceString(private val text: String?) : ResourceString() {
     override fun format(context: Context): String = text ?: ""
-    override fun equals(other: Any?) = other is TextResourceString && text == other.text
-    override fun hashCode() = text.hashCode()
     override fun toString() = "TextResourceString: $text"
 }
 

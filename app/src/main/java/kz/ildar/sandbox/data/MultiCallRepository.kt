@@ -16,8 +16,12 @@
  */
 package kz.ildar.sandbox.data
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kz.ildar.sandbox.data.api.Api
+import kz.ildar.sandbox.data.model.GreetingWrapper
 import kz.ildar.sandbox.data.model.GreetingsResponse
+import retrofit2.Response
 
 class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCaller {
     suspend fun callAllMethods(): List<RequestResult<GreetingsResponse>> {
@@ -35,5 +39,8 @@ class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCalle
         }
 
     suspend fun callArrayOfMethods(): List<RequestResult<GreetingsResponse>> =
-        zipArray(api.postmanEcho(), api.postmanEchoNamed("Sarah")) { it }
+        zipArray(api.postmanEcho(), api.postmanEchoNamed("Sarah"), emptyResponseAsync()) { it }
+
+    private fun emptyResponseAsync() =
+        GlobalScope.async { Response.success<GreetingWrapper>(null) }
 }
