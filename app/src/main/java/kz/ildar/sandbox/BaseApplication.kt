@@ -18,14 +18,19 @@ package kz.ildar.sandbox
 
 import android.app.Application
 import kz.ildar.sandbox.di.appModule
-import org.koin.android.ext.android.startKoin
-import org.koin.standalone.StandAloneContext.stopKoin
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import timber.log.Timber
 
 class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        startKoin(this, listOf(appModule))
+
+        startKoin {
+            modules(listOf(appModule))
+            androidContext(this@BaseApplication)
+        }
         Timber.plant(Timber.DebugTree())
     }
 

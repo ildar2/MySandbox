@@ -1,6 +1,18 @@
 package kz.ildar.sandbox.utils.leetcode
 
 class Solution {
+
+    companion object {
+
+        fun overflowIssues() {
+            val number: Int = 400000000
+            val squared = number * number
+            println(squared)
+            val squaredLong: Long = number.toLong() * number
+            println(squaredLong)
+        }
+    }
+
     fun productExceptSelf(nums: IntArray): IntArray {
         var temp = 1
         val prod = IntArray(nums.size) { 1 }
@@ -18,16 +30,33 @@ class Solution {
     }
 
     enum class Roman(
-        val value: Int,
-        val char: String
+        val value: Int
     ) {
-        M(1000, "M"),
-        D(500, "D"),
-        C(100, "C"),
-        L(50, "L"),
-        X(10, "X"),
-        V(5, "V"),
-        I(1, "I")
+        M(1000),
+        D(500),
+        C(100),
+        L(50),
+        X(10),
+        V(5),
+        I(1)
+    }
+
+    enum class RomanExtended(
+        val value: Int
+    ) {
+        M(1000),
+        CM(900),
+        D(500),
+        CD(400),
+        C(100),
+        XC(90),
+        L(50),
+        XL(40),
+        X(10),
+        IX(9),
+        V(5),
+        IV(4),
+        I(1)
     }
 
     private val substitutionList = listOf(
@@ -45,16 +74,10 @@ class Solution {
         var temp = input
         while(temp > 0) {
             //find largest roman number
-            for (char in Roman.values()) {
+            for (char in RomanExtended.values()) {
                 if (temp >= char.value) {
-                    output.append(char.char)
+                    output.append(char.name)
                     temp -= char.value
-                    //run 4,9,40,90 substitution
-                    for (entry in substitutionList) {
-                        val corrected = output.replace(entry.first.toRegex(), entry.second)
-                        output.delete(0, output.length)
-                        output.append(corrected)
-                    }
                     break
                 }
             }

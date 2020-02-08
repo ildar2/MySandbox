@@ -36,8 +36,9 @@ import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.module
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -54,8 +55,8 @@ val appModule = module {
     single { MultiCallRepository(get()) }
     single { ColorRepository() }
 
-    single<CoroutineContext>("io") { Dispatchers.IO }
-    single<CoroutineContext>("main") { Dispatchers.Main }
+    single<CoroutineContext>(named("io")) { Dispatchers.IO }
+    single<CoroutineContext>(named("main")) { Dispatchers.Main }
 
     viewModel { MainViewModel() }
     viewModel { ChildViewModel(get()) }

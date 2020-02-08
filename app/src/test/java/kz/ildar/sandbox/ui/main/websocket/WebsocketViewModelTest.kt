@@ -22,21 +22,17 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kz.ildar.sandbox.di.initTestKoin
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
-import okio.ByteString
+import okio.ByteString.Companion.decodeHex
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext
-import org.koin.standalone.StandAloneContext.stopKoin
+import org.koin.core.context.stopKoin
 import org.mockito.Mockito.`when`
-import kotlin.coroutines.CoroutineContext
 
 class WebsocketViewModelTest {
 
@@ -74,7 +70,7 @@ class WebsocketViewModelTest {
 
         verify(ws).send("Hello!")
         verify(ws).send("What's up ?")
-        verify(ws).send(ByteString.decodeHex("deadbeef"))
+        verify(ws).send("deadbeef".decodeHex())
         verify(ws).close(1000, "Goodbye!")
 
         Unit

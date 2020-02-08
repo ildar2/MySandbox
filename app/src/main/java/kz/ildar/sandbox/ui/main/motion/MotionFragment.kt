@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
-import org.koin.android.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MotionFragment : Fragment() {
     private lateinit var viewModel: MotionViewModel

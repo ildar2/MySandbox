@@ -17,7 +17,7 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
-import org.koin.android.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class ColorFragment : Fragment() {
     companion object {

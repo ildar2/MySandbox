@@ -17,8 +17,9 @@
 package kz.ildar.sandbox.di
 
 import kz.ildar.sandbox.ui.BaseViewModel
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
+import org.koin.core.qualifier.named
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -26,6 +27,6 @@ import kotlin.coroutines.CoroutineContext
  * should be mocked in tests (see [WebsocketViewModelTest])
  */
 open class CoroutineProvider : KoinComponent {
-    open val Main: CoroutineContext by inject("main")
-    open val IO: CoroutineContext by inject("io")
+    open val Main: CoroutineContext by inject(named("main"))
+    open val IO: CoroutineContext by inject(named("io"))
 }

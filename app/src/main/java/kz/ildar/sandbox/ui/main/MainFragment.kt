@@ -27,7 +27,7 @@ import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
-import org.koin.android.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
 class MainFragment : Fragment() {

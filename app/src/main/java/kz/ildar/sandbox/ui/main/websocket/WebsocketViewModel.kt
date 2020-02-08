@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kz.ildar.sandbox.ui.BaseViewModel
 import okhttp3.*
 import okio.ByteString
+import okio.ByteString.Companion.decodeHex
 
 class WebsocketViewModel(
     private val client: OkHttpClient,
@@ -36,7 +37,7 @@ class WebsocketViewModel(
         webSocket = client.newWebSocket(request, listener)
         webSocket.send("Hello!")
         webSocket.send("What's up ?")
-        webSocket.send(ByteString.decodeHex("deadbeef"))
+        webSocket.send("deadbeef".decodeHex())
         webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye!")
     }
 
@@ -50,15 +51,15 @@ class WebsocketViewModel(
             output("onOpen")
         }
 
-        override fun onMessage(webSocket: WebSocket?, text: String?) {
+        override fun onMessage(webSocket: WebSocket, text: String) {
             output("Receiving : $text")
         }
 
-        override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
+        override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
             output("Receiving bytes : ${bytes.hex()}")
         }
 
-        override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
+        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
             webSocket.close(NORMAL_CLOSURE_STATUS, null)
             output("Closing : $code / $reason")
         }

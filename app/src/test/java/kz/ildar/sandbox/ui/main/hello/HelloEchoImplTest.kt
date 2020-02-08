@@ -17,9 +17,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.StandAloneContext.stopKoin
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.context.stopKoin
+import org.koin.core.inject
 import org.mockito.Mockito.`when`
 
 class HelloEchoImplTest : KoinComponent {
