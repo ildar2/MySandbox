@@ -28,8 +28,8 @@ import org.mockito.Mockito.`when`
 import retrofit2.Response
 
 class MultiCallRepositoryTest {
-    lateinit var api: Api
-    lateinit var repo: MultiCallRepository
+    private lateinit var api: Api
+    private lateinit var repo: MultiCallRepository
 
     @Before
     fun setup() {
@@ -40,12 +40,11 @@ class MultiCallRepositoryTest {
     @Test
     fun testTwoRequests() = runBlocking {
         //make two requests with function
-        val deferred1 = mock<Deferred<Response<String>>>()
-        `when`(deferred1.await()).thenReturn(Response.success("result1"))
-        val deferred2 = mock<Deferred<Response<Int>>>()
-        `when`(deferred2.await()).thenReturn(Response.success(2))
 
-        val result = repo.zip(deferred1, deferred2) { res1, res2 ->
+        val request1: suspend () -> String = { "result1" }
+        val request2: suspend () -> Int = { 2 }
+
+        val result = repo.zip(request1, request2) { res1, res2 ->
             "${(res1 as RequestResult.Success).result} ${(res2 as RequestResult.Success).result}"
         }
 
@@ -54,13 +53,15 @@ class MultiCallRepositoryTest {
 
     @Test
     fun testArrayRequests() = runBlocking {
-        //make several homogenious requests with function
+        //make several homogeneous requests with function
+        val request1: suspend () -> String = { "result1" }
+        val request2: suspend () -> String = { "result2" }
         val deferred1 = mock<Deferred<Response<String>>>()
         `when`(deferred1.await()).thenReturn(Response.success("result1"))
         val deferred2 = mock<Deferred<Response<String>>>()
         `when`(deferred2.await()).thenReturn(Response.success("result2"))
 
-        val result = repo.zipArray(deferred1, deferred2) { resultList ->
+        val result = repo.zipArray(request1, request2) { resultList ->
             "${(resultList[0] as RequestResult.Success).result} ${(resultList[1] as RequestResult.Success).result}"
         }
 
@@ -70,17 +71,14 @@ class MultiCallRepositoryTest {
     @Test
     fun testThreeRequests() = runBlocking {
         //make three requests with function
-        val deferred1 = mock<Deferred<Response<String>>>()
-        `when`(deferred1.await()).thenReturn(Response.success("result1"))
-        val deferred2 = mock<Deferred<Response<Int>>>()
-        `when`(deferred2.await()).thenReturn(Response.success(2))
-        val deferred3 = mock<Deferred<Response<String>>>()
-        `when`(deferred3.await()).thenReturn(Response.success("result3"))
+        val request1: suspend () -> String = { "result1" }
+        val request2: suspend () -> Int = { 2 }
+        val request3: suspend () -> String = { "result3" }
 
-        val result = repo.zip(deferred1, deferred2, deferred3) { res1, res2, res3 ->
+        val result = repo.zip(request1, request2, request3) { res1, res2, res3 ->
             "${(res1 as RequestResult.Success).result} " +
                 "${(res2 as RequestResult.Success).result} " +
-                "${(res3 as RequestResult.Success).result}"
+                (res3 as RequestResult.Success).result
         }
 
         assertThat(result, `is`("result1 2 result3"))

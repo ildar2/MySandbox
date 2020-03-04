@@ -36,11 +36,19 @@ class HelloRepositoryImpl(
 
     override fun giveHello() = "Hello Koin"
 
-    override suspend fun greetings() = coroutineApiCall(api.greetings())
+    override suspend fun greetings() = apiCall {
+        api.greetings()
+    }
 
-    override suspend fun personalGreeting(name: String) = coroutineApiCall(api.personalGreetings(name))
+    override suspend fun personalGreeting(name: String) = apiCall {
+        api.personalGreetings(name)
+    }
 
-    override suspend fun echoGreetings() = coroutineApiCall(api.postmanEchoOld())
+    override suspend fun echoGreetings() = apiCall {
+        api.postmanEchoOld()
+    }
 
-    override suspend fun echoPersonalGreeting(name: String) = coroutineApiCall(api.postmanEchoNamedOld(name))
+    override suspend fun echoPersonalGreeting(name: String) = apiCall {
+        api.postmanEchoNamedOld(name)
+    }
 }

@@ -19,7 +19,6 @@ package kz.ildar.sandbox.data
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.coroutineScope
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.FormatResourceString
@@ -28,36 +27,33 @@ import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import retrofit2.HttpException
 import retrofit2.Response
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.HttpURLConnection.HTTP_INTERNAL_ERROR
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
 import java.net.SocketTimeoutException
 
 interface CoroutineCaller {
-    suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T>
-    suspend fun <T> coroutineApiCallRaw(deferred: Deferred<T>): RequestResult<T>
     suspend fun <T> apiCall(result: suspend () -> T): RequestResult<T>
 }
 
 interface MultiCoroutineCaller {
-    suspend fun <T> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>>
+    suspend fun <T> multiCall(vararg requests: T): List<RequestResult<T>>
 
     suspend fun <T1, T2, R> zip(
-        request1: Deferred<Response<T1>>,
-        request2: Deferred<Response<T2>>,
+        request1: suspend () -> T1,
+        request2: suspend () -> T2,
         zipper: (RequestResult<T1>, RequestResult<T2>) -> R
     ): R
 
     suspend fun <T1, T2, T3, R> zip(
-        request1: Deferred<Response<T1>>,
-        request2: Deferred<Response<T2>>,
-        request3: Deferred<Response<T3>>,
+        request1: suspend () -> T1,
+        request2: suspend () -> T2,
+        request3: suspend () -> T3,
         zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
     ): R
 
     suspend fun <T, R> zipArray(
-        vararg requests: Deferred<Response<T>>,
+        vararg requests: suspend () -> T,
         zipper: (List<RequestResult<T>>) -> R
     ): R
 }
@@ -72,77 +68,48 @@ object ApiCaller : ApiCallerInterface {
      * Обработчик для однородных запросов на `kotlin coroutines`
      * [requests] должны возвращать один тип данных
      * запускает все [requests] и записывает их в массив [RequestResult]
-     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
-     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     * обрабатывает ошибки сервера при помощи [apiCall]
+     * обрабатывает ошибки соединения при помощи [apiCall]
      */
-    override suspend fun <T> multiCall(vararg requests: Deferred<Response<T>>): List<RequestResult<T>> =
-        requests.map {
-            coroutineApiCall(it)
-        }
+    override suspend fun <T> multiCall(vararg requests: T) = requests.map { apiCall { it } }
 
     /**
      * Обработчик для однородных запросов на `kotlin coroutines`
      * [requests] должны возвращать один тип данных
      * запускает все [requests], записывает их в массив [RequestResult]
      * и передает в обработчик [zipper]
-     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
-     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     * обрабатывает ошибки сервера при помощи [apiCall]
+     * обрабатывает ошибки соединения при помощи [apiCall]
      */
     override suspend fun <T, R> zipArray(
-        vararg requests: Deferred<Response<T>>,
+        vararg requests: suspend () -> T,
         zipper: (List<RequestResult<T>>) -> R
-    ): R = zipper(requests.map { coroutineApiCall(it) })
+    ) = zipper(requests.map { apiCall(it) })
 
     /**
      * Обработчик для двух разнородных запросов на `kotlin coroutines`
      * запускает [request1], [request2] и передает в обработчик [zipper]
-     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
-     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     * обрабатывает ошибки сервера при помощи [apiCall]
+     * обрабатывает ошибки соединения при помощи [apiCall]
      */
     override suspend fun <T1, T2, R> zip(
-        request1: Deferred<Response<T1>>,
-        request2: Deferred<Response<T2>>,
+        request1: suspend () -> T1,
+        request2: suspend () -> T2,
         zipper: (RequestResult<T1>, RequestResult<T2>) -> R
-    ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2))
+    ): R = zipper(apiCall(request1), apiCall(request2))
 
     /**
      * Обработчик для трех разнородных запросов на `kotlin coroutines`
      * запускает [request1], [request2], [request3] и передает в обработчик [zipper]
-     * обрабатывает ошибки сервера при помощи [coroutineApiCall]
-     * обрабатывает ошибки соединения при помощи [coroutineApiCall]
+     * обрабатывает ошибки сервера при помощи [apiCall]
+     * обрабатывает ошибки соединения при помощи [apiCall]
      */
     override suspend fun <T1, T2, T3, R> zip(
-        request1: Deferred<Response<T1>>,
-        request2: Deferred<Response<T2>>,
-        request3: Deferred<Response<T3>>,
+        request1: suspend () -> T1,
+        request2: suspend () -> T2,
+        request3: suspend () -> T3,
         zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
-    ): R = zipper(coroutineApiCall(request1), coroutineApiCall(request2), coroutineApiCall(request3))
-
-    /**
-     * Обработчик запросов, обернутых в [Response] на `kotlin coroutines`
-     * ждет выполнения запроса [deferred]
-     * обрабатывает ошибки сервера и соединения
-     * возвращает [RequestResult.Success] или [RequestResult.Error]
-     */
-    override suspend fun <T> coroutineApiCall(deferred: Deferred<Response<T>>): RequestResult<T> = try {
-        handleResult(deferred.await())
-    } catch (e: Exception) {
-        Timber.w(e)
-        handleException(e)
-    }
-
-    /**
-     * Обработчик запросов на `kotlin coroutines`
-     * ждет выполнения запроса [deferred]
-     * обрабатывает ошибки сервера и соединения
-     * возвращает [RequestResult.Success] или [RequestResult.Error]
-     */
-    override suspend fun <T> coroutineApiCallRaw(deferred: Deferred<T>): RequestResult<T> = try {
-        RequestResult.Success(deferred.await())
-    } catch (e: Exception) {
-        Timber.w(e)
-        handleException(e)
-    }
+    ): R = zipper(apiCall(request1), apiCall(request2), apiCall(request3))
 
     /**
      * Обработчик запросов на `kotlin coroutines`
@@ -156,13 +123,6 @@ object ApiCaller : ApiCallerInterface {
     } catch (e: Exception) {
         handleException(e)
     }
-
-    private fun <T> handleResult(result: Response<T>): RequestResult<T> =
-        if (result.isSuccessful) result.body()?.let {
-            RequestResult.Success(it)
-        } ?: RequestResult.Empty else {
-            throw HttpException(result)
-        }
 
     private fun <T> handleException(e: Exception): RequestResult<T> = when (e) {
         is JsonSyntaxException -> {
@@ -208,7 +168,6 @@ object ApiCaller : ApiCallerInterface {
 sealed class RequestResult<out T : Any?> {
     data class Success<out T : Any?>(val result: T) : RequestResult<T>()
     data class Error(val error: ResourceString, val code: Int = 0) : RequestResult<Nothing>()
-    object Empty : RequestResult<Nothing>()
 }
 
 @Keep

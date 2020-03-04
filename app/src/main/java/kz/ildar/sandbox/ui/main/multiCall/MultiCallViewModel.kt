@@ -41,7 +41,6 @@ class MultiCallViewModel(
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result.getContents()))
                     is RequestResult.Error -> EventWrapper(it.error)
-                    is RequestResult.Empty -> EventWrapper(IdResourceString(R.string.request_error_empty))
                 }
             }
         }
@@ -53,7 +52,6 @@ class MultiCallViewModel(
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result.getContents()))
                     is RequestResult.Error -> EventWrapper(it.error)
-                    is RequestResult.Empty -> EventWrapper(IdResourceString(R.string.request_error_empty))
                 }
             }
         }
@@ -65,7 +63,6 @@ class MultiCallViewModel(
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result.getContents()))
                     is RequestResult.Error -> EventWrapper(it.error)
-                    is RequestResult.Empty -> EventWrapper(IdResourceString(R.string.request_error_empty))
                 }
             }
         }
@@ -77,7 +74,6 @@ class MultiCallViewModel(
                 _logLiveData.value = when (it) {
                     is RequestResult.Success -> EventWrapper(TextResourceString(it.result.getContents()))
                     is RequestResult.Error -> EventWrapper(it.error)
-                    is RequestResult.Empty -> EventWrapper(IdResourceString(R.string.request_error_empty))
                 }
             }
         }

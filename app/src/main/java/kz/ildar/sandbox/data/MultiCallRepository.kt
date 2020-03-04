@@ -16,12 +16,8 @@
  */
 package kz.ildar.sandbox.data
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kz.ildar.sandbox.data.api.Api
-import kz.ildar.sandbox.data.model.GreetingWrapper
 import kz.ildar.sandbox.data.model.GreetingsResponse
-import retrofit2.Response
 
 class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCaller {
     suspend fun callAllMethods(): List<RequestResult<GreetingsResponse>> {
@@ -29,18 +25,18 @@ class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCalle
     }
 
     suspend fun callTwoMethods(): List<RequestResult<GreetingsResponse>> =
-        zip(api.greetings(), api.postmanEcho()) { res1, res2 ->
+        zip({ api.greetings() }, { api.postmanEcho() }) { res1, res2 ->
             listOf(res1, res2)
         }
 
     suspend fun callThreeMethods(): List<RequestResult<GreetingsResponse>> =
-        zip(api.greetings(), api.postmanEcho(), api.postmanEchoNamed("Sarah")) { res1, res2, res3 ->
+        zip({ api.greetings() }, { api.postmanEcho() }, { api.postmanEchoNamed("Sarah") }) { res1, res2, res3 ->
             listOf(res1, res2, res3)
         }
 
-    suspend fun callArrayOfMethods(): List<RequestResult<GreetingsResponse>> =
-        zipArray(api.postmanEcho(), api.postmanEchoNamed("Sarah"), emptyResponseAsync()) { it }
-
-    private fun emptyResponseAsync() =
-        GlobalScope.async { Response.success<GreetingWrapper>(null) }
+    suspend fun callArrayOfMethods(): List<RequestResult<GreetingsResponse>> = zipArray(
+        { api.postmanEcho() },
+        { api.postmanEchoNamed("Sarah") },
+        { throw Exception("") }
+    ) { it }
 }

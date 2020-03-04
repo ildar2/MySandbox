@@ -122,6 +122,5 @@ class UiCallerImpl(
     ) = when (result) {
         is RequestResult.Success -> successBlock(result.result)
         is RequestResult.Error -> errorBlock?.invoke(result.error)
-        RequestResult.Empty -> Timber.e("Should not use unwrap for Empty requests")
     }
 }

@@ -46,7 +46,7 @@ open class EventWrapper<out T>(private val content: T) {
 /**
  * Can be used for no-data events
  */
-class VoidEvent
+object VoidEvent
 
 /**
  * An [Observer] for [EventWrapper]s, simplifying the pattern of checking if the [EventWrapper]'s content has

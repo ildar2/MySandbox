@@ -15,13 +15,15 @@ import kotlin.coroutines.CoroutineContext
 
 fun initTestKoin(vararg modules: Module) {
     startKoin {
-        listOf(
-            module {
-                single<CoroutineContext>(named("io")) { Dispatchers.Unconfined }
-                single<CoroutineContext>(named("main")) { Dispatchers.Unconfined }
-                single<UiCaller> { spy(UiCallerImpl(CoroutineScope(Job()), CoroutineProvider(), MutableLiveData(), MutableLiveData())) }
-            },
-            *modules
+        modules(
+            listOf(
+                module {
+                    single<CoroutineContext>(named("io")) { Dispatchers.Unconfined }
+                    single<CoroutineContext>(named("main")) { Dispatchers.Unconfined }
+                    single<UiCaller> { spy(UiCallerImpl(CoroutineScope(Job()), CoroutineProvider(), MutableLiveData(), MutableLiveData())) }
+                },
+                *modules
+            )
         )
     }
 }
