@@ -23,6 +23,7 @@ import kotlinx.coroutines.Job
 import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
+import org.koin.core.KoinComponent
 
 abstract class BaseViewModel(
     protected val coroutineProvider: CoroutineProvider = CoroutineProvider(),
@@ -31,7 +32,7 @@ abstract class BaseViewModel(
     private val _statusLiveData: MutableLiveData<Status> = MutableLiveData(),
     private val _errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = MutableLiveData(),
     protected val uiCaller: UiCaller = UiCallerImpl(scope, coroutineProvider, _statusLiveData, _errorLiveData)
-) : ViewModel(), UiProvider by uiCaller {
+) : ViewModel(), UiProvider by uiCaller, KoinComponent {
     override fun onCleared() {
         super.onCleared()
         coroutineJob.cancel()

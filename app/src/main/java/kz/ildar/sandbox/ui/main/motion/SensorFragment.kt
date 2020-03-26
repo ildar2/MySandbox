@@ -22,17 +22,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.afollestad.materialdialogs.MaterialDialog
+import kotlinx.android.synthetic.main.fragment_motion.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.utils.EventObserver
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class MotionFragment : Fragment() {
-    private lateinit var viewModel: MotionViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = getViewModel()
-    }
+class SensorFragment : Fragment() {
+    private lateinit var viewModel: SensorViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +41,32 @@ class MotionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.title = "Motion"
+        toolbar.title = "Proximity Sensor"
+
+        viewModel = getViewModel()
+        viewModel.sensorLiveData.observe(viewLifecycleOwner, EventObserver {
+            dialog()
+        })
+        SensorCallbacks.mode.observe(viewLifecycleOwner, Observer {
+            text.text = when (it) {
+                SensorMode.OPEN -> "Open mode"
+                else -> "Secret mode"
+            }
+        })
+    }
+
+    private fun dialog() {
+        SensorCallbacks.enabled = false
+        MaterialDialog.Builder(requireActivity())
+            .content(
+                if (SensorCallbacks.mode.value == SensorMode.OPEN) "Enable secret mode?"
+                else "Disable secret mode?"
+            )
+            .positiveText("Yes")
+            .negativeText("No")
+            .onPositive { _, _ -> SensorCallbacks.toggle() }
+            .onNegative { _, _ -> }
+            .onAny { _, _ -> SensorCallbacks.enabled = true }
+            .show()
     }
 }

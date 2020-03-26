@@ -46,7 +46,10 @@ open class EventWrapper<out T>(private val content: T) {
 /**
  * Can be used for no-data events
  */
-object VoidEvent
+object VoidEvent {
+    val WRAPPED: EventWrapper<VoidEvent>
+        get() = EventWrapper(VoidEvent)
+}
 
 /**
  * An [Observer] for [EventWrapper]s, simplifying the pattern of checking if the [EventWrapper]'s content has
@@ -54,8 +57,12 @@ object VoidEvent
  *
  * [onEventUnhandledContent] is *only* called if the [EventWrapper]'s contents has not been handled.
  */
-class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<EventWrapper<T>> {
+class EventObserver<T>(
+    private val onEventUnhandledContent: (T) -> Unit
+) : Observer<EventWrapper<T>> {
     override fun onChanged(event: EventWrapper<T>?) {
         event?.get()?.let(onEventUnhandledContent)
     }
 }
+
+fun <T : Any> T.wrapEvent() = EventWrapper(this)

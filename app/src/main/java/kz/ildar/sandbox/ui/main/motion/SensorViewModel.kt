@@ -16,6 +16,13 @@
  */
 package kz.ildar.sandbox.ui.main.motion
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import kz.ildar.sandbox.ui.BaseViewModel
+import kz.ildar.sandbox.utils.EventWrapper
+import kz.ildar.sandbox.utils.VoidEvent
 
-class MotionViewModel : ViewModel()
+class SensorViewModel(
+    sensorCallbacks: SensorCallbacks
+) : BaseViewModel() {
+    val sensorLiveData: LiveData<EventWrapper<VoidEvent>> = sensorCallbacks.sensorEventLiveData
+}

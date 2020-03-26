@@ -85,7 +85,7 @@
             android:id="@+id/motionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Proceed to MotionView"
+            android:text="To Proximity Sensor"
             android:textSize="20sp"
             android:padding="12dp"
             android:background="@drawable/ripple"

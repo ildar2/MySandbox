@@ -4,6 +4,7 @@
     package="kz.ildar.sandbox">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.hardware.sensor.proximity" />
 
     <application
         android:name="kz.ildar.sandbox.BaseApplication"

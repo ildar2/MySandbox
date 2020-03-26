@@ -128,7 +128,7 @@
 
     <fragment
         android:id="@+id/motionFragment"
-        android:name="kz.ildar.sandbox.ui.main.motion.MotionFragment"
+        android:name="kz.ildar.sandbox.ui.main.motion.SensorFragment"
         android:label="fragment_motion"
         tools:layout="@layout/fragment_motion" />
 

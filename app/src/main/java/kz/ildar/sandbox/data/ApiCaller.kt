@@ -26,7 +26,6 @@ import kz.ildar.sandbox.utils.IdResourceString
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import retrofit2.HttpException
-import retrofit2.Response
 import java.net.ConnectException
 import java.net.HttpURLConnection.HTTP_INTERNAL_ERROR
 import java.net.HttpURLConnection.HTTP_NOT_FOUND

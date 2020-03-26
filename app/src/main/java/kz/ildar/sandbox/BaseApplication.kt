@@ -18,6 +18,8 @@ package kz.ildar.sandbox
 
 import android.app.Application
 import kz.ildar.sandbox.di.appModule
+import kz.ildar.sandbox.ui.main.motion.SensorCallbacks
+import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -31,6 +33,7 @@ class BaseApplication : Application() {
             modules(listOf(appModule))
             androidContext(this@BaseApplication)
         }
+        registerActivityLifecycleCallbacks(get<SensorCallbacks>())
         Timber.plant(Timber.DebugTree())
     }
 

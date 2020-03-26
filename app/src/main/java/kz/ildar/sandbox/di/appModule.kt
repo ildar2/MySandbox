@@ -16,7 +16,8 @@
  */
 package kz.ildar.sandbox.di
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import android.content.Context
+import android.hardware.SensorManager
 import kotlinx.coroutines.Dispatchers
 import kz.ildar.sandbox.data.ColorRepository
 import kz.ildar.sandbox.data.HelloRepository
@@ -28,7 +29,8 @@ import kz.ildar.sandbox.ui.main.child.ChildViewModel
 import kz.ildar.sandbox.ui.main.color.ColorViewModel
 import kz.ildar.sandbox.ui.main.hello.HelloViewModel
 import kz.ildar.sandbox.ui.main.list.ColorListViewModel
-import kz.ildar.sandbox.ui.main.motion.MotionViewModel
+import kz.ildar.sandbox.ui.main.motion.SensorViewModel
+import kz.ildar.sandbox.ui.main.motion.SensorCallbacks
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.playground.PlaygroundViewModel
 import kz.ildar.sandbox.ui.main.rainbow.RainbowViewModel
@@ -54,6 +56,8 @@ val appModule = module {
     single<HelloRepository> { HelloRepositoryImpl(get()) }
     single { MultiCallRepository(get()) }
     single { ColorRepository() }
+    single { sensorManager(get()) }
+    single { SensorCallbacks(get()) }
 
     single<CoroutineContext>(named("io")) { Dispatchers.IO }
     single<CoroutineContext>(named("main")) { Dispatchers.Main }
@@ -63,7 +67,7 @@ val appModule = module {
     viewModel { RainbowViewModel(get()) }
     viewModel { HelloViewModel(get()) }
     viewModel { WebsocketViewModel(get(), get()) }
-    viewModel { MotionViewModel() }
+    viewModel { SensorViewModel(get()) }
     viewModel { PlaygroundViewModel() }
     viewModel { MultiCallViewModel(get()) }
     viewModel { ColorViewModel(get()) }
@@ -71,28 +75,25 @@ val appModule = module {
 }
 const val TIMEOUT = 3L
 
-private fun createOkHttp(): OkHttpClient {
-    return OkHttpClient.Builder()
-        .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-        .readTimeout(TIMEOUT, TimeUnit.SECONDS)
-        .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
-        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-        .build()
-}
+private fun createOkHttp(): OkHttpClient = OkHttpClient.Builder()
+    .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+    .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+    .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+    .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+    .build()
 
-private fun createRequest(): Request {
-    return Request.Builder()
-        .url("ws://echo.websocket.org")
-        .build()
-}
+private fun createRequest(): Request = Request.Builder()
+    .url("ws://echo.websocket.org")
+    .build()
 
-private fun createApi(client: OkHttpClient): Api {
-    return Retrofit.Builder()
-//        .baseUrl("http://192.168.1.42:8080/")
-        .baseUrl("https://postman-echo.com")
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(CoroutineCallAdapterFactory())
-        .build()
-        .create(Api::class.java)
-}
+private fun createApi(client: OkHttpClient): Api = Retrofit.Builder()
+//    .baseUrl("http://192.168.1.42:8080/")
+    .baseUrl("https://postman-echo.com")
+    .client(client)
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
+    .create(Api::class.java)
+
+private fun sensorManager(
+    context: Context
+): SensorManager? = context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
