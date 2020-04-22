@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_playground.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
@@ -32,21 +33,15 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 class PlaygroundFragment : Fragment() {
     private lateinit var viewModel: PlaygroundViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = getViewModel()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_playground, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_playground, container, false)
 
     private var switch = true
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel = getViewModel()
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         button.setOnClickListener {
@@ -64,5 +59,15 @@ class PlaygroundFragment : Fragment() {
             ).show()
             switch = !switch
         }
+        buttonVibrate.setOnClickListener {
+            viewModel.toggleVibrating()
+        }
+        viewModel.vibratingLiveData.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                buttonVibrate.text = "Stop vibrating"
+            } else {
+                buttonVibrate.text = "Vibrate"
+            }
+        })
     }
 }

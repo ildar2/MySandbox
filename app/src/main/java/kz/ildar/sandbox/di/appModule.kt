@@ -18,6 +18,8 @@ package kz.ildar.sandbox.di
 
 import android.content.Context
 import android.hardware.SensorManager
+import android.os.Vibrator
+import androidx.core.content.ContextCompat.getSystemService
 import kotlinx.coroutines.Dispatchers
 import kz.ildar.sandbox.data.ColorRepository
 import kz.ildar.sandbox.data.HelloRepository
@@ -38,6 +40,7 @@ import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -52,6 +55,9 @@ val appModule = module {
     single { createApi(get()) }
 
     single { createRequest() }
+    single {
+        androidContext().getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+    }
 
     single<HelloRepository> { HelloRepositoryImpl(get()) }
     single { MultiCallRepository(get()) }
@@ -68,7 +74,7 @@ val appModule = module {
     viewModel { HelloViewModel(get()) }
     viewModel { WebsocketViewModel(get(), get()) }
     viewModel { SensorViewModel(get()) }
-    viewModel { PlaygroundViewModel() }
+    viewModel { PlaygroundViewModel(get()) }
     viewModel { MultiCallViewModel(get()) }
     viewModel { ColorViewModel(get()) }
     viewModel { ColorListViewModel(get()) }
