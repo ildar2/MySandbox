@@ -7,7 +7,5 @@ data class RainbowModel(
     val textColor: Int = 0,
     val bgColor: Int = 0
 ) {
-    override fun toString(): String {
-        return "$text $x $y"
-    }
+    override fun toString(): String = "$text $x $y"
 }

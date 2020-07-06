@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -35,41 +34,22 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 class ChildFragment : Fragment() {
 
     private lateinit var viewModel: ChildViewModel
-    private var counter: Int = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        counter = arguments?.getInt("counter") ?: 0
-        viewModel = getViewModel()
-
-        viewModel.childLiveData.observe(this, Observer { value ->
-            toolbar.title = value
-        })
-        viewModel.openFragmentEvents.observe(this, EventObserver { view ->
-            val extras = FragmentNavigator.Extras.Builder()
-//                .addSharedElement(toolbar, "toolbar")//todo
-                .build()
-            Navigation.findNavController(view).navigate(
-                R.id.action_recursive_child,
-                Bundle().apply { putInt("counter", counter + 1) },
-                null,
-                extras
-            )
-        })
-    }
+    private val counter: Int
+        get() = arguments?.getInt("counter") ?: 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_child, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_child, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
 
+        initViewModel()
         viewModel.getTitle()
 
         childView.text = getString(R.string.child_fragment_label, counter)
@@ -80,5 +60,22 @@ class ChildFragment : Fragment() {
         Glide.with(this)
             .load(viewModel.getUrl())
             .into(image)
+    }
+
+    private fun initViewModel() {
+        viewModel = getViewModel()
+
+        viewModel.childLiveData.observe(viewLifecycleOwner, Observer { value ->
+            toolbar.title = value
+        })
+        viewModel.openFragmentEvents.observe(viewLifecycleOwner, EventObserver { view ->
+            val extras = FragmentNavigator.Extras.Builder().build()
+            Navigation.findNavController(view).navigate(
+                R.id.action_recursive_child,
+                Bundle().apply { putInt("counter", counter + 1) },
+                null,
+                extras
+            )
+        })
     }
 }

@@ -3,7 +3,6 @@
     <string name="child_image_desc">Child image</string>
     <string name="child_fragment_label">ChildFragment %d</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="request_not_successful">Запрос не успешен: %s</string>
     <string name="request_json_error">Ошибка обработки запроса</string>
     <string name="request_connection_error">Проверьте подключение к интернету</string>
@@ -15,4 +14,11 @@
     <string name="request_error">Ошибка: %s \n %s</string>
     <string name="request_http_error_user_blocked">Пользователь заблокирован</string>
     <string name="request_error_empty">Пустой ответ</string>
+    <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
+    <string name="color_list_title">Color list</string>
+    <string name="color_picker_title">Color picker</string>
+    <string name="hello_fragment_title">Server request</string>
+    <string name="proximity_title">Proximity Sensor</string>
+    <string name="multicall_title">Multi-request</string>
+    <string name="websocket_title">Websocket echo</string>
 </resources>

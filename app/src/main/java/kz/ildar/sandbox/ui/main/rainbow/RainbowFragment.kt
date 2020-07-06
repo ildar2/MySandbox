@@ -20,8 +20,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -29,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_rainbow.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
+import kz.ildar.sandbox.utils.toast
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class RainbowFragment : Fragment() {
@@ -62,7 +61,7 @@ class RainbowFragment : Fragment() {
                     rainbowView.visibility = View.GONE
                 }
                 Status.SUCCESS -> {
-                    Toast.makeText(activity, "Игра закончилась!", Toast.LENGTH_SHORT).show()
+                    toast("Игра закончилась!")
                 }
                 else -> {
                     //do nothing
@@ -78,8 +77,10 @@ class RainbowFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_rainbow, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
         toolbar.visibility = View.GONE
 
         minutePicker.minValue = 1

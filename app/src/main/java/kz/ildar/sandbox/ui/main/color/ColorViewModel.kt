@@ -126,15 +126,13 @@ class ColorMutable(
     }
 
     companion object {
-        fun from(item: ColorModel): ColorMutable {
-            return ColorMutable(
-                item.alpha,
-                item.red,
-                item.green,
-                item.blue,
-                item.id,
-                item.name
-            )
-        }
+        fun from(item: ColorModel) = ColorMutable(
+            item.alpha,
+            item.red,
+            item.green,
+            item.blue,
+            item.id,
+            item.name
+        )
     }
 }

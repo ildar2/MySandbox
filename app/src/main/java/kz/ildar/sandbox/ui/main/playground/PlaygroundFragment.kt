@@ -21,13 +21,12 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_playground.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.utils.toast
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class PlaygroundFragment : Fragment() {
@@ -42,8 +41,10 @@ class PlaygroundFragment : Fragment() {
     private var switch = true
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = getViewModel()
-        (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
         button.setOnClickListener {
             if (switch) {
                 et.inputType =
@@ -52,11 +53,7 @@ class PlaygroundFragment : Fragment() {
                 et.inputType =
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
             }
-            Toast.makeText(
-                activity,
-                "inputType is ${if (switch) "number" else "text"}",
-                Toast.LENGTH_SHORT
-            ).show()
+            toast("inputType is ${if (switch) "number" else "text"}")
             switch = !switch
         }
         buttonVibrate.setOnClickListener {

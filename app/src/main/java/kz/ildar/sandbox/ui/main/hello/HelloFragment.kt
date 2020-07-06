@@ -23,8 +23,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_hello.*
@@ -32,17 +30,16 @@ import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.EventObserver
+import kz.ildar.sandbox.utils.toast
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import timber.log.Timber
 
 class HelloFragment : Fragment() {
 
     private lateinit var viewModel: HelloViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private fun initViewModel() {
         viewModel = getViewModel()
-        viewModel.statusLiveData.observe(this, Observer { status ->
+        viewModel.statusLiveData.observe(viewLifecycleOwner, Observer { status ->
             when (status) {
                 Status.SHOW_LOADING -> {
                     progressBar.visibility = View.VISIBLE
@@ -52,29 +49,27 @@ class HelloFragment : Fragment() {
                 }
             }
         })
-        viewModel.errorLiveData.observe(this, EventObserver { error ->
-            Timber.w("errorLiveData fired")
-            activity?.run {
-                val text = error.format(this)
-                Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-            }
+        viewModel.errorLiveData.observe(viewLifecycleOwner, EventObserver { error ->
+            toast(error)
         })
-        viewModel.greetingLiveData.observe(this, EventObserver { message ->
-            Timber.w("greetingLiveData fired")
-            activity?.run {
-                val text = message.format(this)
-                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-            }
+        viewModel.greetingLiveData.observe(viewLifecycleOwner, EventObserver { message ->
+            toast(message)
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        inflater.inflate(R.layout.fragment_hello, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_hello, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.title = "Server request"
+        initViewModel()
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+        toolbar.title = getString(R.string.hello_fragment_title)
         makeRequest.setOnClickListener {
             loadGreetings()
         }

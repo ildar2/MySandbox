@@ -18,15 +18,12 @@ package kz.ildar.sandbox.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
-import timber.log.Timber
+import kz.ildar.sandbox.utils.TextResourceString
 
 interface UiProvider {
     val statusLiveData: LiveData<Status>
@@ -78,8 +75,12 @@ class UiCallerImpl(
             if (!silent) {
                 set(Status.SHOW_LOADING)
             }
-            val result = withContext(scopeProvider.IO, call)
-            resultBlock?.invoke(result)
+            try {
+                val result = withContext(scopeProvider.IO, call)
+                resultBlock?.invoke(result)
+            } catch (e: Exception) {
+                if (e !is CancellationException) setError(TextResourceString(e.message.orEmpty()))
+            }
             if (!silent) {
                 set(Status.HIDE_LOADING)
             }
