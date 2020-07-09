@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package kz.ildar.sandbox.ui.main.motion
+package kz.ildar.sandbox.ui.main.sensor
 
 import androidx.lifecycle.LiveData
 import kz.ildar.sandbox.ui.BaseViewModel

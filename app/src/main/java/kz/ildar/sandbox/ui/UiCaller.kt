@@ -31,9 +31,11 @@ interface UiProvider {
 }
 
 interface UiCaller : UiProvider {
+    override val statusLiveData: MutableLiveData<Status>
+
     fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
-        silent: Boolean = false,
+        statusLD: MutableLiveData<Status>? = statusLiveData,
         resultBlock: (suspend (T) -> Unit)? = null
     )
 
@@ -43,7 +45,7 @@ interface UiCaller : UiProvider {
         successBlock: (T) -> Unit
     ): Unit?
 
-    fun set(status: Status)
+    fun set(status: Status, statusLD: MutableLiveData<Status>? = statusLiveData)
 
     fun setError(error: ResourceString)
 }
@@ -63,45 +65,52 @@ class UiCallerImpl(
      * вызывает прогресс на [statusLiveData]
      *
      * [call] - `suspend`-функция запроса из репозитория
-     * [silent] - для тихих запросов, которые не должны быть видны пользователю
+     * [statusLD] - можно подставлять разные liveData для разных прогрессов (или null)
      * [resultBlock] - функция, которую нужно выполнить по завершении запроса в UI-потоке
      */
     override fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
-        silent: Boolean,
+        statusLD: MutableLiveData<Status>?,
         resultBlock: (suspend (T) -> Unit)?
     ) {
         scope.launch(scopeProvider.Main) {
-            if (!silent) {
-                set(Status.SHOW_LOADING)
-            }
+            set(Status.SHOW_LOADING, statusLD)
             try {
                 val result = withContext(scopeProvider.IO, call)
                 resultBlock?.invoke(result)
             } catch (e: Exception) {
                 if (e !is CancellationException) setError(TextResourceString(e.message.orEmpty()))
             }
-            if (!silent) {
-                set(Status.HIDE_LOADING)
-            }
+            set(Status.HIDE_LOADING, statusLD)
         }
     }
 
+    /**
+     * Чтобы не терять прогрессбар на нескольких запросах
+     */
     private var requestCounter = 0
 
-    override fun set(status: Status) {
-        when (status) {
-            Status.SHOW_LOADING -> {
-                requestCounter++
-            }
-            Status.HIDE_LOADING -> {
-                requestCounter--
-                if (requestCounter > 0) return
-                requestCounter = 0
+    /**
+     * Выставляем статус
+     * по дефолту выставлен [statusLiveData]
+     * можно подставить свою лайвдату или [null]
+     */
+    override fun set(status: Status, statusLD: MutableLiveData<Status>?) {
+        statusLD ?: return
+        if (statusLD === statusLiveData) {
+            when (status) {
+                Status.SHOW_LOADING -> {
+                    requestCounter++
+                }
+                Status.HIDE_LOADING -> {
+                    requestCounter--
+                    if (requestCounter > 0) return
+                    requestCounter = 0
+                }
             }
         }
         scope.launch(scopeProvider.Main) {
-            statusLiveData.value = status
+            statusLD.value = status
         }
     }
 

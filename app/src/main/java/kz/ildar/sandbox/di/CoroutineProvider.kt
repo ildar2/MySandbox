@@ -27,6 +27,6 @@ import kotlin.coroutines.CoroutineContext
  * should be mocked in tests (see [WebsocketViewModelTest])
  */
 open class CoroutineProvider : KoinComponent {
-    open val Main: CoroutineContext by inject(named("main"))
-    open val IO: CoroutineContext by inject(named("io"))
+    open val Main: CoroutineContext by inject(named(NAME_MAIN))
+    open val IO: CoroutineContext by inject(named(NAME_IO))
 }

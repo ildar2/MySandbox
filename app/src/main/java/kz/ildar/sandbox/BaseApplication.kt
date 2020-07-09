@@ -18,7 +18,7 @@ package kz.ildar.sandbox
 
 import android.app.Application
 import kz.ildar.sandbox.di.appModule
-import kz.ildar.sandbox.ui.main.motion.SensorCallbacks
+import kz.ildar.sandbox.ui.main.sensor.SensorCallbacks
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

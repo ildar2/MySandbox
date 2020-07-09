@@ -1,7 +1,7 @@
 package kz.ildar.sandbox.ui.main.rainbow
 
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kz.ildar.sandbox.data.ColorRepository
@@ -11,22 +11,23 @@ import kz.ildar.sandbox.ui.Status
 import kotlin.random.Random
 
 class RainbowViewModel(
-    repository: ColorRepository
+    colorRepository: ColorRepository
 ) : BaseViewModel() {
     private val random = Random(System.currentTimeMillis())
     val rainbowItemLiveData = MutableLiveData<RainbowModel>()
-    val delay = 1500L
-    val terminate = 60000L
+    private val delay = 1500L
+    private val terminate = 60000L
+    private var runningJob: Job? = null
 
     fun start(delay: Long = this.delay, terminate: Long = this.terminate) {
         uiCaller.set(Status.SHOW_LOADING)
-        scope.launch {
+        runningJob = scope.launch {
             launch {
                 delay(terminate)
                 stop()
                 success()
             }
-            while (true) {
+            while(true) {
                 newItem()
                 delay(delay)
             }
@@ -39,7 +40,7 @@ class RainbowViewModel(
 
     fun stop() {
         uiCaller.set(Status.HIDE_LOADING)
-        coroutineJob.cancelChildren()
+        runningJob?.cancel()
     }
 
     private fun newItem() {
@@ -58,7 +59,7 @@ class RainbowViewModel(
         )
     }
 
-    private val texts = repository.getColorList()
+    private val texts = colorRepository.getColorList()
         .mapTo(ArrayList(listOf("Хлопок"))) { it.name }
-    private val colors = repository.getColorList()
+    private val colors = colorRepository.getColorList()
 }

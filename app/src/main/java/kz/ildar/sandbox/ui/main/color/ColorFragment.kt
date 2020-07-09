@@ -5,10 +5,8 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,18 +14,17 @@ import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.toast
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ColorFragment : Fragment() {
+class ColorFragment : Fragment(R.layout.fragment_color) {
     companion object {
         const val EXTRA_COLOR = "extra.color"
     }
 
-    private lateinit var viewModel: ColorViewModel
+    private val viewModel: ColorViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = getViewModel()
         arguments?.getParcelable<ColorMutable>(EXTRA_COLOR)?.let {
             if (savedInstanceState == null) {
                 viewModel.initColor(it)
@@ -54,12 +51,6 @@ class ColorFragment : Fragment() {
             blueValue.text = blue.toString()
         }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_color, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)

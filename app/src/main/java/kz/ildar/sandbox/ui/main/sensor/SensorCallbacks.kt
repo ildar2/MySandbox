@@ -1,4 +1,4 @@
-package kz.ildar.sandbox.ui.main.motion
+package kz.ildar.sandbox.ui.main.sensor
 
 import android.app.Activity
 import android.app.Application

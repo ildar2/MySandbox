@@ -25,6 +25,10 @@ import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 
+/**
+ * Две реализации в зависимости от бэка
+ * todo different flavors
+ */
 interface HelloInteractor {
     val greetingLiveData: LiveData<EventWrapper<ResourceString>>
     fun loadGreetings(name: String)

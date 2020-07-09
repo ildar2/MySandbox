@@ -18,29 +18,22 @@ package kz.ildar.sandbox.ui.main.playground
 
 import android.os.Bundle
 import android.text.InputType
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_playground.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.toast
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaygroundFragment : Fragment() {
-    private lateinit var viewModel: PlaygroundViewModel
+class PlaygroundFragment : Fragment(R.layout.fragment_playground) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_playground, container, false)
+    private val viewModel: PlaygroundViewModel by viewModel()
 
     private var switch = true
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = getViewModel()
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()

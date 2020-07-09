@@ -17,9 +17,8 @@
 package kz.ildar.sandbox.ui.main.child
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -29,19 +28,16 @@ import kotlinx.android.synthetic.main.fragment_child.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.EventObserver
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ChildFragment : Fragment() {
+class ChildFragment : Fragment(R.layout.fragment_child) {
+    companion object {
+        private const val ARG_COUNTER = "counter"
+    }
 
-    private lateinit var viewModel: ChildViewModel
+    private val viewModel: ChildViewModel by viewModel()
     private val counter: Int
-        get() = arguments?.getInt("counter") ?: 0
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_child, container, false)
+        get() = arguments?.getInt(ARG_COUNTER) ?: 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
@@ -63,8 +59,6 @@ class ChildFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        viewModel = getViewModel()
-
         viewModel.childLiveData.observe(viewLifecycleOwner, Observer { value ->
             toolbar.title = value
         })
@@ -72,7 +66,7 @@ class ChildFragment : Fragment() {
             val extras = FragmentNavigator.Extras.Builder().build()
             Navigation.findNavController(view).navigate(
                 R.id.action_recursive_child,
-                Bundle().apply { putInt("counter", counter + 1) },
+                bundleOf(ARG_COUNTER to counter + 1),
                 null,
                 extras
             )

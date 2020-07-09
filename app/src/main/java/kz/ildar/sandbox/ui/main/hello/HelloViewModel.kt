@@ -20,8 +20,8 @@ import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.ui.BaseViewModel
 
 class HelloViewModel(
-    private val repo: HelloRepository,
-    private val helloDelegate: HelloEchoImpl = HelloEchoImpl(repo)
+    private val helloRepository: HelloRepository,
+    private val helloDelegate: HelloEchoImpl = HelloEchoImpl(helloRepository)
 ) : BaseViewModel(), HelloInteractor by helloDelegate {
     init {
         helloDelegate.uiCaller = uiCaller

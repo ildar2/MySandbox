@@ -18,12 +18,10 @@ package kz.ildar.sandbox.ui.main.multiCall
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kz.ildar.sandbox.R
 import kz.ildar.sandbox.data.MultiCallRepository
 import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.ui.BaseViewModel
 import kz.ildar.sandbox.utils.EventWrapper
-import kz.ildar.sandbox.utils.IdResourceString
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 

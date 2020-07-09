@@ -19,7 +19,6 @@ package kz.ildar.sandbox.di
 import android.content.Context
 import android.hardware.SensorManager
 import android.os.Vibrator
-import androidx.core.content.ContextCompat.getSystemService
 import kotlinx.coroutines.Dispatchers
 import kz.ildar.sandbox.data.ColorRepository
 import kz.ildar.sandbox.data.HelloRepository
@@ -31,8 +30,8 @@ import kz.ildar.sandbox.ui.main.child.ChildViewModel
 import kz.ildar.sandbox.ui.main.color.ColorViewModel
 import kz.ildar.sandbox.ui.main.hello.HelloViewModel
 import kz.ildar.sandbox.ui.main.list.ColorListViewModel
-import kz.ildar.sandbox.ui.main.motion.SensorViewModel
-import kz.ildar.sandbox.ui.main.motion.SensorCallbacks
+import kz.ildar.sandbox.ui.main.sensor.SensorViewModel
+import kz.ildar.sandbox.ui.main.sensor.SensorCallbacks
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.playground.PlaygroundViewModel
 import kz.ildar.sandbox.ui.main.rainbow.RainbowViewModel
@@ -52,32 +51,32 @@ import kotlin.coroutines.CoroutineContext
 val appModule = module {
     factory { createOkHttp() }
 
-    single { createApi(get()) }
+    single { createApi(client = get()) }
 
     single { createRequest() }
     single {
         androidContext().getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
     }
 
-    single<HelloRepository> { HelloRepositoryImpl(get()) }
-    single { MultiCallRepository(get()) }
+    single<HelloRepository> { HelloRepositoryImpl(api = get()) }
+    single { MultiCallRepository(api = get()) }
     single { ColorRepository() }
-    single { sensorManager(get()) }
-    single { SensorCallbacks(get()) }
+    single { sensorManager(context = androidContext()) }
+    single { SensorCallbacks(sensorManager = get()) }
 
-    single<CoroutineContext>(named("io")) { Dispatchers.IO }
-    single<CoroutineContext>(named("main")) { Dispatchers.Main }
+    single<CoroutineContext>(named(NAME_IO)) { Dispatchers.IO }
+    single<CoroutineContext>(named(NAME_MAIN)) { Dispatchers.Main }
 
     viewModel { MainViewModel() }
-    viewModel { ChildViewModel(get()) }
-    viewModel { RainbowViewModel(get()) }
-    viewModel { HelloViewModel(get()) }
-    viewModel { WebsocketViewModel(get(), get()) }
-    viewModel { SensorViewModel(get()) }
-    viewModel { PlaygroundViewModel(get()) }
-    viewModel { MultiCallViewModel(get()) }
-    viewModel { ColorViewModel(get()) }
-    viewModel { ColorListViewModel(get()) }
+    viewModel { ChildViewModel(helloRepository = get()) }
+    viewModel { RainbowViewModel(colorRepository = get()) }
+    viewModel { HelloViewModel(helloRepository = get()) }
+    viewModel { WebsocketViewModel(client = get(), request = get()) }
+    viewModel { SensorViewModel(sensorCallbacks = get()) }
+    viewModel { PlaygroundViewModel(vibrator = get()) }
+    viewModel { MultiCallViewModel(multiRepo = get()) }
+    viewModel { ColorViewModel(colorRepository = get()) }
+    viewModel { ColorListViewModel(colorRepository = get()) }
 }
 const val TIMEOUT = 3L
 
@@ -103,3 +102,6 @@ private fun createApi(client: OkHttpClient): Api = Retrofit.Builder()
 private fun sensorManager(
     context: Context
 ): SensorManager? = context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
+
+const val NAME_IO = "io"
+const val NAME_MAIN = "main"

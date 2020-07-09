@@ -17,9 +17,7 @@
 package kz.ildar.sandbox.ui.main.websocket
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_websocket.*
@@ -28,13 +26,12 @@ import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.EventObserver
 import kz.ildar.sandbox.utils.toast
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class WebsocketFragment : Fragment() {
-    private lateinit var viewModel: WebsocketViewModel
+class WebsocketFragment : Fragment(R.layout.fragment_websocket) {
+    private val viewModel: WebsocketViewModel by viewModel()
 
     private fun initViewModel() {
-        viewModel = getViewModel()
         viewModel.statusLiveData.observe(viewLifecycleOwner, Observer { status ->
             when (status) {
                 Status.SHOW_LOADING -> {
@@ -53,12 +50,6 @@ class WebsocketFragment : Fragment() {
             logView.append("\n")
         })
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_websocket, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()

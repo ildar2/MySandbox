@@ -17,9 +17,7 @@
 package kz.ildar.sandbox.ui.main.rainbow
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -28,16 +26,14 @@ import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.toast
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RainbowFragment : Fragment() {
-    private lateinit var viewModel: RainbowViewModel
+class RainbowFragment : Fragment(R.layout.fragment_rainbow) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = getViewModel()
+    private val viewModel: RainbowViewModel by viewModel()
 
-        viewModel.rainbowItemLiveData.observe(this, Observer { item ->
+    private fun initViewModel() {
+        viewModel.rainbowItemLiveData.observe(viewLifecycleOwner, Observer { item ->
             val params = rainbowView.layoutParams as ConstraintLayout.LayoutParams
             params.horizontalBias = item.x
             params.verticalBias = item.y
@@ -46,7 +42,7 @@ class RainbowFragment : Fragment() {
             rainbowView.setTextColor(item.textColor)
             rainbowView.setBackgroundColor(item.bgColor)
         })
-        viewModel.statusLiveData.observe(this, Observer {
+        viewModel.statusLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 Status.SHOW_LOADING -> {
                     startView.visibility = View.GONE
@@ -70,13 +66,8 @@ class RainbowFragment : Fragment() {
         })
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_rainbow, container, false)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initViewModel()
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()

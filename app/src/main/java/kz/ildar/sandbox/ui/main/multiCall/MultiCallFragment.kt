@@ -17,9 +17,7 @@
 package kz.ildar.sandbox.ui.main.multiCall
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_multi_call.*
@@ -28,14 +26,13 @@ import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.EventObserver
 import kz.ildar.sandbox.utils.toast
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MultiCallFragment : Fragment() {
+class MultiCallFragment : Fragment(R.layout.fragment_multi_call) {
 
-    private lateinit var viewModel: MultiCallViewModel
+    private val viewModel: MultiCallViewModel by viewModel()
 
     private fun initViewModel() {
-        viewModel = getViewModel()
         viewModel.statusLiveData.observe(viewLifecycleOwner, Observer { status ->
             when (status) {
                 Status.SHOW_LOADING -> {
@@ -57,12 +54,6 @@ class MultiCallFragment : Fragment() {
             }
         })
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_multi_call, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()

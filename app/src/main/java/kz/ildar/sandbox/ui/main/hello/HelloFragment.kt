@@ -31,14 +31,13 @@ import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.EventObserver
 import kz.ildar.sandbox.utils.toast
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HelloFragment : Fragment() {
+class HelloFragment : Fragment(R.layout.fragment_hello) {
 
-    private lateinit var viewModel: HelloViewModel
+    private val viewModel: HelloViewModel by viewModel()
 
     private fun initViewModel() {
-        viewModel = getViewModel()
         viewModel.statusLiveData.observe(viewLifecycleOwner, Observer { status ->
             when (status) {
                 Status.SHOW_LOADING -> {
@@ -56,12 +55,6 @@ class HelloFragment : Fragment() {
             toast(message)
         })
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_hello, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
