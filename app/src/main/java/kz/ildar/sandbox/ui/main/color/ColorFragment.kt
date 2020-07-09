@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.MotionEvent
 import android.view.View
-import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.utils.doOnProgressChanged
 import kz.ildar.sandbox.utils.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -73,30 +73,11 @@ class ColorFragment : Fragment(R.layout.fragment_color) {
         }
     }
 
-    private val seekBarListener = object : SeekBar.OnSeekBarChangeListener {
-        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            if (fromUser) {
-                when (seekBar) {
-                    alphaSeekbar -> viewModel.setAlpha(progress)
-                    redSeekbar -> viewModel.setRed(progress)
-                    greenSeekbar -> viewModel.setGreen(progress)
-                    blueSeekbar -> viewModel.setBlue(progress)
-                }
-            }
-        }
-
-        override fun onStartTrackingTouch(seekBar: SeekBar?) {
-        }
-
-        override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        }
-    }
-
     private fun initSeekers() {
-        alphaSeekbar.setOnSeekBarChangeListener(seekBarListener)
-        redSeekbar.setOnSeekBarChangeListener(seekBarListener)
-        greenSeekbar.setOnSeekBarChangeListener(seekBarListener)
-        blueSeekbar.setOnSeekBarChangeListener(seekBarListener)
+        alphaSeekbar.doOnProgressChanged { viewModel.setAlpha(it) }
+        redSeekbar.doOnProgressChanged { viewModel.setRed(it) }
+        greenSeekbar.doOnProgressChanged { viewModel.setGreen(it) }
+        blueSeekbar.doOnProgressChanged { viewModel.setBlue(it) }
     }
 
     var autoIncrement = false
