@@ -58,7 +58,7 @@ public final class FastFibonacci {
      * This implementation is the non-recursive version. See the web page and
      * the other programming language implementations for the recursive version.
      */
-    private static BigInteger fastFibonacciDoubling(int n) {
+    public static BigInteger fastFibonacciDoubling(int n) {
         BigInteger a = BigInteger.ZERO;
         BigInteger b = BigInteger.ONE;
         for (int bit = Integer.highestOneBit(n); bit != 0; bit >>>= 1) {
@@ -84,7 +84,7 @@ public final class FastFibonacci {
      * [1 1]^n   [F(n+1) F(n)  ]
      * [1 0]   = [F(n)   F(n-1)].
      */
-    private static BigInteger fastFibonacciMatrix(int n) {
+    public static BigInteger fastFibonacciMatrix(int n) {
         BigInteger[] matrix = {BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ZERO};
         return matrixPow(matrix, n)[1];
     }
