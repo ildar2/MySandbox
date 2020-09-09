@@ -7,10 +7,10 @@ package kz.ildar.sandbox.utils.leetcode.unionFind
  * union: O(logN)
  * find: O(logN)
  */
-class UnionFind(
+open class UnionFind(
     private val size: Int
 ) {
-    private val ids = IntArray(size)
+    protected val ids = IntArray(size)
     private val sizes = IntArray(size)
 
     /**
@@ -26,31 +26,29 @@ class UnionFind(
     override fun toString(): String =
         "UnionFind of $size,\nids: ${ids.contentToString()}\nsizes: ${sizes.contentToString()}"
 
-    fun union(p: Int, q: Int) {
+    open fun union(p: Int, q: Int): Boolean {
         val pRoot = root(p)
         val qRoot = root(q)
-        if (pRoot == qRoot) return
+        if (pRoot == qRoot) return false
 
-        val pSize = sizes[pRoot]
-        val qSize = sizes[qRoot]
-
-        if (pSize < qSize) {
+        if (sizes[pRoot] < sizes[qRoot]) {
             ids[pRoot] = qRoot
-            sizes[q] += pSize
+            sizes[qRoot] += sizes[pRoot]
         } else {
             ids[qRoot] = pRoot
-            sizes[p] += qSize
+            sizes[pRoot] += sizes[qRoot]
         }
+        return true
     }
 
-    fun find(p: Int, q: Int): Boolean = root(p) == root(q)
+    open fun find(p: Int, q: Int): Boolean = root(p) == root(q)
 
     /**
      *   5
      * 6   7
      * 2
      */
-    private fun root(node: Int): Int {
+    protected fun root(node: Int): Int {
         var root = ids[node]
         while(root != ids[root]) {
             //room for improvement - set root to grandparent
