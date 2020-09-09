@@ -20,14 +20,14 @@ fun findJudge(n: Int, trust: Array<IntArray>): Int {
 const val DEFINITELY_NOT_A_JUDGE = -1
 
 /**
- * store trust in hashmap, then loop through it to find valid candidates
+ * store trust in array, then loop through it to find valid candidates
  * time: O(n)
  * space: O(n)
  * no input modification
  */
-fun findJudgeNaive(N: Int, trust: Array<IntArray>): Int {
+fun findJudgeNaive(n: Int, trust: Array<IntArray>): Int {
 
-    val candidates = IntArray(N)//-1 if not a judge, +1 for every citizen
+    val candidates = IntArray(n)//-1 if not a judge, +1 for every citizen
     for (pair in trust) {
         candidates[pair[0] - 1] = DEFINITELY_NOT_A_JUDGE
         if (candidates[pair[1] - 1] >= 0) {
@@ -35,7 +35,7 @@ fun findJudgeNaive(N: Int, trust: Array<IntArray>): Int {
         }
     }
     for (i in candidates.indices) {
-        if (candidates[i] == N - 1) return i + 1
+        if (candidates[i] == n - 1) return i + 1
     }
     return NO_JUDGE
 }
