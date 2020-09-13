@@ -5,10 +5,11 @@ import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
 
-    private double mean;
-    private double stddev;
-    private double confidenceLo;
-    private double confidenceHi;
+    private final double mean;
+    private final double stddev;
+    private final double confidenceLo;
+    private final double confidenceHi;
+    private static final double CONFIDENCE_95 = 1.96;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
@@ -17,22 +18,22 @@ public class PercolationStats {
 
         double[] results = new double[trials];
 
-        //perform T independent computational experiments on a n-by-n grid
-        //O(T * N^2)
+        // perform T independent computational experiments on a n-by-n grid
+        // O(T * N^2)
         for (int i = 0; i < trials; i++) {
             Percolation perc = new Percolation(n);
             while (!perc.percolates()) {
                 perc.open(StdRandom.uniform(1, n + 1), StdRandom.uniform(1, n + 1));
             }
-            //The fraction of sites that are opened when the system
-            //percolates provides an estimate of the percolation threshold
+            // The fraction of sites that are opened when the system
+            // percolates provides an estimate of the percolation threshold
             results[i] = (double) perc.numberOfOpenSites() / (n * n);
         }
 
         mean = StdStats.mean(results);
         stddev = StdStats.stddev(results);
-        confidenceLo = mean - 1.96 * (stddev / Math.sqrt(trials));
-        confidenceHi = mean + 1.96 * (stddev / Math.sqrt(trials));
+        confidenceLo = mean - CONFIDENCE_95 * (stddev / Math.sqrt(trials));
+        confidenceHi = mean + CONFIDENCE_95 * (stddev / Math.sqrt(trials));
     }
 
     // sample mean of percolation threshold
