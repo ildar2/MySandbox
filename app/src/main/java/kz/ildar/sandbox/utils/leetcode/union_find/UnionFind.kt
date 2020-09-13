@@ -1,4 +1,4 @@
-package kz.ildar.sandbox.utils.leetcode.unionFind
+package kz.ildar.sandbox.utils.leetcode.union_find
 
 /**
  * Weighted Union-find
