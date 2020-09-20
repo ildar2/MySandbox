@@ -17,7 +17,7 @@ class BinarySearchKtTest {
     }
 
     @Test
-    fun testPositive() {
+    fun testPositiveEven() {
         assertEquals(0, binarySearch(intArrayOf(1, 4, 6, 15), 1))
         assertEquals(1, binarySearch(intArrayOf(1, 4, 6, 15), 4))
         assertEquals(2, binarySearch(intArrayOf(1, 4, 6, 15), 6))
@@ -25,9 +25,18 @@ class BinarySearchKtTest {
     }
 
     @Test
+    fun testPositiveOdd() {
+        assertEquals(0, binarySearch(intArrayOf(1, 4, 6, 15, 22), 1))
+        assertEquals(1, binarySearch(intArrayOf(1, 4, 6, 15, 22), 4))
+        assertEquals(2, binarySearch(intArrayOf(1, 4, 6, 15, 22), 6))
+        assertEquals(3, binarySearch(intArrayOf(1, 4, 6, 15, 22), 15))
+        assertEquals(4, binarySearch(intArrayOf(1, 4, 6, 15, 22), 22))
+    }
+
+    @Test
     fun testInvalidArray() {
         assertFailsWith<IllegalArgumentException> {
-            binarySearch(intArrayOf(12, 16, 5), 12)
+            binarySearch(intArrayOf(12, 16, 5), 12, true)
         }
     }
 }
