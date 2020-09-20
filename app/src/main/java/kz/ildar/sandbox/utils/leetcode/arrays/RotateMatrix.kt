@@ -4,9 +4,12 @@ package kz.ildar.sandbox.utils.leetcode.arrays
  * rotate given matrix 90 degrees clockwise
  * no copy
  *
- * [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+ * [[1, 2, 3],
+ *  [4, 5, 6],
+ *  [7, 8, 9]]
  */
-fun rotateMatrix(matrix: Array<IntArray>): Array<IntArray> {
+fun rotateSquareMatrix(matrix: Array<IntArray>) {
+    if (matrix.isEmpty()) return
     val n = matrix.size
 
     for (i in 0 until n) {
@@ -24,14 +27,13 @@ fun rotateMatrix(matrix: Array<IntArray>): Array<IntArray> {
             matrix[n - i - 1][j] = temp
         }
     }
-
-    return matrix
 }
 
 private fun print(matrix: Array<IntArray>) {
+    if (matrix.isEmpty()) return
     val sb = StringBuilder()
     for (i in matrix.indices) {
-        for (j in matrix.indices) {
+        for (j in matrix[0].indices) {
             sb.append(matrix[i][j]).append("\t")
         }
         sb.append("\n")
@@ -57,15 +59,37 @@ fun sumOfDiagonals(matrix: Array<IntArray>) {
     println("sum of diagonals is $sum")
 }
 
+
+/**
+ * given non-square matrix with n rows and k columns
+ * rotate it clockwise into new matrix
+ */
+fun rotateMatrix(m: Array<IntArray>): Array<IntArray> {
+    if (m.isEmpty()) return arrayOf()
+    val n = m.size
+    val k = m[0].size
+
+    val newM = Array(k) {
+        IntArray(n)
+    }
+
+    for (i in 0 until n) {
+        for (j in 0 until k) {
+            newM[j][n - i - 1] = m[i][j]
+        }
+    }
+
+    return newM
+}
+
 fun main() {
     val m = arrayOf(intArrayOf(1, 2, 3, 4), intArrayOf(5, 6, 7, 8), intArrayOf(9, 10, 11, 12), intArrayOf(13, 14, 15, 16))
     print(m)
-    sumOfDiagonals(m)
-    rotateMatrix(m)
-    print(m)
-    sumOfDiagonals(m)
+    val newM = rotateMatrix(m)
+    print(newM)
 
-    val m1 = arrayOf(intArrayOf(1, 2, 3), intArrayOf(4, 5, 6), intArrayOf(7, 8, 9))
+    val m1 = arrayOf(intArrayOf(1, 2, 3), intArrayOf(4, 5, 6), intArrayOf(7, 8, 9), intArrayOf(10, 11, 12))
     print(m1)
-    sumOfDiagonals(m1)
+    val newM1 = rotateMatrix(m1)
+    print(newM1)
 }
