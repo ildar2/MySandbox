@@ -1,4 +1,4 @@
-package kz.ildar.sandbox.utils.leetcode.union_find
+package kz.ildar.sandbox.utils.coursera.union_find
 
 import org.junit.Assert.*
 import org.junit.Test

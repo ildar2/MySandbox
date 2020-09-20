@@ -1,4 +1,4 @@
-package kz.ildar.sandbox.utils.leetcode.union_find;
+package kz.ildar.sandbox.utils.coursera.union_find;
 
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
