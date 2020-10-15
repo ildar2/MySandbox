@@ -6,6 +6,9 @@
 
     <color name="transparent">#00FFFFFF</color>
     <color name="white">#FFF</color>
+    <color name="white50">#7FFFFFFF</color>
+    <color name="black">#000000</color>
     <color name="gray_light">#CCC</color>
     <color name="gray_solid">#666</color>
+    <color name="bg_stories">@color/black</color>
 </resources>

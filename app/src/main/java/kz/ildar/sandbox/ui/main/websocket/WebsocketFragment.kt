@@ -19,20 +19,21 @@ package kz.ildar.sandbox.ui.main.websocket
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_websocket.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
-import kz.ildar.sandbox.utils.EventObserver
-import kz.ildar.sandbox.utils.toast
+import kz.ildar.sandbox.utils.ext.observe
+import kz.ildar.sandbox.utils.ext.observeEvent
+import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WebsocketFragment : Fragment(R.layout.fragment_websocket) {
     private val viewModel: WebsocketViewModel by viewModel()
 
     private fun initViewModel() {
-        viewModel.statusLiveData.observe(viewLifecycleOwner, Observer { status ->
+
+        observe(viewModel.statusLiveData) { status ->
             when (status) {
                 Status.SHOW_LOADING -> {
                     progressBar.visibility = View.VISIBLE
@@ -41,14 +42,15 @@ class WebsocketFragment : Fragment(R.layout.fragment_websocket) {
                     progressBar.visibility = View.GONE
                 }
             }
-        })
-        viewModel.errorLiveData.observe(viewLifecycleOwner, EventObserver { error ->
+        }
+
+        observeEvent(viewModel.errorLiveData) { error ->
             toast(error)
-        })
-        viewModel.logLiveData.observe(viewLifecycleOwner, Observer { logEntry ->
+        }
+        observe(viewModel.logLiveData) { logEntry ->
             logView.append(logEntry)
             logView.append("\n")
-        })
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

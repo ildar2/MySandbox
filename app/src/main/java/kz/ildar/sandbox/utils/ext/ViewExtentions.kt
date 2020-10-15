@@ -1,4 +1,4 @@
-package kz.ildar.sandbox.utils
+package kz.ildar.sandbox.utils.ext
 
 import android.widget.SeekBar
 

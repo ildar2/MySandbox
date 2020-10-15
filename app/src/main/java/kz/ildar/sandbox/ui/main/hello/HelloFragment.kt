@@ -18,19 +18,17 @@ package kz.ildar.sandbox.ui.main.hello
 
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_hello.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
-import kz.ildar.sandbox.utils.EventObserver
-import kz.ildar.sandbox.utils.toast
+import kz.ildar.sandbox.utils.ext.observe
+import kz.ildar.sandbox.utils.ext.observeEvent
+import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HelloFragment : Fragment(R.layout.fragment_hello) {
@@ -38,7 +36,7 @@ class HelloFragment : Fragment(R.layout.fragment_hello) {
     private val viewModel: HelloViewModel by viewModel()
 
     private fun initViewModel() {
-        viewModel.statusLiveData.observe(viewLifecycleOwner, Observer { status ->
+        observe(viewModel.statusLiveData) { status ->
             when (status) {
                 Status.SHOW_LOADING -> {
                     progressBar.visibility = View.VISIBLE
@@ -47,13 +45,13 @@ class HelloFragment : Fragment(R.layout.fragment_hello) {
                     progressBar.visibility = View.GONE
                 }
             }
-        })
-        viewModel.errorLiveData.observe(viewLifecycleOwner, EventObserver { error ->
+        }
+        observeEvent(viewModel.errorLiveData) { error ->
             toast(error)
-        })
-        viewModel.greetingLiveData.observe(viewLifecycleOwner, EventObserver { message ->
+        }
+        observeEvent(viewModel.greetingLiveData) { message ->
             toast(message)
-        })
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

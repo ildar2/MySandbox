@@ -30,6 +30,9 @@
             </intent-filter>
 
         </activity>
+        <activity
+            android:name=".ui.main.stories.StoriesActivity"
+            android:theme="@style/Theme.Slidr.Slidable" />
 
     </application>
 

@@ -12,8 +12,8 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_color.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
-import kz.ildar.sandbox.utils.doOnProgressChanged
-import kz.ildar.sandbox.utils.toast
+import kz.ildar.sandbox.utils.ext.doOnProgressChanged
+import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ColorFragment : Fragment(R.layout.fragment_color) {

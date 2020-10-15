@@ -21,7 +21,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
-import kotlinx.android.synthetic.main.activity_main.*
 import kz.ildar.sandbox.ui.main.child.ChildFragment
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?) = when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {
             val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
             val fragment = navHost?.childFragmentManager?.fragments?.get(0)

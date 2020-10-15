@@ -24,7 +24,7 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_playground.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
-import kz.ildar.sandbox.utils.toast
+import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaygroundFragment : Fragment(R.layout.fragment_playground) {

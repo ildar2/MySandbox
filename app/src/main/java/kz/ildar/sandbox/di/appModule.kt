@@ -35,6 +35,7 @@ import kz.ildar.sandbox.ui.main.sensor.SensorCallbacks
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.playground.PlaygroundViewModel
 import kz.ildar.sandbox.ui.main.rainbow.RainbowViewModel
+import kz.ildar.sandbox.ui.main.stories.StoriesViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -68,6 +69,7 @@ val appModule = module {
     single<CoroutineContext>(named(NAME_MAIN)) { Dispatchers.Main }
 
     viewModel { MainViewModel() }
+    viewModel { StoriesViewModel() }
     viewModel { ChildViewModel(helloRepository = get()) }
     viewModel { RainbowViewModel(colorRepository = get()) }
     viewModel { HelloViewModel(helloRepository = get()) }

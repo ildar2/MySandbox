@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_rainbow.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
-import kz.ildar.sandbox.utils.toast
+import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RainbowFragment : Fragment(R.layout.fragment_rainbow) {

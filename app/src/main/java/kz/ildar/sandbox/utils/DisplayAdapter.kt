@@ -19,6 +19,7 @@ package kz.ildar.sandbox.utils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kz.ildar.sandbox.ui.main.list.ColorListAdapter
@@ -45,15 +46,19 @@ abstract class DisplayAdapter(
 
     override fun getItemViewType(position: Int) = items[position].layout
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): DisplayViewHolder<DisplayItem> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return createViewHolder(view, viewType)
+        return createViewHolder(view, viewType) as DisplayViewHolder<DisplayItem>
     }
 
-    abstract fun createViewHolder(view: View, viewType: Int): DisplayViewHolder<DisplayItem>
+    /**
+     * Erased type for brevity, item should always implement [DisplayItem]
+     */
+    abstract fun createViewHolder(view: View, @LayoutRes viewType: Int): DisplayViewHolder<*>
 
     override fun getItemCount() = items.size
 

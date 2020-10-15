@@ -50,16 +50,17 @@ class SensorFragment : Fragment(R.layout.fragment_motion) {
 
     private fun dialog() {
         SensorCallbacks.enabled = false
-        MaterialDialog.Builder(requireActivity())
-            .content(
-                if (SensorCallbacks.mode.value == SensorMode.OPEN) "Enable secret mode?"
+        MaterialDialog(requireActivity())
+            .title(text = if (SensorCallbacks.mode.value == SensorMode.OPEN) "Enable secret mode?"
                 else "Disable secret mode?"
             )
-            .positiveText("Yes")
-            .negativeText("No")
-            .onPositive { _, _ -> SensorCallbacks.toggle() }
-            .onNegative { _, _ -> }
-            .onAny { _, _ -> SensorCallbacks.enabled = true }
+            .positiveButton(text = "Yes") {
+                SensorCallbacks.toggle()
+                SensorCallbacks.enabled = true
+            }
+            .negativeButton(text = "No") {
+                SensorCallbacks.enabled = true
+            }
             .show()
     }
 }

@@ -16,6 +16,7 @@
  */
 package kz.ildar.sandbox.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.ui.main.stories.StoriesActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment(R.layout.fragment_main) {
@@ -44,6 +46,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         viewModel.getData()
 
+        storyView.setOnClickListener {
+            startActivity(Intent(context, StoriesActivity::class.java))
+        }
         playgroundView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_playgroundFragment))
 
         childView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_childFragment))
@@ -65,8 +70,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onPause() {
         super.onPause()
-        //we're hiding screen from task manager
-        curtain.visibility = View.VISIBLE
+        //we can hide screen from task manager
+//        curtain.visibility = View.VISIBLE
     }
 
     override fun onResume() {
