@@ -12,7 +12,18 @@ import kotlin.math.max
  * explanation: 4 + 2 + 10 + 23 = 39
  */
 fun sumOfK(array: IntArray, k: Int): Int {
-    return sumOfKOptimal(array, k)
+    array.sort()
+
+    var totalSum = 0
+    var counter = 0
+    for (i in array.size - 1..0 ) {
+        counter++
+        totalSum += array[i]
+
+        if (counter == k)
+            break
+    }
+    return totalSum
 }
 
 fun sumOfKNaive(array: IntArray, k: Int): Int {

@@ -44,4 +44,32 @@ class InterviewJava {
         return output;               // [4, ]
     }
 
+    public static void main(String[] args) {
+        System.out.println(String.format("%1$.1f%% до %2$s", 5.6, "2000"));
+        Integer i = 1;
+//        float f = 1.0 + 1.0f;
+//        f = f + 1;
+
+    }
+}
+
+class Test {
+    private Test() {
+        str = "New";
+    }
+    public String str;
+
+    public static void main(String[] args) {
+        Test v1 = new Test();
+        Test v2 = v1;
+        v2.str = "My";
+        System.out.println(v1.str);
+
+
+        String a = "t";
+        String b = a;
+        System.out.println(b);
+        a = "t1";
+        System.out.println(b);
+    }
 }
