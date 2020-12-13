@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -26,124 +27,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/storyView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Proceed to Stories"
-            android:textSize="20sp"
-            android:padding="12dp"
             android:background="@drawable/ripple"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingBottom="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
-        <TextView
-            android:id="@+id/playgroundView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to Playground"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/storyView" />
-
-        <TextView
-            android:id="@+id/childView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to Child"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playgroundView" />
-
-        <TextView
-            android:id="@+id/rainbowView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to Rainbow"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/childView" />
-
-        <TextView
-            android:id="@+id/helloView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to Hello Requests"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rainbowView" />
-
-        <TextView
-            android:id="@+id/websocketView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to Websocket"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/helloView" />
-
-        <TextView
-            android:id="@+id/motionView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="To Proximity Sensor"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/websocketView" />
-
-        <TextView
-            android:id="@+id/multiCallView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to MultiCall"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/motionView" />
-
-        <TextView
-            android:id="@+id/colorView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to Color picker"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/multiCallView" />
-
-        <TextView
-            android:id="@+id/colorListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Proceed to Color list"
-            android:textSize="20sp"
-            android:padding="12dp"
-            android:background="@drawable/ripple"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/colorView" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            tools:listitem="@layout/item_main_button" />
 
         <View
             android:id="@+id/curtain"
-            android:background="@android:color/white"
             android:layout_width="match_parent"
-            android:layout_height="800dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
             android:visibility="gone"
-            tools:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

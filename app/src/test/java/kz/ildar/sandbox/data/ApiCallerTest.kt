@@ -19,7 +19,7 @@ class ApiCallerTest {
     @Test
     fun `test successful api call`() = runBlocking {
         val request: suspend () -> String = { "result1" }
-        val result = apiCaller.apiCall(request) as RequestResult.Success
+        val result = apiCaller.apiCall(request = request) as RequestResult.Success
 
         assertThat(result.result, `is`("result1"))
     }
@@ -34,7 +34,7 @@ class ApiCallerTest {
                 )
             )
         }
-        val result = apiCaller.apiCall(request) as RequestResult.Error
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
         val error = result.error as IdResourceString
 
         assertThat(error, `is`(IdResourceString(R.string.request_http_error_500)))
@@ -50,7 +50,7 @@ class ApiCallerTest {
                 )
             )
         }
-        val result = apiCaller.apiCall(request) as RequestResult.Error
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
         val error = result.error as IdResourceString
 
         assertThat(error, `is`(IdResourceString(R.string.request_http_error_404)))
@@ -66,7 +66,7 @@ class ApiCallerTest {
                 )
             )
         }
-        val result = apiCaller.apiCall(request) as RequestResult.Error
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
         val error = result.error as TextResourceString
 
         assertThat(error, `is`(TextResourceString("test message")))
@@ -82,7 +82,7 @@ class ApiCallerTest {
                 )
             )
         }
-        val result = apiCaller.apiCall(request) as RequestResult.Error
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
         val error = result.error as FormatResourceString
 
         assertThat(error, `is`(FormatResourceString(R.string.request_http_error_format, 406)))
@@ -93,7 +93,7 @@ class ApiCallerTest {
         val request: suspend () -> Unit = {
             throw ConnectException()
         }
-        val result = apiCaller.apiCall(request) as RequestResult.Error
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
         val error = result.error as IdResourceString
 
         assertThat(error, `is`(IdResourceString(R.string.request_connection_error)))
@@ -104,9 +104,27 @@ class ApiCallerTest {
         val request: suspend () -> Unit = {
             throw RuntimeException("test error")
         }
-        val result = apiCaller.apiCall(request) as RequestResult.Error
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
         val error = result.error as FormatResourceString
 
         assertThat(error, `is`(FormatResourceString(R.string.request_error, "RuntimeException", "test error")))
+    }
+
+    @Test
+    fun `test response with custom error handler`() = runBlocking {
+        val request: suspend () -> Unit = {
+            throw HttpException(
+                Response.error<Unit>(
+                    406,
+                    "{\"message\":\"test message\"}".toResponseBody(null)
+                )
+            )
+        }
+        val result = apiCaller.apiCall(request = request, customErrorHandler = {
+            RequestResult.Error(TextResourceString(it.message + " modified"))
+        }) as RequestResult.Error
+        val error = result.error as TextResourceString
+
+        assertThat(error, `is`(TextResourceString("test message modified")))
     }
 }

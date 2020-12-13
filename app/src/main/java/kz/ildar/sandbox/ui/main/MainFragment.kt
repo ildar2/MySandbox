@@ -21,51 +21,53 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.main.stories.StoriesActivity
+import kz.ildar.sandbox.utils.DisplayAdapter
+import kz.ildar.sandbox.utils.ext.observe
+import kz.ildar.sandbox.utils.ext.observeEvent
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val viewModel: MainViewModel by viewModel()
+    private val adapter = object : DisplayAdapter() {
+        override fun createViewHolder(view: View, viewType: Int) = MainButtonDisplay.ViewHolder(view)
+    }
 
     private fun initViewModel() {
-        viewModel.parentLiveData.observe(viewLifecycleOwner, Observer { value ->
-            toolbar.title = value//not working
-            (activity as? AppCompatActivity)?.supportActionBar?.title = value//working
-        })
+        observe(viewModel.actionListLiveData) {
+            adapter.items = it
+        }
+        observeEvent(viewModel.actionEventLiveData) {
+            when (it) {
+                MainNavAction.OPEN_STORIES -> startActivity(Intent(context, StoriesActivity::class.java))
+                MainNavAction.OPEN_CHILD -> Navigation.findNavController(requireView()).navigate(R.id.open_childFragment)
+                MainNavAction.OPEN_PLAYGROUND -> Navigation.findNavController(requireView()).navigate(R.id.open_playgroundFragment)
+                MainNavAction.OPEN_RAINBOW -> Navigation.findNavController(requireView()).navigate(R.id.open_rainbowFragment)
+                MainNavAction.OPEN_HELLO -> Navigation.findNavController(requireView()).navigate(R.id.open_helloFragment)
+                MainNavAction.OPEN_WEBSOCKET -> Navigation.findNavController(requireView()).navigate(R.id.open_websocketFragment)
+                MainNavAction.OPEN_MOTION -> Navigation.findNavController(requireView()).navigate(R.id.open_motionFragment)
+                MainNavAction.OPEN_MULTICALL -> Navigation.findNavController(requireView()).navigate(R.id.open_multiCallFragment)
+                MainNavAction.OPEN_COLOR -> Navigation.findNavController(requireView()).navigate(R.id.open_colorFragment)
+                MainNavAction.OPEN_COLOR_LIST -> Navigation.findNavController(requireView()).navigate(R.id.open_colorListFragment)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
         (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "Main menu"
+        rv_buttons.adapter = adapter
+    }
 
-        viewModel.getData()
-
-        storyView.setOnClickListener {
-            startActivity(Intent(context, StoriesActivity::class.java))
-        }
-        playgroundView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_playgroundFragment))
-
-        childView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_childFragment))
-
-        rainbowView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_rainbowFragment))
-
-        helloView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_helloFragment))
-
-        websocketView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_websocketFragment))
-
-        motionView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_motionFragment))
-
-        multiCallView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_multiCallFragment))
-
-        colorView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_colorFragment))
-
-        colorListView.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.open_colorListFragment))
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rv_buttons.adapter = null
     }
 
     override fun onPause() {

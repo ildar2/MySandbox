@@ -1,5 +1,6 @@
 package kz.ildar.sandbox.utils.ext
 
+import androidx.lifecycle.MutableLiveData
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -23,3 +24,7 @@ inline fun CharSequence?.notBlank(block: (String) -> Unit): Boolean {
 fun <T : Number> T?.orZero(): T = this ?: orDefault(0 as T)
 
 fun <T : Number> T?.orDefault(default: T): T = this ?: default
+
+infix fun <T> MutableLiveData<T>.set(data: T) = setValue(data)
+
+infix fun <T> MutableLiveData<T>.post(data: T) = postValue(data)
