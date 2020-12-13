@@ -42,36 +42,3 @@ fun findJudgeNaive(n: Int, trust: Array<IntArray>): Int {
 
 fun main() {
 }
-
-@Volatile
-var counter = 0
-
-fun checkMultithreading() {
-    for (i in 1..150) {
-        thread {
-            counter++
-        }
-    }
-    Thread.sleep(20)
-    println(counter)
-}
-
-class Point(val x: Int, val y: Int)
-
-fun checking1() {
-    val point1 = Point(1, 2)
-    val point2 = Point(1, 2)
-    println(point1 == point2)
-    println(point1 === point2)
-}
-
-fun checking2() {
-    listOf("three", "two", "one").forEach {
-        if (it == "one") {
-            return
-        } else {
-            println(it)
-        }
-    }
-    println("go!")
-}
