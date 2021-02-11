@@ -1,7 +1,5 @@
 package kz.ildar.sandbox.utils.leetcode.arrays
 
-import kotlin.concurrent.thread
-
 const val NO_JUDGE = -1
 
 /**
