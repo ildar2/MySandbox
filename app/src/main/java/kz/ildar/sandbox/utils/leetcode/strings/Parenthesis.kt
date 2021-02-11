@@ -1,4 +1,4 @@
-package kz.ildar.sandbox.utils.leetcode.parenthesis
+package kz.ildar.sandbox.utils.leetcode.strings
 
 /**
  * Сгенерировать все возможные скобки длинной [n]

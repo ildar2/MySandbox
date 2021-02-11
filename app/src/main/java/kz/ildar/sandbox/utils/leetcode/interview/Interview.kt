@@ -4,7 +4,7 @@ import kotlin.concurrent.thread
 
 /**
  * Дан массив [array] длиной N
- * Нужно вернуть массив, где каждое i-e значение -
+ * Нужно вернуть массив, где каждое значение с индексом i -
  * это сумма всех значений массива [array], кроме значения на i
  * array:  [2, 3, 1]
  * output: [4, 3, 5]
@@ -16,6 +16,23 @@ fun sumExceptI(
 //    return sumOptimal(array)
 }
 
+//private fun compareInternal(first: String, second: String) : Int {
+//    if (first.size != second.size) return NOT_ANAGRAM
+//    val chars1 = HashMap<Char, Int>()
+//    val chars2 = HashMap<Char, Int>()
+//
+//    for (i in 0 until first.length) {
+//        chars1[first.toCharArray(i)]++
+//        chars2[second[i]]++
+//        second[i]
+//    }
+//
+//
+//}
+
+/**
+ * explanation: 4 = 3 + 1, 3 = 2 + 1, 5 = 2 + 3
+ */
 private fun sumOptimal(array: IntArray): IntArray {
     val result = IntArray(array.size)
 
@@ -124,6 +141,12 @@ Koin vs Dagger vs Hilt
 
     }
 
+    public static void main(String []args){
+        int a = 1000_000_000;
+        int b = 2000_000_000;
+        System.out.println(a+b);
+    }
+
 	public static void main(String[] args) {
         int a1 = 1000, a2 = 1000;
         System.out.println(a1 == a2);//=>true
@@ -152,3 +175,54 @@ Koin vs Dagger vs Hilt
     }
 
  */
+
+// 1st array = ["abc", "def", "ghik"],
+//       2nd = ["abb", "efd", "igk"]
+
+// abc = cab
+
+// abc(b) abb(c) = 1 modification
+
+// [1, 0, -1]
+
+//any char but lower reg
+// size of array = 1k, lenght = 1k
+
+// O(N*M)
+// M >= K
+
+const val NOT_ANAGRAM = -1
+
+fun compare(arr1: Array<String>, arr2: Array<String>): IntArray {
+    //skip validation
+    val result = IntArray(arr1.size)
+
+    for (i in 0 until arr1.size) {
+        result[i] = compareInternal1(arr1[i], arr2[i])
+    }
+
+    return result
+}
+
+private fun compareInternal1(first: String, second: String) : Int {
+    if (first.length != second.length) return NOT_ANAGRAM
+
+    val chars1 = HashMap<Char, Int>()
+    val chars2 = HashMap<Char, Int>()
+
+    for (i in first.indices) {
+        chars1[first[i]] = (chars1[first[i]] ?: 0) + 1
+        chars2[second[i]] = (chars2[second[i]] ?: 0) + 1
+    }
+
+    var differences = 0
+
+    chars1.forEach { (ch: Char, count: Int) ->
+        val count2 = chars2[ch] ?: 0
+        differences += kotlin.math.abs(count - count2)
+    }
+
+    return differences
+}
+
+
