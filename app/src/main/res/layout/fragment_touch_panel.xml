@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.child.ChildFragment">
+
+    <TextView
+        android:id="@+id/tv_logging"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/ripple"
+        android:padding="16dp"
+        android:textSize="20sp"
+        android:visibility="visible"
+        tools:text="Logging" />
+
+    <kz.ildar.sandbox.ui.main.touch.TouchPanel
+        android:id="@+id/touch_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+</FrameLayout>

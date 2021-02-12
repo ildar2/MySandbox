@@ -160,4 +160,10 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/touchPanelFragment"
+        android:name="kz.ildar.sandbox.ui.main.touch.TouchPanelFragment"
+        android:label="fragment_touch_panel"
+        tools:layout="@layout/fragment_touch_panel" />
+
 </navigation>

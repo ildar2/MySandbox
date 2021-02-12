@@ -54,6 +54,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 MainNavAction.OPEN_MULTICALL -> Navigation.findNavController(requireView()).navigate(R.id.open_multiCallFragment)
                 MainNavAction.OPEN_COLOR -> Navigation.findNavController(requireView()).navigate(R.id.open_colorFragment)
                 MainNavAction.OPEN_COLOR_LIST -> Navigation.findNavController(requireView()).navigate(R.id.open_colorListFragment)
+                MainNavAction.OPEN_TOUCH_PANEL -> Navigation.findNavController(requireView()).navigate(R.id.touchPanelFragment)
             }
         }
     }

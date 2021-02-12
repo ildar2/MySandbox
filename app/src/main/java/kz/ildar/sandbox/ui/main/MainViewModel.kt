@@ -40,7 +40,8 @@ class MainViewModel : ViewModel() {
             MainButtonDisplay("Proceed to Proximity sensor") { action(MainNavAction.OPEN_MOTION) },
             MainButtonDisplay("Proceed to Multicall") { action(MainNavAction.OPEN_MULTICALL) },
             MainButtonDisplay("Proceed to Color picker") { action(MainNavAction.OPEN_COLOR) },
-            MainButtonDisplay("Proceed to Color list") { action(MainNavAction.OPEN_COLOR_LIST) }
+            MainButtonDisplay("Proceed to Color list") { action(MainNavAction.OPEN_COLOR_LIST) },
+            MainButtonDisplay("Proceed to Touch panel") { action(MainNavAction.OPEN_TOUCH_PANEL) }
         )
     )
     val actionEventLiveData = MutableLiveData<EventWrapper<MainNavAction>>()
@@ -74,5 +75,6 @@ enum class MainNavAction {
     OPEN_MOTION,
     OPEN_MULTICALL,
     OPEN_COLOR,
-    OPEN_COLOR_LIST
+    OPEN_COLOR_LIST,
+    OPEN_TOUCH_PANEL,
 }
