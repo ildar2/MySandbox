@@ -109,6 +109,12 @@
         tools:layout="@layout/fragment_rainbow" />
 
     <fragment
+        android:id="@+id/rainbow2Fragment"
+        android:name="kz.ildar.sandbox.ui.main.rainbow.Rainbow2Fragment"
+        android:label="fragment_rainbow2"
+        tools:layout="@layout/fragment_rainbow" />
+
+    <fragment
         android:id="@+id/playgroundFragment"
         android:name="kz.ildar.sandbox.ui.main.playground.PlaygroundFragment"
         android:label="fragment_playground"

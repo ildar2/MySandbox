@@ -31,17 +31,18 @@ import kz.ildar.sandbox.utils.wrapEvent
 class MainViewModel : ViewModel() {
     val actionListLiveData: LiveData<List<MainButtonDisplay>> = MutableLiveData(
         listOf(
-            MainButtonDisplay("Proceed to Stories") { action(MainNavAction.OPEN_STORIES) },
-            MainButtonDisplay("Proceed to Playground") { action(MainNavAction.OPEN_PLAYGROUND) },
-            MainButtonDisplay("Proceed to Child") { action(MainNavAction.OPEN_CHILD) },
-            MainButtonDisplay("Proceed to Rainbow") { action(MainNavAction.OPEN_RAINBOW) },
-            MainButtonDisplay("Proceed to Hello requests") { action(MainNavAction.OPEN_HELLO) },
-            MainButtonDisplay("Proceed to Websocket") { action(MainNavAction.OPEN_WEBSOCKET) },
-            MainButtonDisplay("Proceed to Proximity sensor") { action(MainNavAction.OPEN_MOTION) },
-            MainButtonDisplay("Proceed to Multicall") { action(MainNavAction.OPEN_MULTICALL) },
-            MainButtonDisplay("Proceed to Color picker") { action(MainNavAction.OPEN_COLOR) },
-            MainButtonDisplay("Proceed to Color list") { action(MainNavAction.OPEN_COLOR_LIST) },
-            MainButtonDisplay("Proceed to Touch panel") { action(MainNavAction.OPEN_TOUCH_PANEL) }
+            MainButtonDisplay("Stories") { action(MainNavAction.OPEN_STORIES) },
+            MainButtonDisplay("Playground") { action(MainNavAction.OPEN_PLAYGROUND) },
+            MainButtonDisplay("Child") { action(MainNavAction.OPEN_CHILD) },
+            MainButtonDisplay("Rainbow") { action(MainNavAction.OPEN_RAINBOW) },
+            MainButtonDisplay("Rainbow 2") { action(MainNavAction.OPEN_RAINBOW2) },
+            MainButtonDisplay("Hello requests") { action(MainNavAction.OPEN_HELLO) },
+            MainButtonDisplay("Websocket") { action(MainNavAction.OPEN_WEBSOCKET) },
+            MainButtonDisplay("Proximity sensor") { action(MainNavAction.OPEN_MOTION) },
+            MainButtonDisplay("Multicall") { action(MainNavAction.OPEN_MULTICALL) },
+            MainButtonDisplay("Color picker") { action(MainNavAction.OPEN_COLOR) },
+            MainButtonDisplay("Color list") { action(MainNavAction.OPEN_COLOR_LIST) },
+            MainButtonDisplay("Touch panel") { action(MainNavAction.OPEN_TOUCH_PANEL) }
         )
     )
     val actionEventLiveData = MutableLiveData<EventWrapper<MainNavAction>>()
@@ -70,6 +71,7 @@ enum class MainNavAction {
     OPEN_CHILD,
     OPEN_PLAYGROUND,
     OPEN_RAINBOW,
+    OPEN_RAINBOW2,
     OPEN_HELLO,
     OPEN_WEBSOCKET,
     OPEN_MOTION,

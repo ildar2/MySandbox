@@ -48,6 +48,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 MainNavAction.OPEN_CHILD -> Navigation.findNavController(requireView()).navigate(R.id.open_childFragment)
                 MainNavAction.OPEN_PLAYGROUND -> Navigation.findNavController(requireView()).navigate(R.id.open_playgroundFragment)
                 MainNavAction.OPEN_RAINBOW -> Navigation.findNavController(requireView()).navigate(R.id.open_rainbowFragment)
+                MainNavAction.OPEN_RAINBOW2 -> Navigation.findNavController(requireView()).navigate(R.id.rainbow2Fragment)
                 MainNavAction.OPEN_HELLO -> Navigation.findNavController(requireView()).navigate(R.id.open_helloFragment)
                 MainNavAction.OPEN_WEBSOCKET -> Navigation.findNavController(requireView()).navigate(R.id.open_websocketFragment)
                 MainNavAction.OPEN_MOTION -> Navigation.findNavController(requireView()).navigate(R.id.open_motionFragment)

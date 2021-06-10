@@ -34,6 +34,7 @@ import kz.ildar.sandbox.ui.main.sensor.SensorViewModel
 import kz.ildar.sandbox.ui.main.sensor.SensorCallbacks
 import kz.ildar.sandbox.ui.main.multiCall.MultiCallViewModel
 import kz.ildar.sandbox.ui.main.playground.PlaygroundViewModel
+import kz.ildar.sandbox.ui.main.rainbow.Rainbow2ViewModel
 import kz.ildar.sandbox.ui.main.rainbow.RainbowViewModel
 import kz.ildar.sandbox.ui.main.stories.StoriesViewModel
 import kz.ildar.sandbox.ui.main.websocket.WebsocketViewModel
@@ -72,6 +73,7 @@ val appModule = module {
     viewModel { StoriesViewModel() }
     viewModel { ChildViewModel(helloRepository = get()) }
     viewModel { RainbowViewModel(colorRepository = get()) }
+    viewModel { Rainbow2ViewModel(colorRepository = get()) }
     viewModel { HelloViewModel(helloRepository = get()) }
     viewModel { WebsocketViewModel(client = get(), request = get()) }
     viewModel { SensorViewModel(sensorCallbacks = get()) }

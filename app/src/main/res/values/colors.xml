@@ -11,4 +11,13 @@
     <color name="gray_light">#CCC</color>
     <color name="gray_solid">#666</color>
     <color name="bg_stories">@color/black</color>
+    <color name="bg_shadow">#16000000</color>
+
+    <!--  Status colors  -->
+    <color name="warning">#DD6706</color>
+    <color name="warning_bg">#FDECCC</color>
+    <color name="error">#CE3434</color>
+    <color name="error_bg">#F9DAD0</color>
+    <color name="success">#048949</color>
+    <color name="success_bg">#1A048949</color>
 </resources>
