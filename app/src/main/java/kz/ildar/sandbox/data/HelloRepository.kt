@@ -49,6 +49,6 @@ class HelloRepositoryImpl(
     }
 
     override suspend fun echoPersonalGreeting(name: String) = apiCall {
-        api.postmanEchoNamedOld(name)
+        api.postmanEchoNamedOld("Hello, $name!")
     }
 }

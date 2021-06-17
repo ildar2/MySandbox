@@ -19,6 +19,7 @@ package kz.ildar.sandbox.data
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.FormatResourceString
@@ -27,11 +28,16 @@ import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import okhttp3.ResponseBody
 import retrofit2.HttpException
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.HttpURLConnection.HTTP_INTERNAL_ERROR
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
 import java.net.SocketTimeoutException
 
+/**
+ * Интерфейс для репозиториев, указывающий на то, что
+ * производится обработка ошибок через [ApiCaller]
+ */
 interface CoroutineCaller {
     suspend fun <T> apiCall(
         customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null,
@@ -66,9 +72,7 @@ interface MultiCoroutineCaller {
     ): R
 }
 
-interface ApiCallerInterface : CoroutineCaller, MultiCoroutineCaller
-
-object ApiCaller : ApiCallerInterface {
+object ApiCaller : CoroutineCaller, MultiCoroutineCaller {
 
     private const val HTTP_CODE_ACCOUNT_BLOCKED = 419
 
@@ -117,7 +121,11 @@ object ApiCaller : ApiCallerInterface {
         request2: suspend () -> T2,
         request3: suspend () -> T3,
         zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
-    ): R = zipper(apiCall(request = request1), apiCall(request = request2), apiCall(request = request3))
+    ): R = zipper(
+        apiCall(request = request1),
+        apiCall(request = request2),
+        apiCall(request = request3)
+    )
 
     /**
      * Обработчик запросов на `kotlin coroutines`
@@ -125,15 +133,14 @@ object ApiCaller : ApiCallerInterface {
      * обрабатывает ошибки сервера и соединения
      * возвращает [RequestResult.Success] или [RequestResult.Error]
      * Применяется для suspend-функций Retrofit-api
+     * можно добавить обработчик [customErrorHandler]
      */
     override suspend fun <T> apiCall(
         customErrorHandler: ((ErrorResponse) -> RequestResult.Error)?,
         request: suspend () -> T
     ): RequestResult<T> = try {
-        coroutineScope {
-            RequestResult.Success(request.invoke())
-        }
-    } catch (e: Exception) {
+        coroutineScope { RequestResult.Success(request.invoke()) }
+    } catch (e: Throwable) {
         handleException(e, customErrorHandler)
     }
 
@@ -145,6 +152,7 @@ object ApiCaller : ApiCallerInterface {
      * Применяется для suspend-функций Retrofit-api
      *
      * Бросает исключение вместо возвращения ошибки
+     * можно добавить обработчик [customErrorHandler]
      */
     override suspend fun <T> apiCallStrict(
         customErrorHandler: ((ErrorResponse) -> RequestResult.Error)?,
@@ -157,8 +165,8 @@ object ApiCaller : ApiCallerInterface {
     }
 
     private fun handleException(
-        e: Exception,
-        customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null
+        e: Throwable,
+        customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null,
     ): RequestResult.Error = when (e) {
         is JsonSyntaxException -> {
             RequestResult.Error(IdResourceString(R.string.request_json_error))
@@ -168,6 +176,13 @@ object ApiCaller : ApiCallerInterface {
         }
         is SocketTimeoutException -> {
             RequestResult.Error(IdResourceString(R.string.request_timeout))
+        }
+        is CancellationException -> {
+            Timber.i("CancellationException")
+            RequestResult.Error(IdResourceString(R.string.request_cancellation_error))
+        }
+        is RequestError -> {
+            RequestResult.Error(e.error, e.code)
         }
         is HttpException -> when (e.code()) {
             HTTP_NOT_FOUND -> {
@@ -180,8 +195,9 @@ object ApiCaller : ApiCallerInterface {
                         IdResourceString(R.string.request_http_error_user_blocked),
                         HTTP_CODE_ACCOUNT_BLOCKED
                     )
-                } else
-                    RequestResult.Error(IdResourceString(R.string.request_http_error_500), e.code())
+                } else RequestResult.Error(
+                    IdResourceString(R.string.request_http_error_500), e.code()
+                )
             }
             else -> {
                 val error = ErrorResponse.from(e.response()?.errorBody())
@@ -189,13 +205,23 @@ object ApiCaller : ApiCallerInterface {
                     customErrorHandler.invoke(error)
                 } else {
                     RequestResult.Error(
-                        error.print(FormatResourceString(R.string.request_http_error_format, e.code()))
+                        error.print(default = FormatResourceString(
+                            R.string.request_http_error_format,
+                            e.code()
+                        )),
+                        e.code()
                     )
                 }
             }
         }
         else -> {
-            RequestResult.Error(FormatResourceString(R.string.request_error, e::class.java.simpleName, e.localizedMessage))
+            RequestResult.Error(
+                FormatResourceString(
+                    R.string.request_error,
+                    e::class.java.simpleName,
+                    e.localizedMessage
+                )
+            )
         }
     }
 }
@@ -212,7 +238,10 @@ sealed class RequestResult<out T : Any?> {
 /**
  * Исключение, которое можно использовать вместе с [ApiCaller.apiCallStrict]
  */
-class RequestError(val error: ResourceString, val code: Int = 0) : Exception()
+class RequestError(
+    val error: ResourceString,
+    val code: Int = 0
+) : Throwable()
 
 @Keep
 data class ErrorResponse(
@@ -245,5 +274,5 @@ data class ErrorResponse(
  * [ErrorResponse.print] for nullable type
  */
 fun ErrorResponse?.print(
-    default: ResourceString
+    default: ResourceString = TextResourceString("error")
 ): ResourceString = this?.print(default) ?: default

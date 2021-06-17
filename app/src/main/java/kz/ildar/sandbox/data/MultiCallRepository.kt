@@ -19,7 +19,7 @@ package kz.ildar.sandbox.data
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.data.model.GreetingsResponse
 
-class MultiCallRepository(private val api: Api) : ApiCallerInterface by ApiCaller {
+class MultiCallRepository(private val api: Api) : MultiCoroutineCaller by ApiCaller {
     suspend fun callAllMethods(): List<RequestResult<GreetingsResponse>> {
         return multiCall(api.postmanEcho(), api.postmanEcho(), api.postmanEchoNamed("Hello Carol!"))
     }

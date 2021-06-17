@@ -7,6 +7,7 @@
     <string name="request_json_error">Ошибка обработки запроса</string>
     <string name="request_connection_error">Проверьте подключение к интернету</string>
     <string name="request_timeout">Сервер не отвечает</string>
+    <string name="request_cancellation_error">Запрос отменён</string>
     <string name="request_http_error">Ошибка запроса: %d</string>
     <string name="request_http_error_format">Ошибка запроса: %d</string>
     <string name="request_http_error_404">Нет такой страницы</string>

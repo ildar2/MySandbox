@@ -7,7 +7,7 @@ import kz.ildar.sandbox.utils.IdResourceString
 import kz.ildar.sandbox.utils.TextResourceString
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import retrofit2.HttpException
 import retrofit2.Response
@@ -73,6 +73,47 @@ class ApiCallerTest {
     }
 
     @Test
+    fun `test with custom error handler 1`() = runBlocking {
+        val request: suspend () -> Unit = {
+            throw HttpException(
+                Response.error<Unit>(
+                    406,
+                    "{}".toResponseBody(null)
+                )
+            )
+        }
+        val result = apiCaller.apiCall({
+            when (it.message) {
+                else -> RequestResult.Error(it.print(TextResourceString("default")))
+            }
+        }, request) as RequestResult.Error
+        val error = result.error as TextResourceString
+
+        assertThat(error, `is`(TextResourceString("default")))
+    }
+
+    @Test
+    fun `test with custom error handler 2`() = runBlocking {
+        val request: suspend () -> Unit = {
+            throw HttpException(
+                Response.error<Unit>(
+                    406,
+                    "{\"message\":\"test message\"}".toResponseBody(null)
+                )
+            )
+        }
+        val result = apiCaller.apiCall({
+            when (it.message) {
+                "test message" -> RequestResult.Error(TextResourceString("message override"))
+                else -> RequestResult.Error(it.print(TextResourceString("default")))
+            }
+        }, request) as RequestResult.Error
+        val error = result.error as TextResourceString
+
+        assertThat(error, `is`(TextResourceString("message override")))
+    }
+
+    @Test
     fun `test response with no errorBody`() = runBlocking {
         val request: suspend () -> Unit = {
             throw HttpException(
@@ -126,5 +167,16 @@ class ApiCallerTest {
         val error = result.error as TextResourceString
 
         assertThat(error, `is`(TextResourceString("test message modified")))
+    }
+
+    @Test
+    fun `test unexpected error`() = runBlocking {
+        val request: suspend () -> Unit = {
+            throw Error("test error")
+        }
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
+        val error = result.error as FormatResourceString
+
+        assertThat(error, `is`(FormatResourceString(R.string.request_error, "Error", "test error")))
     }
 }

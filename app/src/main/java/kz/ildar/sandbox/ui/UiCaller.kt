@@ -37,7 +37,7 @@ interface UiCaller : UiProvider {
         call: suspend CoroutineScope.() -> T,
         statusLD: MutableLiveData<Status>? = statusLiveData,
         resultBlock: (suspend (T) -> Unit)? = null
-    )
+    ): Job
 
     fun <T> unwrap(
         result: RequestResult<T>,
@@ -67,22 +67,22 @@ class UiCallerImpl(
      * [call] - `suspend`-функция запроса из репозитория
      * [statusLD] - можно подставлять разные liveData для разных прогрессов (или null)
      * [resultBlock] - функция, которую нужно выполнить по завершении запроса в UI-потоке
+     *
+     * возвращает [Job], чтобы можно было прервать запрос
      */
     override fun <T> makeRequest(
         call: suspend CoroutineScope.() -> T,
         statusLD: MutableLiveData<Status>?,
         resultBlock: (suspend (T) -> Unit)?
-    ) {
-        scope.launch(scopeProvider.Main) {
-            set(Status.SHOW_LOADING, statusLD)
-            try {
-                val result = withContext(scopeProvider.IO, call)
-                resultBlock?.invoke(result)
-            } catch (e: Exception) {
-                if (e !is CancellationException) setError(TextResourceString(e.message.orEmpty()))
-            }
-            set(Status.HIDE_LOADING, statusLD)
+    ): Job = scope.launch(scopeProvider.Main) {
+        set(Status.SHOW_LOADING, statusLD)
+        try {
+            val result = withContext(scopeProvider.IO, call)
+            resultBlock?.invoke(result)
+        } catch (e: Exception) {
+            if (e !is CancellationException) setError(TextResourceString(e.message.orEmpty()))
         }
+        set(Status.HIDE_LOADING, statusLD)
     }
 
     /**
