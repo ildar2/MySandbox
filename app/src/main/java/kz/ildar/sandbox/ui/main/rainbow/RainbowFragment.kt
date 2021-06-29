@@ -22,9 +22,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_rainbow.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+import kotlinx.android.synthetic.main.include_toolbar.view.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.ui.Status
+import kz.ildar.sandbox.utils.ext.hide
+import kz.ildar.sandbox.utils.ext.show
 import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -45,19 +47,21 @@ class RainbowFragment : Fragment(R.layout.fragment_rainbow) {
         viewModel.statusLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 Status.SHOW_LOADING -> {
-                    startView.visibility = View.GONE
-                    minutePickerLabel.visibility = View.GONE
-                    minutePicker.visibility = View.GONE
-                    rainbowView.visibility = View.VISIBLE
+                    tooltip.hide()
+                    startView.hide()
+                    minutePickerLabel.hide()
+                    minutePicker.hide()
+                    rainbowView.show()
                 }
                 Status.HIDE_LOADING -> {
-                    startView.visibility = View.VISIBLE
-                    minutePickerLabel.visibility = View.VISIBLE
-                    minutePicker.visibility = View.VISIBLE
-                    rainbowView.visibility = View.GONE
+                    tooltip.show()
+                    startView.show()
+                    minutePickerLabel.show()
+                    minutePicker.show()
+                    rainbowView.hide()
                 }
                 Status.SUCCESS -> {
-                    toast("Игра закончилась!")
+                    toast(getString(R.string.rainbow_finish))
                 }
                 else -> {
                     //do nothing
@@ -68,11 +72,11 @@ class RainbowFragment : Fragment(R.layout.fragment_rainbow) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        toolbar.setNavigationOnClickListener {
+        toolbar.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        toolbar.visibility = View.GONE
+        toolbar.toolbar.hide()
 
         minutePicker.minValue = 1
         minutePicker.maxValue = 10

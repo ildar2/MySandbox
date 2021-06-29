@@ -46,6 +46,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             when (it) {
                 MainNavAction.OPEN_STORIES -> startActivity(Intent(context, StoriesActivity::class.java))
                 MainNavAction.OPEN_CHILD -> Navigation.findNavController(requireView()).navigate(R.id.open_childFragment)
+                MainNavAction.OPEN_MEMORY_TRAINING -> Navigation.findNavController(requireView()).navigate(R.id.memoryTrainingFragment)
                 MainNavAction.OPEN_PLAYGROUND -> Navigation.findNavController(requireView()).navigate(R.id.open_playgroundFragment)
                 MainNavAction.OPEN_RAINBOW -> Navigation.findNavController(requireView()).navigate(R.id.open_rainbowFragment)
                 MainNavAction.OPEN_RAINBOW2 -> Navigation.findNavController(requireView()).navigate(R.id.rainbow2Fragment)

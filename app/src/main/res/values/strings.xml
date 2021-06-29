@@ -15,6 +15,7 @@
     <string name="request_error">Ошибка: %s \n %s</string>
     <string name="request_http_error_user_blocked">Пользователь заблокирован</string>
     <string name="request_error_empty">Пустой ответ</string>
+
     <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
     <string name="color_list_title">Color list</string>
     <string name="color_picker_title">Color picker</string>
@@ -22,4 +23,18 @@
     <string name="proximity_title">Proximity Sensor</string>
     <string name="multicall_title">Multi-request</string>
     <string name="websocket_title">Websocket echo</string>
+
+    <string name="memory_button_start">Начать</string>
+    <string name="memory_button_retry">Еще раз</string>
+    <string name="memory_tooltip_init">Нажмите кнопку, чтобы начать. Нужно будет запомнить последовательность.</string>
+    <string name="memory_tooltip_sequence">Повторите последовательность</string>
+    <string name="memory_tooltip_error">Ошибка! Попробуйте еще раз</string>
+    <string name="memory_tooltip_success">Правильно!</string>
+
+    <string name="rainbow_tooltip">В течение времени игры нужно вслух называть цвет текста, игнорируя его содержание. Но если слово будет Хлопок, надо хлопнуть в ладоши.</string>
+    <string name="rainbow_button_start">Старт</string>
+    <string name="rainbow_minute_picker_tooltip">Длительность (мин):</string>
+    <string name="rainbow_picker_accessibility_tooltip">Количество минут</string>
+    <string name="rainbow_finish">Игра закончилась!</string>
+
 </resources>

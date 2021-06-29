@@ -32,6 +32,7 @@ class MainViewModel : ViewModel() {
     val actionListLiveData: LiveData<List<MainButtonDisplay>> = MutableLiveData(
         listOf(
             MainButtonDisplay("Stories") { action(MainNavAction.OPEN_STORIES) },
+            MainButtonDisplay("Memory Training") { action(MainNavAction.OPEN_MEMORY_TRAINING) },
             MainButtonDisplay("Playground") { action(MainNavAction.OPEN_PLAYGROUND) },
             MainButtonDisplay("Child") { action(MainNavAction.OPEN_CHILD) },
             MainButtonDisplay("Rainbow") { action(MainNavAction.OPEN_RAINBOW) },
@@ -69,6 +70,7 @@ class MainButtonDisplay(
 enum class MainNavAction {
     OPEN_STORIES,
     OPEN_CHILD,
+    OPEN_MEMORY_TRAINING,
     OPEN_PLAYGROUND,
     OPEN_RAINBOW,
     OPEN_RAINBOW2,

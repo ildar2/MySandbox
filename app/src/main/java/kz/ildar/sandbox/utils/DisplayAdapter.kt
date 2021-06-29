@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2019 Ildar Ishalin
+ * (C) Copyright 2021 Ildar Ishalin
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,8 @@ abstract class DisplayAdapter(
 
     override fun onBindViewHolder(holder: DisplayViewHolder<DisplayItem>, position: Int) =
         holder.bind(items[position])
+
+    override fun onViewRecycled(holder: DisplayViewHolder<DisplayItem>) = holder.unbind()
 }
 
 /**
@@ -80,4 +82,6 @@ abstract class DisplayViewHolder<E>(
     override val containerView: View
 ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
     abstract fun bind(item: E)
+    open fun bind(item: E, payloads: MutableList<Any>) = bind(item)
+    open fun unbind() = Unit
 }

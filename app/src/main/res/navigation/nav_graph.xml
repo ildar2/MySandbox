@@ -172,4 +172,10 @@
         android:label="fragment_touch_panel"
         tools:layout="@layout/fragment_touch_panel" />
 
+    <fragment
+        android:id="@+id/memoryTrainingFragment"
+        android:name="kz.ildar.sandbox.ui.main.memory.MemoryTrainingFragment"
+        android:label="fragment_memory_training"
+        tools:layout="@layout/fragment_memory_training" />
+
 </navigation>
