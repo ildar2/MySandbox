@@ -1,11 +1,12 @@
 package kz.ildar.sandbox.utils.leetcode.interview
 
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
 /**
  * Дан массив [array] длиной N
  * Нужно вернуть массив, где каждое значение с индексом i -
- * это сумма всех значений массива [array], кроме значения на i
+ * это сумма всех остальных значений массива [array], кроме значения на i
  * array:  [2, 3, 1]
  * output: [4, 3, 5]
  */
@@ -14,6 +15,13 @@ fun sumExceptI(
 ): IntArray {
     return InterviewJava.sumOptimal(array)
 //    return sumOptimal(array)
+}
+
+fun sumExceptIKotlin(
+    array: IntArray
+): IntArray = array.let {
+    val sum = array.sum()
+    array.map { sum - it }.toIntArray()
 }
 
 //private fun compareInternal(first: String, second: String) : Int {
@@ -61,10 +69,10 @@ private fun sumNotOptimal(array: IntArray): IntArray {
 }
 
 fun main() {
-    checkMultithreading1()
+    checkMultithreading()
 }
 
-//@Volatile
+@Volatile
 var counter = 0
 
 fun checkMultithreading() {
@@ -166,11 +174,11 @@ Koin vs Dagger vs Hilt
         }
 
         holder.itemView.setOnClickListener {
-            val bundle = bundleOf("user" to myDataset[position])
+            val bandle = bundleOf("user" to myDataset[position])
 
             holder.itemView.findNavController().navigate(
                     R.id.action_leaderboard_to_userProfile,
-                bundle)
+                bandle)
         }
     }
 
