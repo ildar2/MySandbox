@@ -34,7 +34,7 @@ class InterviewKtTest {
     @Test
     fun testOverflow() {
         assertArrayEquals(
-            intArrayOf(2000000000, 2000000000, 2000000000),
+            intArrayOf(198184402, 198184402, 198184402),
             sumExceptI(intArrayOf(99092201, 99092201, 99092201))
         )
     }
