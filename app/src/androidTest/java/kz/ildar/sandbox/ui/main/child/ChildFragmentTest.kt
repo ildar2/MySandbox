@@ -30,7 +30,7 @@ class ChildFragmentTest {
     @Test
     fun testCreation() {
         val scenario = launchFragmentInContainer<ChildFragment>(
-            bundleOf("counter" to 0), R.style.AppTheme, null
+            bundleOf("counter" to 0), R.style.AppTheme
         )
 //        onView(withId(R.id.toolbar)).check(matches(withText("I am Child")))
         onView(withId(R.id.childView)).check(matches(isDisplayed()))

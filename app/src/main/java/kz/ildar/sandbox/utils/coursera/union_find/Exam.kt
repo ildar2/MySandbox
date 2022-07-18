@@ -73,7 +73,7 @@ class ModifiedUnionFind(size: Int) : UnionFind(size) {
             if (root(j) == root) elements.add(j)
         }
 
-        return elements.max() ?: i
+        return elements.maxOrNull() ?: i
     }
 
 }
