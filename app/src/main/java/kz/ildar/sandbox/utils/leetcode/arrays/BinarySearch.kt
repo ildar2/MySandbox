@@ -12,8 +12,8 @@ fun binarySearch(array: IntArray, value: Int, validate: Boolean = false): Int {
     if (validate && !checkSorted(array)) return NO_VALUE
 
     var lo = 0
-    var hi = array.size - 1
-    while(lo <= hi) {
+    var hi = array.lastIndex
+    while (lo <= hi) {
         val mid = lo + (hi - lo) / 2
         when {
             value > array[mid] -> lo = mid + 1
