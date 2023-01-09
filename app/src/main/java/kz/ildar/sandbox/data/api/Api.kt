@@ -16,6 +16,7 @@
  */
 package kz.ildar.sandbox.data.api
 
+import kz.ildar.sandbox.data.SafeApiCall
 import kz.ildar.sandbox.data.model.Greeting
 import kz.ildar.sandbox.data.model.GreetingWrapper
 import retrofit2.http.GET
@@ -35,8 +36,8 @@ interface Api {
     suspend fun postmanEchoNamed(@Query("content") name: String): GreetingWrapper
 
     @GET("/get?content=Hello")
-    suspend fun postmanEchoOld(): GreetingWrapper
+    fun postmanEchoOld(): SafeApiCall<GreetingWrapper>
 
     @GET("/get")
-    suspend fun postmanEchoNamedOld(@Query("content") name: String): GreetingWrapper
+    fun postmanEchoNamedOld(@Query("content") name: String): SafeApiCall<GreetingWrapper>
 }

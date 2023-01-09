@@ -20,10 +20,7 @@ import android.content.Context
 import android.hardware.SensorManager
 import android.os.Vibrator
 import kotlinx.coroutines.Dispatchers
-import kz.ildar.sandbox.data.ColorRepository
-import kz.ildar.sandbox.data.HelloRepository
-import kz.ildar.sandbox.data.HelloRepositoryImpl
-import kz.ildar.sandbox.data.MultiCallRepository
+import kz.ildar.sandbox.data.*
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
@@ -101,6 +98,7 @@ private fun createApi(client: OkHttpClient): Api = Retrofit.Builder()
 //    .baseUrl("http://192.168.1.42:8080/")
     .baseUrl("https://postman-echo.com")
     .client(client)
+    .addCallAdapterFactory(GoApiCallAdapterFactory())
     .addConverterFactory(GsonConverterFactory.create())
     .build()
     .create(Api::class.java)

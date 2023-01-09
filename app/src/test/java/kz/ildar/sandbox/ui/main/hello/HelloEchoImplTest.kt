@@ -7,6 +7,7 @@ import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.runBlocking
 import kz.ildar.sandbox.data.HelloRepository
 import kz.ildar.sandbox.data.RequestResult
+import kz.ildar.sandbox.data.SafeResponse
 import kz.ildar.sandbox.data.model.GreetingsResponse
 import kz.ildar.sandbox.di.initTestKoin
 import kz.ildar.sandbox.ui.UiCaller
@@ -63,7 +64,7 @@ class HelloEchoImplTest : KoinComponent {
     fun `test repo success - should post value to greetingLiveData`() = runBlocking {
         val successValue = mock<GreetingsResponse>()
         `when`(successValue.getContents()).thenReturn("content")
-        `when`(repo.echoGreetings()).thenReturn(RequestResult.Success(successValue))
+        `when`(repo.echoGreetings()).thenReturn(RequestResult.Success(SafeResponse(successValue)))
         interactor.loadGreetings("")
 
         verify(uiCaller).makeRequest<RequestResult<GreetingsResponse>>(any(), any(), any())

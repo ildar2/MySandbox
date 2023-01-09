@@ -24,8 +24,8 @@ interface HelloRepository {
     fun getImageUrl(): String
     suspend fun greetings(): RequestResult<GreetingsResponse>
     suspend fun personalGreeting(name: String): RequestResult<GreetingsResponse>
-    suspend fun echoGreetings(): RequestResult<GreetingsResponse>
-    suspend fun echoPersonalGreeting(name: String): RequestResult<GreetingsResponse>
+    suspend fun echoGreetings(): RequestResult<SafeResponse<GreetingsResponse>>
+    suspend fun echoPersonalGreeting(name: String): RequestResult<SafeResponse<GreetingsResponse>>
 }
 
 class HelloRepositoryImpl(
@@ -44,11 +44,9 @@ class HelloRepositoryImpl(
         api.personalGreetings(name)
     }
 
-    override suspend fun echoGreetings() = apiCall {
-        api.postmanEchoOld()
-    }
+    override suspend fun echoGreetings() =
+        api.postmanEchoOld().call()
 
-    override suspend fun echoPersonalGreeting(name: String) = apiCall {
-        api.postmanEchoNamedOld("Hello, $name!")
-    }
+    override suspend fun echoPersonalGreeting(name: String) =
+        api.postmanEchoNamedOld("Hello, $name!").call()
 }

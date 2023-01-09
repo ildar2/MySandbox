@@ -77,7 +77,7 @@ class HelloEchoImpl(
         }) {
             when (it) {
                 is RequestResult.Success -> greetingLiveData.value =
-                    EventWrapper(TextResourceString(it.result.getContents()))
+                    EventWrapper(TextResourceString(it.result.dto.getContents()))
                 is RequestResult.Error -> uiCaller.setError(it.error)
             }
         }

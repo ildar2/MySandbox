@@ -41,6 +41,7 @@ class MultiCallFragment : Fragment(R.layout.fragment_multi_call) {
                 Status.HIDE_LOADING -> {
                     progressBar.visibility = View.GONE
                 }
+                else -> Unit
             }
         }
         observeEvent(viewModel.errorLiveData) { error ->

@@ -19,24 +19,22 @@ package kz.ildar.sandbox.data
 import kz.ildar.sandbox.data.api.Api
 import kz.ildar.sandbox.data.model.GreetingsResponse
 
-class MultiCallRepository(private val api: Api) : MultiCoroutineCaller by ApiCaller {
-    suspend fun callAllMethods(): List<RequestResult<GreetingsResponse>> {
-        return multiCall(api.postmanEcho(), api.postmanEcho(), api.postmanEchoNamed("Hello Carol!"))
-    }
+class MultiCallRepository(private val api: Api) : CoroutineCaller by ApiCaller {
+    suspend fun callAllMethods(): List<RequestResult<GreetingsResponse>> = listOf(
+        apiCall { api.postmanEcho() },
+        apiCall { api.postmanEcho() },
+        apiCall { api.postmanEchoNamed("Hello Carol!") },
+    )
 
     suspend fun callTwoMethods(): List<RequestResult<GreetingsResponse>> =
-        zip({ api.greetings() }, { api.postmanEcho() }) { res1, res2 ->
-            listOf(res1, res2)
-        }
+        listOf(apiCall { api.greetings() }, apiCall { api.postmanEcho() })
 
     suspend fun callThreeMethods(): List<RequestResult<GreetingsResponse>> =
-        zip({ api.greetings() }, { api.postmanEcho() }, { api.postmanEchoNamed("Sarah") }) { res1, res2, res3 ->
-            listOf(res1, res2, res3)
-        }
+        listOf(apiCall { api.greetings() }, apiCall { api.postmanEcho() }, apiCall { api.postmanEchoNamed("Sarah") })
 
-    suspend fun callArrayOfMethods(): List<RequestResult<GreetingsResponse>> = zipArray(
-        { api.postmanEcho() },
-        { api.postmanEchoNamed("Sarah") },
-        { throw Exception("") }
-    ) { it }
+    suspend fun callArrayOfMethods(): List<RequestResult<GreetingsResponse>> = listOf(
+        apiCall { api.postmanEcho() },
+        apiCall { api.postmanEchoNamed("Sarah") },
+        apiCall { throw Exception("") }
+    )
 }

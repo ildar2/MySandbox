@@ -75,14 +75,16 @@ class UiCallerImpl(
         statusLD: MutableLiveData<Status>?,
         resultBlock: (suspend (T) -> Unit)?
     ): Job = scope.launch(scopeProvider.Main) {
-        set(Status.SHOW_LOADING, statusLD)
         try {
+            set(Status.SHOW_LOADING, statusLD)
             val result = withContext(scopeProvider.IO, call)
             resultBlock?.invoke(result)
         } catch (e: Exception) {
-            if (e !is CancellationException) setError(TextResourceString(e.message.orEmpty()))
+            if (e is CancellationException) throw e
+            setError(TextResourceString(e.message.orEmpty()))
+        } finally {
+            set(Status.HIDE_LOADING, statusLD)
         }
-        set(Status.HIDE_LOADING, statusLD)
     }
 
     /**
@@ -107,6 +109,8 @@ class UiCallerImpl(
                     if (requestCounter > 0) return
                     requestCounter = 0
                 }
+                Status.ERROR,
+                Status.SUCCESS -> Unit
             }
         }
         scope.launch(scopeProvider.Main) {

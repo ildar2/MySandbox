@@ -41,6 +41,7 @@ class WebsocketFragment : Fragment(R.layout.fragment_websocket) {
                 Status.HIDE_LOADING -> {
                     progressBar.visibility = View.GONE
                 }
+                else -> Unit
             }
         }
 

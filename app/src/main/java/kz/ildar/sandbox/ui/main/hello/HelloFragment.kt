@@ -44,6 +44,7 @@ class HelloFragment : Fragment(R.layout.fragment_hello) {
                 Status.HIDE_LOADING -> {
                     progressBar.visibility = View.GONE
                 }
+                else -> Unit
             }
         }
         observeEvent(viewModel.errorLiveData) { error ->

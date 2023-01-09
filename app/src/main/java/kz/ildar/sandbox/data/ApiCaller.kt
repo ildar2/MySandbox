@@ -21,18 +21,23 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.FormatResourceString
 import kz.ildar.sandbox.utils.IdResourceString
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
+import okhttp3.Headers
 import okhttp3.ResponseBody
+import okhttp3.internal.closeQuietly
 import retrofit2.HttpException
+import retrofit2.Response
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.HttpURLConnection.HTTP_INTERNAL_ERROR
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
 import java.net.SocketTimeoutException
+import kotlin.math.pow
 
 /**
  * Интерфейс для репозиториев, указывающий на то, что
@@ -48,84 +53,23 @@ interface CoroutineCaller {
         customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null,
         request: suspend () -> T
     ): T
+
+    suspend fun <T> apiCallRetryable(
+        customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null,
+        shouldRetry: Boolean = true,
+        request: suspend (retryNumber: Int?, lastStatusCode: Int?) -> Response<T>
+    ): RequestResult<T>
+
+    suspend fun <T> apiCallRetryableStrict(
+        customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null,
+        shouldRetry: Boolean = true,
+        request: suspend (retryNumber: Int?, lastStatusCode: Int?) -> Response<T>
+    ): T
 }
 
-interface MultiCoroutineCaller {
-    suspend fun <T> multiCall(vararg requests: T): List<RequestResult<T>>
-
-    suspend fun <T1, T2, R> zip(
-        request1: suspend () -> T1,
-        request2: suspend () -> T2,
-        zipper: (RequestResult<T1>, RequestResult<T2>) -> R
-    ): R
-
-    suspend fun <T1, T2, T3, R> zip(
-        request1: suspend () -> T1,
-        request2: suspend () -> T2,
-        request3: suspend () -> T3,
-        zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
-    ): R
-
-    suspend fun <T, R> zipArray(
-        vararg requests: suspend () -> T,
-        zipper: (List<RequestResult<T>>) -> R
-    ): R
-}
-
-object ApiCaller : CoroutineCaller, MultiCoroutineCaller {
+object ApiCaller : CoroutineCaller {
 
     private const val HTTP_CODE_ACCOUNT_BLOCKED = 419
-
-    /**
-     * Обработчик для однородных запросов на `kotlin coroutines`
-     * [requests] должны возвращать один тип данных
-     * запускает все [requests] и записывает их в массив [RequestResult]
-     * обрабатывает ошибки сервера при помощи [apiCall]
-     * обрабатывает ошибки соединения при помощи [apiCall]
-     */
-    override suspend fun <T> multiCall(vararg requests: T) = requests.map { apiCall { it } }
-
-    /**
-     * Обработчик для однородных запросов на `kotlin coroutines`
-     * [requests] должны возвращать один тип данных
-     * запускает все [requests], записывает их в массив [RequestResult]
-     * и передает в обработчик [zipper]
-     * обрабатывает ошибки сервера при помощи [apiCall]
-     * обрабатывает ошибки соединения при помощи [apiCall]
-     */
-    override suspend fun <T, R> zipArray(
-        vararg requests: suspend () -> T,
-        zipper: (List<RequestResult<T>>) -> R
-    ) = zipper(requests.map { apiCall(request = it) })
-
-    /**
-     * Обработчик для двух разнородных запросов на `kotlin coroutines`
-     * запускает [request1], [request2] и передает в обработчик [zipper]
-     * обрабатывает ошибки сервера при помощи [apiCall]
-     * обрабатывает ошибки соединения при помощи [apiCall]
-     */
-    override suspend fun <T1, T2, R> zip(
-        request1: suspend () -> T1,
-        request2: suspend () -> T2,
-        zipper: (RequestResult<T1>, RequestResult<T2>) -> R
-    ): R = zipper(apiCall(request = request1), apiCall(request = request2))
-
-    /**
-     * Обработчик для трех разнородных запросов на `kotlin coroutines`
-     * запускает [request1], [request2], [request3] и передает в обработчик [zipper]
-     * обрабатывает ошибки сервера при помощи [apiCall]
-     * обрабатывает ошибки соединения при помощи [apiCall]
-     */
-    override suspend fun <T1, T2, T3, R> zip(
-        request1: suspend () -> T1,
-        request2: suspend () -> T2,
-        request3: suspend () -> T3,
-        zipper: (RequestResult<T1>, RequestResult<T2>, RequestResult<T3>) -> R
-    ): R = zipper(
-        apiCall(request = request1),
-        apiCall(request = request2),
-        apiCall(request = request3)
-    )
 
     /**
      * Обработчик запросов на `kotlin coroutines`
@@ -164,9 +108,86 @@ object ApiCaller : CoroutineCaller, MultiCoroutineCaller {
         throw RequestError(message, code)
     }
 
-    private fun handleException(
+    /**
+     * Общая функция для запросов в сеть с возможностью повторить запрос
+     *
+     * @param request - запрос в ретрофит. получает параметры для отправки на сервер
+     * @param customErrorHandler - кастомный обработчик ошибок
+     * @param shouldRetry - нужно ли ретраить запрос
+     *
+     * @return sealed-класс результата или ошибки
+     */
+    override suspend fun <T> apiCallRetryable(
+        customErrorHandler: ((ErrorResponse) -> RequestResult.Error)?,
+        shouldRetry: Boolean,
+        request: suspend (retryNumber: Int?, lastStatusCode: Int?) -> Response<T>
+    ): RequestResult<T> = apiCallInternal(
+        customErrorHandler,
+        shouldRetry,
+        null,
+        null,
+        request
+    )
+
+    /**
+     * Обработчик запросов на `kotlin coroutines`
+     * с возможностью повтора запроса
+     * ждет выполнения запроса [request]
+     * обрабатывает ошибки сервера и соединения
+     * возвращает готовое значение [T]
+     * Применяется для suspend-функций Retrofit-api
+     *
+     * Бросает исключение вместо возвращения ошибки
+     */
+    override suspend fun <T> apiCallRetryableStrict(
+        customErrorHandler: ((ErrorResponse) -> RequestResult.Error)?,
+        shouldRetry: Boolean,
+        request: suspend (retryNumber: Int?, lastStatusCode: Int?) -> Response<T>
+    ): T = when (val result = apiCallInternal(
+        customErrorHandler,
+        shouldRetry,
+        null,
+        null,
+        request
+    )) {
+        is RequestResult.Success -> result.result
+        is RequestResult.Error -> throw RequestError(result.error, result.code)
+    }
+
+    private suspend fun <T> apiCallInternal(
+        customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null,
+        shouldRetry: Boolean = false,
+        attempt: Int? = null,
+        lastErrorCode: Int? = null,
+        request: suspend (Int?, Int?) -> Response<T>
+    ): RequestResult<T> = try {
+        coroutineScope {
+            val response = request.invoke(attempt, lastErrorCode)
+            if (!response.isSuccessful) {
+                throw HttpException(response)
+            }
+            RequestResult.Success(response.body()!!)
+        }
+    } catch (e: Throwable) {
+        val error = handleException(e, customErrorHandler, attempt ?: 0)
+        if (shouldRetry && error.retryAction != null && error.retryAction != RetryAction.Stop) {
+            delay(error.retryAction.retryDelayMs())
+            apiCallInternal(
+                customErrorHandler,
+                shouldRetry,
+                (attempt ?: 0) + 1,
+                error.code,
+                request,
+            )
+        } else {
+            error
+        }
+    }
+
+    fun handleException(
         e: Throwable,
         customErrorHandler: ((ErrorResponse) -> RequestResult.Error)? = null,
+        attempt: Int = 0,
     ): RequestResult.Error = when (e) {
         is JsonSyntaxException -> {
             RequestResult.Error(IdResourceString(R.string.request_json_error))
@@ -179,12 +200,20 @@ object ApiCaller : CoroutineCaller, MultiCoroutineCaller {
         }
         is CancellationException -> {
             Timber.i("CancellationException")
-            RequestResult.Error(IdResourceString(R.string.request_cancellation_error))
+            throw e
         }
         is RequestError -> {
             RequestResult.Error(e.error, e.code)
         }
         is HttpException -> when (e.code()) {
+            429 -> {//can add 404 for echo check
+                Timber.w("Retryable error on attempt $attempt")
+                RequestResult.Error(
+                    TextResourceString("Retryable"),
+                    e.code(),
+                    RetryAction.of(e.response()?.headers(), attempt)
+                )
+            }
             HTTP_NOT_FOUND -> {
                 RequestResult.Error(IdResourceString(R.string.request_http_error_404), e.code())
             }
@@ -215,11 +244,12 @@ object ApiCaller : CoroutineCaller, MultiCoroutineCaller {
             }
         }
         else -> {
+            Timber.e(e, "Request failed")
             RequestResult.Error(
                 FormatResourceString(
                     R.string.request_error,
                     e::class.java.simpleName,
-                    e.localizedMessage
+                    e.localizedMessage.orEmpty(),
                 )
             )
         }
@@ -232,7 +262,11 @@ object ApiCaller : CoroutineCaller, MultiCoroutineCaller {
  */
 sealed class RequestResult<out T : Any?> {
     data class Success<out T : Any?>(val result: T) : RequestResult<T>()
-    data class Error(val error: ResourceString, val code: Int = 0) : RequestResult<Nothing>()
+    data class Error(
+        val error: ResourceString,
+        val code: Int = 0,
+        val retryAction: RetryAction? = null,
+    ) : RequestResult<Nothing>()
 }
 
 /**
@@ -242,6 +276,45 @@ class RequestError(
     val error: ResourceString,
     val code: Int = 0
 ) : Throwable()
+
+sealed interface RetryAction {
+    fun retryDelayMs(): Long = 0
+
+    companion object {
+        fun of(
+            headers: Headers?,
+            attempt: Int = 0,
+            maxClientRetries: Int = 3,
+        ): RetryAction = when (headers?.get("Header-Retry-Action")) {
+            null -> defaultRetryInterval(attempt, maxClientRetries)
+            "stop" -> Stop
+            else -> {
+                val retryInterval = headers["Header-Retry-Interval-Ms"]?.toLongOrNull()
+
+                when {
+                    retryInterval != null && retryInterval > 0 -> RetryInterval(retryInterval)
+                    else -> defaultRetryInterval(attempt, maxClientRetries)
+                }
+            }
+        }
+
+        private fun defaultRetryInterval(
+            attempt: Int,
+            maxClientRetries: Int
+        ): RetryAction = when (attempt) {
+            in 0 until maxClientRetries -> RetryInterval(1000 * 2.0.pow(attempt).toLong())
+            else -> Stop
+        }
+    }
+
+    object Stop : RetryAction
+
+    class RetryInterval(
+        private val delay: Long
+    ) : RetryAction {
+        override fun retryDelayMs(): Long = delay
+    }
+}
 
 @Keep
 data class ErrorResponse(
@@ -265,7 +338,7 @@ data class ErrorResponse(
         } catch (e: Exception) {
             null
         } finally {
-            response?.close()
+            response?.closeQuietly()
         }
     }
 }
