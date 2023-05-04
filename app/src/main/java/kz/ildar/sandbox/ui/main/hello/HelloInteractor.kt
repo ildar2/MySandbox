@@ -70,16 +70,18 @@ class HelloEchoImpl(
     override fun loadGreetings(name: String) {
         uiCaller.makeRequest({
             if (name.isBlank()) {
-                repo.echoGreetings()
+                repo.echoGreetingsGo()
             } else {
-                repo.echoPersonalGreeting(name)
+                repo.echoPersonalGreetingGo(name)
             }
         }) {
-            when (it) {
-                is RequestResult.Success -> greetingLiveData.value =
-                    EventWrapper(TextResourceString(it.result.dto.getContents()))
-                is RequestResult.Error -> uiCaller.setError(it.error)
-            }
+            greetingLiveData.value =
+                EventWrapper(TextResourceString(it.getContents()))
+//            when (it) {
+//                is RequestResult.Success -> greetingLiveData.value =
+//                    EventWrapper(TextResourceString(it.result.dto.getContents()))
+//                is RequestResult.Error -> uiCaller.setError(it.error)
+//            }
         }
     }
 }

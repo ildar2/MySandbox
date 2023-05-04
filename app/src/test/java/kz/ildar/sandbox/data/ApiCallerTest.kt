@@ -1,6 +1,6 @@
 package kz.ildar.sandbox.data
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.FormatResourceString
 import kz.ildar.sandbox.utils.IdResourceString
@@ -148,7 +148,10 @@ class ApiCallerTest {
         val result = apiCaller.apiCall(request = request) as RequestResult.Error
         val error = result.error as FormatResourceString
 
-        assertThat(error, `is`(FormatResourceString(R.string.request_error, "RuntimeException", "test error")))
+        assertThat(
+            error,
+            `is`(FormatResourceString(R.string.request_error, "RuntimeException", "test error"))
+        )
     }
 
     @Test
@@ -178,5 +181,45 @@ class ApiCallerTest {
         val error = result.error as FormatResourceString
 
         assertThat(error, `is`(FormatResourceString(R.string.request_error, "Error", "test error")))
+    }
+
+    @Test
+    fun `test nested async exception`() = runBlocking {
+        val request: suspend () -> String = {
+            //not possible to catch nested exceptions otherwise
+            val job = SupervisorJob()
+            val deferred = async<String>(job) {
+                throw Exception("nested coroutine exception")
+            }
+            deferred.await()
+        }
+        val result = apiCaller.apiCall(request = request) as RequestResult.Error
+        val error = result.error as FormatResourceString
+
+        assertThat(
+            error,
+            `is`(
+                FormatResourceString(
+                    R.string.request_error,
+                    "Exception",
+                    "nested coroutine exception"
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `test nested launch exception`() = runBlocking {
+        val request: suspend () -> String = {
+            //i have no idea what i'm doing
+            val job = SupervisorJob()
+            launch(job) {
+                throw Exception("nested exception")
+            }
+            "test result"
+        }
+        val result = apiCaller.apiCall(request = request) as RequestResult.Success
+
+        assertThat(result.result, `is`("test result"))
     }
 }

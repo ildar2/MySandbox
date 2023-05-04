@@ -22,6 +22,7 @@ import android.os.Vibrator
 import kotlinx.coroutines.Dispatchers
 import kz.ildar.sandbox.data.*
 import kz.ildar.sandbox.data.api.Api
+import kz.ildar.sandbox.data.go.GoApiCallAdapterFactory
 import kz.ildar.sandbox.ui.main.MainViewModel
 import kz.ildar.sandbox.ui.main.child.ChildViewModel
 import kz.ildar.sandbox.ui.main.color.ColorViewModel
@@ -98,6 +99,7 @@ private fun createApi(client: OkHttpClient): Api = Retrofit.Builder()
 //    .baseUrl("http://192.168.1.42:8080/")
     .baseUrl("https://postman-echo.com")
     .client(client)
+    .addCallAdapterFactory(SafeApiCallAdapterFactory())
     .addCallAdapterFactory(GoApiCallAdapterFactory())
     .addConverterFactory(GsonConverterFactory.create())
     .build()

@@ -75,7 +75,7 @@ class SafeApiCallImpl<R : Any>(private val call: Call<R>) : SafeApiCall<R> {
         }
 }
 
-class GoApiCallAdapterFactory : CallAdapter.Factory() {
+class SafeApiCallAdapterFactory : CallAdapter.Factory() {
 
     override fun get(
         returnType: Type,
@@ -89,7 +89,7 @@ class GoApiCallAdapterFactory : CallAdapter.Factory() {
             && returnType is ParameterizedType
             && getRawType(getParameterUpperBound(0, returnType)) == SafeApiCall::class.java
         ) {
-            throw IllegalStateException("Don't use suspend with GoApiCall")
+            throw IllegalStateException("Don't use suspend with SafeApiCall")
         }
 
         // target check

@@ -19,11 +19,14 @@ package kz.ildar.sandbox.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kz.ildar.sandbox.data.RequestResult
 import kz.ildar.sandbox.di.CoroutineProvider
 import kz.ildar.sandbox.utils.EventWrapper
 import kz.ildar.sandbox.utils.ResourceString
 import kz.ildar.sandbox.utils.TextResourceString
+import timber.log.Timber
 
 interface UiProvider {
     val statusLiveData: LiveData<Status>
@@ -56,6 +59,9 @@ class UiCallerImpl(
     _statusLiveData: MutableLiveData<Status>,
     _errorLiveData: MutableLiveData<EventWrapper<ResourceString>>
 ) : UiCaller {
+    val errorFlow: MutableSharedFlow<ResourceString> = MutableSharedFlow(extraBufferCapacity = 0)
+    val loadingState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     override val statusLiveData: MutableLiveData<Status> = _statusLiveData
     override val errorLiveData: MutableLiveData<EventWrapper<ResourceString>> = _errorLiveData
 
@@ -80,6 +86,7 @@ class UiCallerImpl(
             val result = withContext(scopeProvider.IO, call)
             resultBlock?.invoke(result)
         } catch (e: Exception) {
+            Timber.w(e, "Caught exception: ${e.javaClass.simpleName} ${e.message}")
             if (e is CancellationException) throw e
             setError(TextResourceString(e.message.orEmpty()))
         } finally {
@@ -115,12 +122,14 @@ class UiCallerImpl(
         }
         scope.launch(scopeProvider.Main) {
             statusLD.value = status
+            loadingState.value = status == Status.SHOW_LOADING
         }
     }
 
     override fun setError(error: ResourceString) {
         scope.launch(scopeProvider.Main) {
             errorLiveData.value = EventWrapper(error)
+            errorFlow.emit(error)
         }
     }
 

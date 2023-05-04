@@ -17,9 +17,11 @@
 package kz.ildar.sandbox.data.api
 
 import kz.ildar.sandbox.data.SafeApiCall
+import kz.ildar.sandbox.data.go.GoApiCall
 import kz.ildar.sandbox.data.model.Greeting
 import kz.ildar.sandbox.data.model.GreetingWrapper
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface Api {
@@ -36,8 +38,14 @@ interface Api {
     suspend fun postmanEchoNamed(@Query("content") name: String): GreetingWrapper
 
     @GET("/get?content=Hello")
-    fun postmanEchoOld(): SafeApiCall<GreetingWrapper>
+    fun postmanEchoSafe(): SafeApiCall<GreetingWrapper>
 
     @GET("/get")
-    fun postmanEchoNamedOld(@Query("content") name: String): SafeApiCall<GreetingWrapper>
+    fun postmanEchoNamedSafe(@Query("content") name: String): SafeApiCall<GreetingWrapper>
+
+    @GET("/get?content=Hello")
+    fun postmanEchoGo(): GoApiCall<GreetingWrapper>
+
+    @GET("/gett")
+    fun postmanEchoNamedGo(@Query("content") name: String): GoApiCall<GreetingWrapper>
 }

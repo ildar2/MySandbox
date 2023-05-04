@@ -17,6 +17,8 @@
 package kz.ildar.sandbox.data
 
 import kz.ildar.sandbox.data.api.Api
+import kz.ildar.sandbox.data.go.request
+import kz.ildar.sandbox.data.model.GreetingWrapper
 import kz.ildar.sandbox.data.model.GreetingsResponse
 
 interface HelloRepository {
@@ -26,6 +28,8 @@ interface HelloRepository {
     suspend fun personalGreeting(name: String): RequestResult<GreetingsResponse>
     suspend fun echoGreetings(): RequestResult<SafeResponse<GreetingsResponse>>
     suspend fun echoPersonalGreeting(name: String): RequestResult<SafeResponse<GreetingsResponse>>
+    suspend fun echoGreetingsGo(): GreetingWrapper
+    suspend fun echoPersonalGreetingGo(name: String): GreetingWrapper
 }
 
 class HelloRepositoryImpl(
@@ -45,8 +49,14 @@ class HelloRepositoryImpl(
     }
 
     override suspend fun echoGreetings() =
-        api.postmanEchoOld().call()
+        api.postmanEchoSafe().call()
 
     override suspend fun echoPersonalGreeting(name: String) =
-        api.postmanEchoNamedOld("Hello, $name!").call()
+        api.postmanEchoNamedSafe("Hello, $name!").call()
+
+    override suspend fun echoGreetingsGo() =
+        api.postmanEchoGo().request()
+
+    override suspend fun echoPersonalGreetingGo(name: String) =
+        api.postmanEchoNamedGo("Hello, $name!").singleRequest().dto
 }

@@ -19,9 +19,7 @@ package kz.ildar.sandbox.data
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.FormatResourceString
 import kz.ildar.sandbox.utils.IdResourceString
@@ -71,6 +69,11 @@ object ApiCaller : CoroutineCaller {
 
     private const val HTTP_CODE_ACCOUNT_BLOCKED = 419
 
+    private val exceptionHandler = CoroutineExceptionHandler { coroutineContext, exception ->
+        val res = handleException(exception)
+        println("uncaught: " + res.error)
+    }
+
     /**
      * Обработчик запросов на `kotlin coroutines`
      * ждет выполнения запроса [request]
@@ -82,10 +85,36 @@ object ApiCaller : CoroutineCaller {
     override suspend fun <T> apiCall(
         customErrorHandler: ((ErrorResponse) -> RequestResult.Error)?,
         request: suspend () -> T
-    ): RequestResult<T> = try {
-        coroutineScope { RequestResult.Success(request.invoke()) }
-    } catch (e: Throwable) {
-        handleException(e, customErrorHandler)
+    ): RequestResult<T> {
+        return runCatching {
+            val supervisor = SupervisorJob()
+            withContext(supervisor + CoroutineExceptionHandler { _, exception ->
+                throw exception
+            }) {
+                async(supervisor) { request.invoke() }.await()
+            }
+        }.fold(
+            onSuccess = { RequestResult.Success(it) },
+            onFailure = {
+                handleException(it, customErrorHandler)
+            }
+        )
+
+
+//        return runCatching { request.invoke() }.fold(
+//            onSuccess = { RequestResult.Success(it) },
+//            onFailure = {
+//                handleException(it, customErrorHandler)
+//            }
+//        )
+
+//        return try {
+//            coroutineScope {
+//                RequestResult.Success(request.invoke())
+//            }
+//        } catch (e: Throwable) {
+//            handleException(e, customErrorHandler)
+//        }
     }
 
     /**
@@ -206,7 +235,7 @@ object ApiCaller : CoroutineCaller {
             RequestResult.Error(e.error, e.code)
         }
         is HttpException -> when (e.code()) {
-            429 -> {//can add 404 for echo check
+            429, 404 -> {//can add 404 for echo check
                 Timber.w("Retryable error on attempt $attempt")
                 RequestResult.Error(
                     TextResourceString("Retryable"),

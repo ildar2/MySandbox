@@ -1,6 +1,10 @@
-apply plugin: "com.android.application"
-apply plugin: "kotlin-android"
-apply plugin: "kotlin-android-extensions"
+
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "kotlin-android-extensions"
+    id "marathon" version "0.7.6"
+}
 
 android {
     compileSdkVersion 33
@@ -85,6 +89,7 @@ dependencies {
 
     testImplementation "junit:junit:4.13.2"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
     testImplementation "androidx.test:core:1.5.0"
     testImplementation "com.android.support.test:rules:1.0.2"
     testImplementation "com.android.support.test:runner:1.0.2"
