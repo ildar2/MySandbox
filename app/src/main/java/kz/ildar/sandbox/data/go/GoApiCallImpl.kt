@@ -13,18 +13,22 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kz.ildar.sandbox.data.go.statebar.GoApiCallResultObserver
 import retrofit2.Call as RCall
 
 class GoApiCallImpl<T : Any>(
     private val callFactory: Call.Factory,
-    private val originalCall: RCall<T>
+    private val originalCall: RCall<T>,
+    private val observer: GoApiCallResultObserver
 ) : GoApiCall<T> {
 
     override suspend fun singleRequest(): GoApiResponse<T> {
         return try {
-            makeRequest(createCallRequest())
+            val result = makeRequest(createCallRequest())
+            observer.onResult(successResult())
+            result
         } catch (ex: Throwable) {
-            throw when (ex) {
+            val error = when (ex) {
                 is CancellationException -> ex
                 is HttpException -> GoApiHttpException(
                     code = ex.code(),
@@ -32,6 +36,8 @@ class GoApiCallImpl<T : Any>(
                 )
                 else -> GoApiOtherException(original = ex)
             }
+            observer.onResult(errorResult(error))
+            throw error
         }
     }
 
@@ -85,6 +91,27 @@ class GoApiCallImpl<T : Any>(
                     }
                 }
             })
+        }
+    }
+
+    private fun successResult(): GoApiCallResultObserver.CallResult.SuccessResult {
+        return GoApiCallResultObserver.CallResult.SuccessResult(originalCall.request().url.encodedPath.cutApiVersion())
+    }
+
+    private fun errorResult(error: Throwable): GoApiCallResultObserver.CallResult.FailureResult {
+        return GoApiCallResultObserver.CallResult.FailureResult(
+            originalCall.request().url.encodedPath.cutApiVersion(),
+            error
+        )
+    }
+
+    private fun String.cutApiVersion(): String {
+        if (this.isBlank()) return this
+        val prettied = trim()
+        return if (prettied[0] == '/') {
+            prettied.removeRange(0, 1).substringAfter("/")
+        } else {
+            prettied.substringAfter("/")
         }
     }
 }

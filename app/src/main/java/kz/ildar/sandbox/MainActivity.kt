@@ -21,9 +21,12 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import kz.ildar.sandbox.data.go.statebar.InternetConnectionStateBarMediator
 import kz.ildar.sandbox.ui.main.child.ChildFragment
 
 class MainActivity : AppCompatActivity() {
+
+    private val internetConnectionStateBarMediator: InternetConnectionStateBarMediator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,5 +52,15 @@ class MainActivity : AppCompatActivity() {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        internetConnectionStateBarMediator?.attach(null)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        internetConnectionStateBarMediator?.detach()
     }
 }

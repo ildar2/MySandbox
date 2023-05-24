@@ -15,6 +15,10 @@
     <string name="request_error">Ошибка: %s \n %s</string>
     <string name="request_http_error_user_blocked">Пользователь заблокирован</string>
     <string name="request_error_empty">Пустой ответ</string>
+    <string name="toast_connection_lost_taxiontheway">Connection failure</string>
+    <string name="toast_connection_lost_taxisearch">There are some connection issues, but we’re still looking for a car</string>
+    <string name="shuttle_payment_internet_error_title">Internet connection lost. Payment may be complete</string>
+    <string name="shuttle_payment_internet_error_subtitle">Get back online to continue</string>
 
     <string name="copied_to_clipboard">Скопировано в буфер обмена</string>
     <string name="color_list_title">Color list</string>

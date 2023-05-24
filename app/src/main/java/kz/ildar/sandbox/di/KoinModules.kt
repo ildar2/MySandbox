@@ -19,6 +19,7 @@ package kz.ildar.sandbox.di
 import android.content.Context
 import android.hardware.SensorManager
 import android.os.Vibrator
+import java.util.Random
 import kotlinx.coroutines.Dispatchers
 import kz.ildar.sandbox.data.*
 import kz.ildar.sandbox.data.api.Api
@@ -48,6 +49,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
+import kz.ildar.sandbox.data.go.statebar.GoApiCallResultObserver
+import kz.ildar.sandbox.data.go.statebar.GoNetworkStrategiesProvider
+import kz.ildar.sandbox.data.go.statebar.NetworkStateRepository
+import kz.ildar.sandbox.data.go.statebar.ShuttleOrderStateProvider
+import kz.ildar.sandbox.data.go.statebar.StateBarGoApiCallResultObserver
+import kz.ildar.sandbox.data.go.statebar.StrategiesProvider
+import kz.ildar.sandbox.data.go.statebar.TaxiOrderStateProvider
+import org.koin.dsl.binds
 
 val appModule = module {
     factory { createOkHttp() }
@@ -67,6 +76,23 @@ val appModule = module {
 
     single<CoroutineContext>(named(NAME_IO)) { Dispatchers.IO }
     single<CoroutineContext>(named(NAME_MAIN)) { Dispatchers.Main }
+
+    single {
+        StateBarGoApiCallResultObserver(get(), get())
+    }.binds(arrayOf(GoApiCallResultObserver::class, NetworkStateRepository::class))
+    single<StrategiesProvider> {
+        GoNetworkStrategiesProvider(get(), get())
+    }
+    single<TaxiOrderStateProvider> {
+        object : TaxiOrderStateProvider {
+            override fun isOrderSearching() = Random().nextBoolean()
+        }
+    }
+    single<ShuttleOrderStateProvider> {
+        object : ShuttleOrderStateProvider {
+            override fun isOrderWaitingPayments() = Random().nextBoolean()
+        }
+    }
 
     viewModel { MainViewModel() }
     viewModel { StoriesViewModel() }
@@ -100,7 +126,7 @@ private fun createApi(client: OkHttpClient): Api = Retrofit.Builder()
     .baseUrl("https://postman-echo.com")
     .client(client)
     .addCallAdapterFactory(SafeApiCallAdapterFactory())
-    .addCallAdapterFactory(GoApiCallAdapterFactory())
+    .addCallAdapterFactory(GoApiCallAdapterFactory(GoApiCallResultObserver.EMPTY))
     .addConverterFactory(GsonConverterFactory.create())
     .build()
     .create(Api::class.java)
