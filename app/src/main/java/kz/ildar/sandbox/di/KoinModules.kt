@@ -18,6 +18,7 @@ package kz.ildar.sandbox.di
 
 import android.content.Context
 import android.hardware.SensorManager
+import android.net.ConnectivityManager
 import android.os.Vibrator
 import java.util.Random
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +57,7 @@ import kz.ildar.sandbox.data.go.statebar.ShuttleOrderStateProvider
 import kz.ildar.sandbox.data.go.statebar.StateBarGoApiCallResultObserver
 import kz.ildar.sandbox.data.go.statebar.StrategiesProvider
 import kz.ildar.sandbox.data.go.statebar.TaxiOrderStateProvider
+import kz.ildar.sandbox.ui.main.child.ConnectivityInteractor
 import org.koin.dsl.binds
 
 val appModule = module {
@@ -64,15 +66,15 @@ val appModule = module {
     single { createApi(client = get()) }
 
     single { createRequest() }
-    single {
-        androidContext().getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
-    }
+    single { androidContext().getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator }
+    single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager }
 
     single<HelloRepository> { HelloRepositoryImpl(api = get()) }
     single { MultiCallRepository(api = get()) }
     single { ColorRepository() }
     single { sensorManager(context = androidContext()) }
     single { SensorCallbacks(sensorManager = get()) }
+    single { ConnectivityInteractor(connectivityManager = get()) }
 
     single<CoroutineContext>(named(NAME_IO)) { Dispatchers.IO }
     single<CoroutineContext>(named(NAME_MAIN)) { Dispatchers.Main }
@@ -96,7 +98,7 @@ val appModule = module {
 
     viewModel { MainViewModel() }
     viewModel { StoriesViewModel() }
-    viewModel { ChildViewModel(helloRepository = get()) }
+    viewModel { ChildViewModel(helloRepository = get(), connectivityInteractor = get()) }
     viewModel { RainbowViewModel(colorRepository = get()) }
     viewModel { Rainbow2ViewModel(colorRepository = get()) }
     viewModel { HelloViewModel(helloRepository = get()) }

@@ -24,8 +24,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigator
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.fragment_child.*
-import kotlinx.android.synthetic.main.include_toolbar.*
+import kotlinx.android.synthetic.main.fragment_child.childView
+import kotlinx.android.synthetic.main.fragment_child.image
+import kotlinx.android.synthetic.main.include_toolbar.toolbar
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.EventObserver
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -60,8 +61,13 @@ class ChildFragment : Fragment(R.layout.fragment_child) {
 
     private fun initViewModel() {
         viewModel.childLiveData.observe(viewLifecycleOwner, Observer { value ->
-            toolbar.title = value
+//            toolbar.title = value
+            childView.text = value
         })
+        viewModel.capabilities.observe(viewLifecycleOwner) { value ->
+            childView.append("\n")
+            childView.append(value)
+        }
         viewModel.openFragmentEvents.observe(viewLifecycleOwner, EventObserver { view ->
             val extras = FragmentNavigator.Extras.Builder().build()
             Navigation.findNavController(view).navigate(

@@ -46,6 +46,6 @@ interface Api {
     @GET("/get?content=Hello")
     fun postmanEchoGo(): GoApiCall<GreetingWrapper>
 
-    @GET("/gett")
+    @GET("/get")
     fun postmanEchoNamedGo(@Query("content") name: String): GoApiCall<GreetingWrapper>
 }

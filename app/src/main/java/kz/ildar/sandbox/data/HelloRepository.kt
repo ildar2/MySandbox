@@ -58,5 +58,5 @@ class HelloRepositoryImpl(
         api.postmanEchoGo().request()
 
     override suspend fun echoPersonalGreetingGo(name: String) =
-        api.postmanEchoNamedGo("Hello, $name!").singleRequest().dto
+        api.postmanEchoNamedGo("Hello, $name!").request()
 }
