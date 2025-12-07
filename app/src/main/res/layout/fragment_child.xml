@@ -7,6 +7,7 @@
     tools:context=".ui.main.child.ChildFragment">
 
     <include
+        android:id="@+id/include"
         layout="@layout/include_toolbar" />
 
     <TextView

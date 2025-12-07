@@ -17,11 +17,12 @@
 package kz.ildar.sandbox.ui.main.rainbow
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_rainbow_2.*
-import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.FragmentRainbow2Binding
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.ext.hide
 import kz.ildar.sandbox.utils.ext.observe
@@ -43,47 +44,57 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class Rainbow2Fragment : Fragment(R.layout.fragment_rainbow_2) {
 
     private val viewModel: Rainbow2ViewModel by viewModel()
+    private lateinit var binding: FragmentRainbow2Binding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRainbow2Binding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private fun initViewModel() {
         observe(viewModel.rainbowItemLiveData) { item ->
-            tv_result.text = "Совпадает ли название цвета наверху с цветом текста внизу?"
-            tv_result.textColorRes(R.color.gray_solid)
-            rainbowView.text = item.text1
-            rainbowView.setTextColor(item.textColor1)
-            rainbow2View.text = item.text2
-            rainbow2View.setTextColor(item.textColor2)
+            binding.tvResult.text = "Совпадает ли название цвета наверху с цветом текста внизу?"
+            binding.tvResult.textColorRes(R.color.gray_solid)
+            binding.rainbowView.text = item.text1
+            binding.rainbowView.setTextColor(item.textColor1)
+            binding.rainbow2View.text = item.text2
+            binding.rainbow2View.setTextColor(item.textColor2)
         }
         observe(viewModel.statusLiveData) {
             when (it) {
                 Status.SHOW_LOADING -> {
-                    tv_result.show()
-                    startView.hide()
-                    minutePickerLabel.hide()
-                    minutePicker.hide()
-                    rainbowView.show()
-                    rainbow2View.show()
-                    b_yes.show()
-                    b_no.show()
+                    binding.tvResult.show()
+                    binding.startView.hide()
+                    binding.minutePickerLabel.hide()
+                    binding.minutePicker.hide()
+                    binding.rainbowView.show()
+                    binding.rainbow2View.show()
+                    binding.bYes.show()
+                    binding.bNo.show()
                 }
                 Status.HIDE_LOADING -> {
-                    tv_result.hide()
-                    startView.show()
-                    minutePickerLabel.show()
-                    minutePicker.show()
-                    rainbowView.hide()
-                    rainbow2View.hide()
-                    b_yes.hide()
-                    b_no.hide()
+                    binding.tvResult.hide()
+                    binding.startView.show()
+                    binding.minutePickerLabel.show()
+                    binding.minutePicker.show()
+                    binding.rainbowView.hide()
+                    binding.rainbow2View.hide()
+                    binding.bYes.hide()
+                    binding.bNo.hide()
                 }
                 Status.SUCCESS -> {
-                    tv_result.show()
-                    tv_result.text = "Правильно!"
-                    tv_result.textColorRes(R.color.success)
+                    binding.tvResult.show()
+                    binding.tvResult.text = "Правильно!"
+                    binding.tvResult.textColorRes(R.color.success)
                 }
                 else -> {
-                    tv_result.show()
-                    tv_result.text = "Неправильно!"
-                    tv_result.textColorRes(R.color.error)
+                    binding.tvResult.show()
+                    binding.tvResult.text = "Неправильно!"
+                    binding.tvResult.textColorRes(R.color.error)
                 }
             }
         }
@@ -91,25 +102,25 @@ class Rainbow2Fragment : Fragment(R.layout.fragment_rainbow_2) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        toolbar.setNavigationOnClickListener {
+        binding.include.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding.include.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        toolbar.hide()
+        binding.include.toolbar.hide()
 
-        minutePicker.minValue = 1
-        minutePicker.maxValue = 10
+        binding.minutePicker.minValue = 1
+        binding.minutePicker.maxValue = 10
 
-        startView.setOnClickListener {
-            viewModel.start(terminate = minutePicker.value * 60000L)
+        binding.startView.setOnClickListener {
+            viewModel.start(terminate = binding.minutePicker.value * 60000L)
         }
-        contentView.setOnClickListener {
+        binding.contentView.setOnClickListener {
             viewModel.stop()
         }
-        b_yes.setSafeOnClickListener {
+        binding.bYes.setSafeOnClickListener {
             viewModel.answerYes()
         }
-        b_no.setSafeOnClickListener {
+        binding.bNo.setSafeOnClickListener {
             viewModel.answerNo()
         }
     }

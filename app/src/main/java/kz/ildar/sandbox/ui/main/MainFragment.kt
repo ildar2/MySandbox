@@ -18,13 +18,14 @@ package kz.ildar.sandbox.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.FragmentMainBinding
 import kz.ildar.sandbox.ui.main.stories.StoriesActivity
 import kz.ildar.sandbox.utils.DisplayAdapter
 import kz.ildar.sandbox.utils.ext.observe
@@ -34,8 +35,18 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val viewModel: MainViewModel by viewModel()
+    private lateinit var binding: FragmentMainBinding
     private val adapter = object : DisplayAdapter() {
         override fun createViewHolder(view: View, viewType: Int) = MainButtonDisplay.ViewHolder(view)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private fun initViewModel() {
@@ -63,14 +74,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
-        (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
+        (activity as? AppCompatActivity)?.setSupportActionBar(binding.include.toolbar)
         (activity as? AppCompatActivity)?.supportActionBar?.title = "Main menu"
-        rv_buttons.adapter = adapter
+
+        binding.rvButtons.adapter = adapter
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_buttons.adapter = null
+        binding.rvButtons.adapter = null
     }
 
     override fun onPause() {
@@ -81,6 +93,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onResume() {
         super.onResume()
-        curtain.visibility = View.GONE
+        binding.curtain.visibility = View.GONE
     }
 }

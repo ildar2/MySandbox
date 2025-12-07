@@ -8,6 +8,7 @@
     tools:context=".ui.main.sensor.SensorFragment">
 
     <include
+        android:id="@+id/include"
         layout="@layout/include_toolbar"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -18,7 +19,7 @@
         android:padding="24dp"
         android:gravity="center"
         android:textSize="24sp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/include"
         tools:text="Near" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

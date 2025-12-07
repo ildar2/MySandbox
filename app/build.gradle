@@ -2,7 +2,7 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id "kotlin-android-extensions"
+    id "kotlin-parcelize"
     id "marathon" version "0.7.6"
 }
 
@@ -20,29 +20,29 @@ android {
     buildTypes {
         release {
             debuggable = false
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
         debug {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
-    }
-    androidExtensions {
-        experimental = true
     }
     testOptions {
         unitTests.includeAndroidResources = true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-    namespace 'kz.ildar.sandbox'
+    buildFeatures {
+        viewBinding = true
+    }
+    namespace = "kz.ildar.sandbox"
 }
 
 dependencies {

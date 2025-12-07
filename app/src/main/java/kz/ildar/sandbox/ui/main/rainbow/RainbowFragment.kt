@@ -17,13 +17,14 @@
 package kz.ildar.sandbox.ui.main.rainbow
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.fragment_rainbow.*
-import kotlinx.android.synthetic.main.include_toolbar.view.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.FragmentRainbowBinding
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.ext.hide
 import kz.ildar.sandbox.utils.ext.show
@@ -33,36 +34,49 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class RainbowFragment : Fragment(R.layout.fragment_rainbow) {
 
     private val viewModel: RainbowViewModel by viewModel()
+    private lateinit var binding: FragmentRainbowBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRainbowBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private fun initViewModel() {
         viewModel.rainbowItemLiveData.observe(viewLifecycleOwner, Observer { item ->
-            val params = rainbowView.layoutParams as ConstraintLayout.LayoutParams
+            val params = binding.rainbowView.layoutParams as ConstraintLayout.LayoutParams
             params.horizontalBias = item.x
             params.verticalBias = item.y
-            rainbowView.layoutParams = params
-            rainbowView.text = item.text
-            rainbowView.setTextColor(item.textColor)
-            rainbowView.setBackgroundColor(item.bgColor)
+            binding.rainbowView.layoutParams = params
+            binding.rainbowView.text = item.text
+            binding.rainbowView.setTextColor(item.textColor)
+            binding.rainbowView.setBackgroundColor(item.bgColor)
         })
         viewModel.statusLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 Status.SHOW_LOADING -> {
-                    tooltip.hide()
-                    startView.hide()
-                    minutePickerLabel.hide()
-                    minutePicker.hide()
-                    rainbowView.show()
+                    binding.tooltip.hide()
+                    binding.startView.hide()
+                    binding.minutePickerLabel.hide()
+                    binding.minutePicker.hide()
+                    binding.rainbowView.show()
                 }
+
                 Status.HIDE_LOADING -> {
-                    tooltip.show()
-                    startView.show()
-                    minutePickerLabel.show()
-                    minutePicker.show()
-                    rainbowView.hide()
+                    binding.tooltip.show()
+                    binding.startView.show()
+                    binding.minutePickerLabel.show()
+                    binding.minutePicker.show()
+                    binding.rainbowView.hide()
                 }
+
                 Status.SUCCESS -> {
                     toast(getString(R.string.rainbow_finish))
                 }
+
                 else -> {
                     //do nothing
                 }
@@ -72,19 +86,19 @@ class RainbowFragment : Fragment(R.layout.fragment_rainbow) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
-        toolbar.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        toolbar.toolbar.setNavigationOnClickListener {
+        binding.toolbar.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding.toolbar.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        toolbar.toolbar.hide()
+        binding.toolbar.toolbar.hide()
 
-        minutePicker.minValue = 1
-        minutePicker.maxValue = 10
+        binding.minutePicker.minValue = 1
+        binding.minutePicker.maxValue = 10
 
-        startView.setOnClickListener {
-            viewModel.start(terminate = minutePicker.value * 60000L)
+        binding.startView.setOnClickListener {
+            viewModel.start(terminate = binding.minutePicker.value * 60000L)
         }
-        contentView.setOnClickListener {
+        binding.contentView.setOnClickListener {
             viewModel.stop()
         }
     }

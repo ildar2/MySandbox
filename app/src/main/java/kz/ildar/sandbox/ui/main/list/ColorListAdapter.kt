@@ -1,7 +1,8 @@
 package kz.ildar.sandbox.ui.main.list
 
 import android.view.View
-import kotlinx.android.synthetic.main.item_color.*
+import android.widget.ImageView
+import android.widget.TextView
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.DisplayAdapter
 import kz.ildar.sandbox.utils.DisplayItem
@@ -24,9 +25,9 @@ data class ColorDisplay(
 ) : DisplayItem(R.layout.item_color) {
     class ViewHolder(itemView: View) : DisplayViewHolder<ColorDisplay>(itemView) {
         override fun bind(item: ColorDisplay) {
-            colorView.setBackgroundColor(item.color)
-            hexView.text = item.hexString
-            nameView.text = item.name
+            itemView.findViewById<ImageView>(R.id.colorView).setBackgroundColor(item.color)
+            itemView.findViewById<TextView>(R.id.hexView).text = item.hexString
+            itemView.findViewById<TextView>(R.id.nameView).text = item.name
             itemView.setOnClickListener { item.click.invoke(item) }
         }
     }

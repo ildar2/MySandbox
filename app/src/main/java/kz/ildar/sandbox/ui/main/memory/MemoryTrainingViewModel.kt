@@ -17,8 +17,8 @@
 package kz.ildar.sandbox.ui.main.memory
 
 import android.view.View
+import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
-import kotlinx.android.synthetic.main.item_point_display.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kz.ildar.sandbox.R
@@ -166,6 +166,7 @@ class PointDisplay(
 
     class PointViewHolder(view: View) : DisplayViewHolder<PointDisplay>(view) {
         override fun bind(item: PointDisplay) {
+            val point_icon = containerView.findViewById<ImageView>(R.id.point_icon)
             point_icon.setImageResource(item.pressed.icon)
             point_icon.setOnClickListener {
                 item.click?.invoke(item.wrapped)

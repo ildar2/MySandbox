@@ -17,11 +17,12 @@
 package kz.ildar.sandbox.ui.main.multiCall
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_multi_call.*
-import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.FragmentMultiCallBinding
 import kz.ildar.sandbox.ui.Status
 import kz.ildar.sandbox.utils.ext.observe
 import kz.ildar.sandbox.utils.ext.observeEvent
@@ -31,15 +32,25 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MultiCallFragment : Fragment(R.layout.fragment_multi_call) {
 
     private val viewModel: MultiCallViewModel by viewModel()
+    private lateinit var binding: FragmentMultiCallBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMultiCallBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private fun initViewModel() {
         observe(viewModel.statusLiveData) { status ->
             when (status) {
                 Status.SHOW_LOADING -> {
-                    progressBar.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.VISIBLE
                 }
                 Status.HIDE_LOADING -> {
-                    progressBar.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                 }
                 else -> Unit
             }
@@ -50,37 +61,37 @@ class MultiCallFragment : Fragment(R.layout.fragment_multi_call) {
         observeEvent(viewModel.logLiveData) { message ->
             activity?.run {
                 val text = message.format(this)
-                logView.append(text)
-                logView.append("\n")
+                binding.logView.append(text)
+                binding.logView.append("\n")
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initViewModel()
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        toolbar.setNavigationOnClickListener {
+        binding.include.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding.include.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        toolbar.title = getString(R.string.multicall_title)
+        binding.include.toolbar.title = getString(R.string.multicall_title)
 
-        multipleCallView.setOnClickListener {
-            logView.text = ""
+        binding.multipleCallView.setOnClickListener {
+            binding.logView.text = ""
             viewModel.multiCall()
         }
 
-        twoCallView.setOnClickListener {
-            logView.text = ""
+        binding.twoCallView.setOnClickListener {
+            binding.logView.text = ""
             viewModel.twoCall()
         }
 
-        threeCallView.setOnClickListener {
-            logView.text = ""
+        binding.threeCallView.setOnClickListener {
+            binding.logView.text = ""
             viewModel.threeCall()
         }
 
-        arrayCallView.setOnClickListener {
-            logView.text = ""
+        binding.arrayCallView.setOnClickListener {
+            binding.logView.text = ""
             viewModel.arrayCall()
         }
     }

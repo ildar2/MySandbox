@@ -19,11 +19,11 @@ package kz.ildar.sandbox.ui.main.stories
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.item_story_full.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.DisplayAdapter
 import kz.ildar.sandbox.utils.DisplayItem
@@ -56,8 +56,8 @@ class StoryFullDisplay(
 
     class ViewHolder(view: View) : DisplayViewHolder<StoryFullDisplay>(view) {
         override fun bind(item: StoryFullDisplay) {
-            iv_story_bg.loadColor(item.pages[item.pagePosition])
-            tv_story_message.text = "$adapterPosition ${item.pagePosition}"
+            containerView.findViewById<ImageView>(R.id.iv_story_bg).loadColor(item.pages[item.pagePosition])
+            containerView.findViewById<TextView>(R.id.tv_story_message).text = "$adapterPosition ${item.pagePosition}"
         }
 
         private fun ImageView.loadColor(@ColorInt color: Int) {

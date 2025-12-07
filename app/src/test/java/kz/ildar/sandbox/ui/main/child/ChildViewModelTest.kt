@@ -16,20 +16,20 @@
  */
 package kz.ildar.sandbox.ui.main.child
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import kz.ildar.sandbox.data.HelloRepository
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 
 class ChildViewModelTest {
     @Test
     fun testGetUrl() {
-        val repo = Mockito.mock(HelloRepository::class.java)
-        `when`(repo.getImageUrl()).thenReturn("url1")
+        val repo = mock<HelloRepository>()
+        whenever(repo.getImageUrl()).thenReturn("url1")
 
-        val viewModel = ChildViewModel(repo)
+        val viewModel = ChildViewModel(repo, mock())
 
         assertThat(viewModel.getUrl(), `is`("url1"))
     }

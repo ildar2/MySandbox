@@ -30,8 +30,8 @@ import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrListener
 import com.r0adkll.slidr.model.SlidrPosition
 import com.teresaholfeld.stories.StoriesProgressView
-import kotlinx.android.synthetic.main.activity_stories.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.ActivityStoriesBinding
 import kz.ildar.sandbox.utils.ext.observe
 import kz.ildar.sandbox.utils.ext.orDefault
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -57,17 +57,18 @@ class StoriesActivity : AppCompatActivity() {
     private var mIsVerticalDragging = false
     private var lastX = 0f
     private var mTouchSlop = 0
+    private lateinit var binding: ActivityStoriesBinding
 
     /**
      * Ставим сториз на паузу, когда юзер держит палец на экране: [indicator]
      * Определяем клики: [pressTime] & [limit]
      * Определяем, на какой стороне кликнул юзер: [leftSide]
-     * Управляем перетаскиванием [story_container]: [mIsDragging] & [lastX]
+     * Управляем перетаскиванием [binding.storyContainer]: [mIsDragging] & [lastX]
      */
     private val onTouchListener = View.OnTouchListener { v, event ->
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                indicator.pause()
+                binding.indicator.pause()
                 pressTime = System.currentTimeMillis()
                 lastX = event.x
                 return@OnTouchListener false
@@ -83,15 +84,15 @@ class StoriesActivity : AppCompatActivity() {
 
                 if (mIsDragging) {
                     lastX = event.x
-                    if (story_container.isFakeDragging || story_container.beginFakeDrag()) {
-                        story_container.fakeDragBy(deltaX)
+                    if (binding.storyContainer.isFakeDragging || binding.storyContainer.beginFakeDrag()) {
+                        binding.storyContainer.fakeDragBy(deltaX)
                     }
                 }
             }
             MotionEvent.ACTION_CANCEL,
             MotionEvent.ACTION_UP -> {
                 if (event.action != MotionEvent.ACTION_CANCEL) {
-                    indicator.resume()
+                    binding.indicator.resume()
                 }
                 val width = v.width
                 leftSide = event.x < width / 2
@@ -103,8 +104,8 @@ class StoriesActivity : AppCompatActivity() {
                     return@OnTouchListener v.performClick()
                 }
                 mIsDragging = false
-                if (story_container.isFakeDragging) {
-                    story_container.endFakeDrag()
+                if (binding.storyContainer.isFakeDragging) {
+                    binding.storyContainer.endFakeDrag()
                 }
                 return@OnTouchListener true
             }
@@ -114,7 +115,8 @@ class StoriesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stories)
+        binding = ActivityStoriesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupSwipeClose()
         setupTouchArea()
         setupPager()
@@ -122,22 +124,22 @@ class StoriesActivity : AppCompatActivity() {
 
     private fun setupTouchArea() {
         mTouchSlop = ViewConfiguration.get(this).scaledPagingTouchSlop
-        touch_area.setOnClickListener {
+        binding.touchArea.setOnClickListener {
             if (leftSide) {
-                if (pagePosition > 0) indicator.reverse()
+                if (pagePosition > 0) binding.indicator.reverse()
                 else goLeft()
-            } else indicator.skip()
+            } else binding.indicator.skip()
         }
-        touch_area.setOnTouchListener(onTouchListener)
-        button_stories.setOnClickListener {
+        binding.touchArea.setOnTouchListener(onTouchListener)
+        binding.buttonStories.setOnClickListener {
             viewModel.loadStories()
         }
     }
 
     private fun setupPager() {
-        story_container.adapter = storiesAdapter
-        story_container.setPageTransformer(CubePageTransformer())
-        story_container.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.storyContainer.adapter = storiesAdapter
+        binding.storyContainer.setPageTransformer(CubePageTransformer())
+        binding.storyContainer.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 if (position > storyPosition) goRight(false)
                 if (position < storyPosition) goLeft(false)
@@ -150,20 +152,20 @@ class StoriesActivity : AppCompatActivity() {
             storyPosition = 0
             pagesCount = it.firstOrNull()?.pageCount.orDefault(-1)
             pagePosition = it.firstOrNull()?.pagePosition.orDefault(-1)
-            button_stories.text = "loaded stories: $storyCount"
+            binding.buttonStories.text = "loaded stories: $storyCount"
             resetIndicator()
         }
     }
 
     private fun goLeft(updatePager: Boolean = true) {
         if (storyPosition <= 0) {
-            indicator.reverse()
+            binding.indicator.reverse()
             return
         }
         pagesCount = storiesAdapter.stories[--storyPosition].pageCount
         pagePosition = storiesAdapter.stories[storyPosition].pagePosition
-        button_stories.text = "started left $storyPosition $pagePosition"
-        if (updatePager) story_container.currentItem = storyPosition
+        binding.buttonStories.text = "started left $storyPosition $pagePosition"
+        if (updatePager) binding.storyContainer.currentItem = storyPosition
         resetIndicator()
     }
 
@@ -174,8 +176,8 @@ class StoriesActivity : AppCompatActivity() {
         }
         pagesCount = storiesAdapter.stories[++storyPosition].pageCount
         pagePosition = storiesAdapter.stories[storyPosition].pagePosition
-        button_stories.text = "started right $storyPosition $pagePosition"
-        if (updatePager) story_container.currentItem = storyPosition
+        binding.buttonStories.text = "started right $storyPosition $pagePosition"
+        if (updatePager) binding.storyContainer.currentItem = storyPosition
         resetIndicator()
     }
 
@@ -183,30 +185,30 @@ class StoriesActivity : AppCompatActivity() {
      * Верхний индикатор сториз
      */
     private fun resetIndicator() {
-        indicator.clear()
-        indicator.setStoriesListener(object : StoriesProgressView.StoriesListener {
+        binding.indicator.clear()
+        binding.indicator.setStoriesListener(object : StoriesProgressView.StoriesListener {
             override fun onComplete() {
                 goRight()
             }
 
             override fun onNext() {
                 pagePosition++
-                button_stories.text = "next: $storyPosition $pagePosition"
+                binding.buttonStories.text = "next: $storyPosition $pagePosition"
                 storiesAdapter.stories[storyPosition].pagePosition = pagePosition
                 storiesAdapter.notifyItemChanged(storyPosition)
             }
 
             override fun onPrev() {
                 if (pagePosition > 0) pagePosition--
-                button_stories.text = "previous: $storyPosition $pagePosition"
+                binding.buttonStories.text = "previous: $storyPosition $pagePosition"
                 storiesAdapter.stories[storyPosition].pagePosition = pagePosition
                 storiesAdapter.notifyItemChanged(storyPosition)
             }
         })
-        indicator.setStoriesCount(pagesCount)
-        indicator.setStoryDuration(5000L)
+        binding.indicator.setStoriesCount(pagesCount)
+        binding.indicator.setStoryDuration(5000L)
         if (!mIsVerticalDragging) {
-            indicator.startStories(pagePosition)
+            binding.indicator.startStories(pagePosition)
         }
     }
 
@@ -248,7 +250,7 @@ class StoriesActivity : AppCompatActivity() {
                             it.name == "current"
                         }?.also {
                             it.isAccessible = true
-                        }?.get(indicator) as? Int ?: -1
+                        }?.get(binding.indicator) as? Int ?: -1
 
                         current >= 0
                     } catch (e: Exception) {
@@ -257,12 +259,12 @@ class StoriesActivity : AppCompatActivity() {
                     }
 
                     if (running) {
-                        indicator.resume()
+                        binding.indicator.resume()
                     } else {
                         //rare case: swipe left/right then bottom
-                        indicator.startStories(pagePosition)
+                        binding.indicator.startStories(pagePosition)
                     }
-                    button_stories.text = "resume: $storyPosition $pagePosition"
+                    binding.buttonStories.text = "resume: $storyPosition $pagePosition"
                 }
 
                 /**
@@ -279,7 +281,7 @@ class StoriesActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        indicator.destroy()
-        story_container.adapter = null
+        binding.indicator.destroy()
+        binding.storyContainer.adapter = null
     }
 }

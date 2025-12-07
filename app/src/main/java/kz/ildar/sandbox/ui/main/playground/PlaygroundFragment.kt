@@ -18,12 +18,13 @@ package kz.ildar.sandbox.ui.main.playground
 
 import android.os.Bundle
 import android.text.InputType
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.fragment_playground.*
-import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.FragmentPlaygroundBinding
 import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -32,31 +33,41 @@ class PlaygroundFragment : Fragment(R.layout.fragment_playground) {
     private val viewModel: PlaygroundViewModel by viewModel()
 
     private var switch = true
+    private lateinit var binding: FragmentPlaygroundBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPlaygroundBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        toolbar.setNavigationOnClickListener {
+        binding.include.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding.include.toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        button.setOnClickListener {
+        binding.button.setOnClickListener {
             if (switch) {
-                et.inputType =
+                binding.et.inputType =
                     InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
             } else {
-                et.inputType =
+                binding.et.inputType =
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
             }
             toast("inputType is ${if (switch) "number" else "text"}")
             switch = !switch
         }
-        buttonVibrate.setOnClickListener {
+        binding.buttonVibrate.setOnClickListener {
             viewModel.toggleVibrating()
         }
         viewModel.vibratingLiveData.observe(viewLifecycleOwner, Observer {
             if (it == true) {
-                buttonVibrate.text = "Stop vibrating"
+                binding.buttonVibrate.text = "Stop vibrating"
             } else {
-                buttonVibrate.text = "Vibrate"
+                binding.buttonVibrate.text = "Vibrate"
             }
         })
     }

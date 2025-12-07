@@ -17,10 +17,10 @@
 package kz.ildar.sandbox.ui.main
 
 import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.android.synthetic.main.item_main_button.*
 import kz.ildar.sandbox.R
 import kz.ildar.sandbox.utils.DisplayItem
 import kz.ildar.sandbox.utils.DisplayViewHolder
@@ -59,6 +59,7 @@ class MainButtonDisplay(
 ) : DisplayItem(R.layout.item_main_button) {
     class ViewHolder(view: View) : DisplayViewHolder<MainButtonDisplay>(view) {
         override fun bind(item: MainButtonDisplay) {
+            val tv_button_text = containerView.findViewById<TextView>(R.id.tv_button_text)
             tv_button_text.text = item.text
             tv_button_text.setOnClickListener {
                 item.click()

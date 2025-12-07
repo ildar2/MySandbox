@@ -17,17 +17,30 @@
 package kz.ildar.sandbox.ui.main.touch
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_touch_panel.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.FragmentTouchPanelBinding
 
 class TouchPanelFragment : Fragment(R.layout.fragment_touch_panel) {
 
+    private lateinit var binding: FragmentTouchPanelBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentTouchPanelBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        tv_logging.text = "hello"
-        touch_panel.logger = {
-            tv_logging.text = it
+        binding.tvLogging.text = "hello"
+        binding.touchPanel.logger = {
+            binding.tvLogging.text = it
         }
     }
 }

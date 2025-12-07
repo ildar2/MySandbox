@@ -8,6 +8,7 @@
     tools:context=".ui.main.list.ColorListFragment">
 
     <include
+        android:id="@+id/include"
         layout="@layout/include_toolbar"
         app:layout_constraintTop_toTopOf="parent" />
 

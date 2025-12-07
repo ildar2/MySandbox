@@ -5,13 +5,14 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.fragment_color.*
-import kotlinx.android.synthetic.main.include_toolbar.*
 import kz.ildar.sandbox.R
+import kz.ildar.sandbox.databinding.FragmentColorBinding
 import kz.ildar.sandbox.utils.ext.doOnProgressChanged
 import kz.ildar.sandbox.utils.ext.toast
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,6 +23,16 @@ class ColorFragment : Fragment(R.layout.fragment_color) {
     }
 
     private val viewModel: ColorViewModel by viewModel()
+    private lateinit var binding: FragmentColorBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentColorBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,35 +48,38 @@ class ColorFragment : Fragment(R.layout.fragment_color) {
 
     private fun updateColor(colorModel: ColorMutable) {
         with(colorModel) {
-            if (!name.isBlank()) toolbar.title = name
-            colorView.setBackgroundColor(getColor())
-            hexView.text = getHexString()
+            if (!name.isBlank()) binding.include?.toolbar?.title = name
+            binding.colorView.setBackgroundColor(getColor())
+            binding.hexView.text = getHexString()
 
-            alphaSeekbar.progress = alpha
-            alphaValue.text = alpha.toString()
-            redSeekbar.progress = red
-            redValue.text = red.toString()
-            greenSeekbar.progress = green
-            greenValue.text = green.toString()
-            blueSeekbar.progress = blue
-            blueValue.text = blue.toString()
+            binding.alphaSeekbar.progress = alpha
+            binding.alphaValue.text = alpha.toString()
+            binding.redSeekbar.progress = red
+            binding.redValue.text = red.toString()
+            binding.greenSeekbar.progress = green
+            binding.greenValue.text = green.toString()
+            binding.blueSeekbar.progress = blue
+            binding.blueValue.text = blue.toString()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        toolbar.setNavigationOnClickListener {
+        binding.include?.toolbar?.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding.include?.toolbar?.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        toolbar.title = getString(R.string.color_picker_title)
+        binding.include?.toolbar?.title = getString(R.string.color_picker_title)
 
         initSeekers()
         initPlusMinus()
 
-        hexView.setOnLongClickListener {
+        binding.hexView.setOnLongClickListener {
             viewModel.colorLiveData.value?.let {
                 val clipboard = context?.getSystemService(CLIPBOARD_SERVICE) as? ClipboardManager
-                val clip = ClipData.newPlainText(getString(R.string.copied_to_clipboard), it.getHexString())
+                val clip = ClipData.newPlainText(
+                    getString(R.string.copied_to_clipboard),
+                    it.getHexString()
+                )
                 clipboard?.setPrimaryClip(clip)
                 toast(getString(R.string.copied_to_clipboard))
             }
@@ -74,10 +88,10 @@ class ColorFragment : Fragment(R.layout.fragment_color) {
     }
 
     private fun initSeekers() {
-        alphaSeekbar.doOnProgressChanged { viewModel.setAlpha(it) }
-        redSeekbar.doOnProgressChanged { viewModel.setRed(it) }
-        greenSeekbar.doOnProgressChanged { viewModel.setGreen(it) }
-        blueSeekbar.doOnProgressChanged { viewModel.setBlue(it) }
+        binding.alphaSeekbar.doOnProgressChanged { viewModel.setAlpha(it) }
+        binding.redSeekbar.doOnProgressChanged { viewModel.setRed(it) }
+        binding.greenSeekbar.doOnProgressChanged { viewModel.setGreen(it) }
+        binding.blueSeekbar.doOnProgressChanged { viewModel.setBlue(it) }
     }
 
     var autoIncrement = false
@@ -98,26 +112,26 @@ class ColorFragment : Fragment(R.layout.fragment_color) {
     }
 
     private fun initPlusMinus() {
-        minusView.setOnClickListener { viewModel.minusClick() }
-        minusView.setOnLongClickListener {
+        binding.minusView.setOnClickListener { viewModel.minusClick() }
+        binding.minusView.setOnLongClickListener {
             autoDecrement = true
             autoPressHandler.post(AutoPressEvent())
             true
         }
-        minusView.setOnTouchListener { _, event ->
+        binding.minusView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP && autoDecrement) {
                 autoDecrement = false
             }
             false
         }
 
-        plusView.setOnClickListener { viewModel.plusClick() }
-        plusView.setOnLongClickListener {
+        binding.plusView.setOnClickListener { viewModel.plusClick() }
+        binding.plusView.setOnLongClickListener {
             autoIncrement = true
             autoPressHandler.post(AutoPressEvent())
             true
         }
-        plusView.setOnTouchListener { _, event ->
+        binding.plusView.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP && autoIncrement) {
                 autoIncrement = false
             }

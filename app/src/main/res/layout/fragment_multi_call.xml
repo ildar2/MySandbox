@@ -8,6 +8,7 @@
     tools:context=".ui.main.multiCall.MultiCallFragment">
 
     <include
+        android:id="@+id/include"
         layout="@layout/include_toolbar"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -20,7 +21,7 @@
         android:padding="12dp"
         android:background="@drawable/ripple"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+        app:layout_constraintTop_toBottomOf="@id/include"/>
 
     <TextView
         android:id="@+id/twoCallView"

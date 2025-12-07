@@ -21,7 +21,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.extensions.LayoutContainer
 import kz.ildar.sandbox.ui.main.list.ColorListAdapter
 
 /**
@@ -79,8 +78,8 @@ abstract class DisplayItem(val layout: Int)
  * Обычно лучше делать inner-классом элемента для понятности, но не обязательно
  */
 abstract class DisplayViewHolder<E>(
-    override val containerView: View
-) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    val containerView: View
+) : RecyclerView.ViewHolder(containerView) {
     abstract fun bind(item: E)
     open fun bind(item: E, payloads: MutableList<Any>) = bind(item)
     open fun unbind() = Unit
